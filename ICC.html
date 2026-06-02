@@ -1,0 +1,1067 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IRIS — Лист персонажа (Редактор)</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap');
+
+  :root {
+    --header-bg: #000;
+    --header-text: #fff;
+    --border-color: #333;
+    --text-color: #111;
+    --bg-opacity: 1;
+    --decal-default-size: 120px;
+    --accent: #4488ff;
+    --btn-bg: #2a2a2a;
+    --btn-hover: #444;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', Arial, Helvetica, sans-serif;
+    background: #3a3a3a;
+    background-image: 
+      radial-gradient(circle at 20% 50%, rgba(68,136,255,0.08) 0%, transparent 50%),
+      radial-gradient(circle at 80% 80%, rgba(255,100,100,0.05) 0%, transparent 50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    padding-bottom: 100px;
+    min-height: 100vh;
+  }
+
+  .page {
+  width: 210mm;
+  min-height: 297mm;
+  background: #fff;
+  padding: 12mm 10mm;   /* ← базовый padding */
+  margin-bottom: 20px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+  position: relative;
+  overflow: hidden;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  }
+
+  .page-bg {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background-size: cover;
+    background-position: center;
+    opacity: var(--bg-opacity);
+    pointer-events: none;
+  }
+
+ .decal-container {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  }
+
+
+  .decal {
+    position: absolute;
+    cursor: move;
+    user-select: none;
+    pointer-events: auto;
+    transform-origin: center center;
+  }
+
+  .decal img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    pointer-events: none;
+    display: block;
+  }
+
+  .handle {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background: white;
+    border: 2px solid var(--accent);
+    border-radius: 50%;
+    display: none;
+    z-index: 5;
+    pointer-events: auto;
+  }
+
+  .decal.active .handle { display: block; }
+
+  .handle.corner { border-radius: 2px; }
+
+  .handle.nw { top: -6px; left: -6px; cursor: nw-resize; }
+  .handle.ne { top: -6px; right: -6px; cursor: ne-resize; }
+  .handle.se { bottom: -6px; right: -6px; cursor: se-resize; }
+  .handle.sw { bottom: -6px; left: -6px; cursor: sw-resize; }
+  .handle.n  { top: -6px; left: 50%; transform: translateX(-50%); cursor: n-resize; }
+  .handle.s  { bottom: -6px; left: 50%; transform: translateX(-50%); cursor: s-resize; }
+  .handle.e  { right: -6px; top: 50%; transform: translateY(-50%); cursor: e-resize; }
+  .handle.w  { left: -6px; top: 50%; transform: translateY(-50%); cursor: w-resize; }
+
+  .rotate-handle {
+    position: absolute;
+    top: -40px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 14px;
+    height: 14px;
+    background: white;
+    border: 2px solid var(--accent);
+    border-radius: 50%;
+    display: none;
+    cursor: crosshair;
+    z-index: 6;
+    pointer-events: auto;
+  }
+  .rotate-handle::after {
+    content: '↻';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 10px;
+    color: var(--accent);
+    font-weight: bold;
+  }
+  .decal.active .rotate-handle { display: block; }
+
+  .rotate-line {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 2px;
+    background: var(--accent);
+    display: none;
+    pointer-events: none;
+    transform-origin: bottom center;
+  }
+  .decal.active .rotate-line { display: block; }
+
+  .sheet-content {
+    position: relative;
+    z-index: 1;
+  }
+
+  .hbar {
+    background: var(--header-bg);
+    color: var(--header-text);
+    font-size: 11px;
+    font-weight: 900;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border-radius: 3px;
+    display: inline-block;
+    margin-bottom: 4px;
+    line-height: 1.3;
+  }
+
+  input[type="text"], textarea {
+    font-family: inherit;
+    font-size: 12px;
+    border: 1px solid var(--border-color);
+    background: transparent;
+    outline: none;
+    padding: 3px 5px;
+    color: var(--text-color);
+    transition: border-color 0.2s;
+  }
+  input[type="text"]:focus, textarea:focus { border-color: var(--accent); }
+  textarea { resize: none; line-height: 1.5; }
+
+  .cb {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 18px; height: 18px;
+    border: 2px solid var(--border-color);
+    cursor: pointer; flex-shrink: 0;
+    position: relative; background: #fff;
+    transition: border-color 0.2s;
+  }
+  .cb:hover { border-color: var(--accent); }
+  .cb.checked::after {
+    content: '✓'; font-size: 14px; font-weight: 900; color: var(--text-color);
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
+  }
+  .cb.disabled { opacity: 0.25; }
+
+  .row { display: flex; gap: 8px; align-items: flex-start; margin-bottom: 4px; }
+  .row-full { width: 100%; }
+
+  .p1-header {
+    display: flex; gap: 6px; align-items: flex-end;
+    margin-bottom: 10px; padding-bottom: 6px; border-bottom: 1px solid #ccc;
+  }
+  .p1-header .col-name { flex: 0 0 40%; display: flex; flex-direction: column; gap: 3px; }
+  .p1-header .col-desc { flex: 1; display: flex; flex-direction: column; gap: 3px; }
+  .p1-header .col-portrait { flex: 0 0 90px; display: flex; flex-direction: column; align-items: center; gap: 3px; }
+  .p1-header .col-portrait .portrait-box {
+    width: 80px; height: 80px; border: 1px solid var(--border-color);
+    background: rgba(255,255,255,0.5); display: flex; align-items: center; justify-content: center;
+    font-size: 10px; color: #999;
+  }
+
+  .logo-area { text-align: right; line-height: 1.2; margin-left: auto; }
+  .logo-area .iris-logo {
+    font-size: 38px; font-weight: 900; letter-spacing: 2px; line-height: 1;
+    color: var(--header-bg);
+  }
+  .logo-area .iris-sub {
+    font-size: 9px; font-weight: 700; letter-spacing: 3px; margin-top: 2px;
+    color: var(--header-bg);
+  }
+
+  .p1-body { display: grid; grid-template-columns: 1fr 1.4fr; gap: 12px; margin-bottom: 10px; }
+  .aspects .row input { width: 100%; height: 22px; }
+
+  .skills-grid { display: flex; flex-direction: column; gap: 3px; }
+  .skill-row { display: flex; align-items: center; gap: 4px; height: 22px; }
+  .skill-label { width: 120px; font-size: 11px; font-weight: 700; flex-shrink: 0; }
+  .skill-label .rank { color: #888; font-weight: 400; margin-left: 2px; }
+  .skill-boxes { display: flex; gap: 3px; flex: 1; }
+  .sbox { flex: 1; height: 100%; border: 1px solid var(--border-color); background: transparent; }
+  .sbox input { width: 100%; height: 100%; border: none; text-align: center; padding: 0; font-size: 11px; font-weight: 600; }
+
+  .p1-bottom { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 10px; }
+  .p1-bottom textarea { height: 70px; width: 100%; }
+
+  .p1-footer { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+  .stress-group { margin-bottom: 4px; }
+  .stress-track { display: flex; align-items: center; gap: 5px; }
+  .stress-track .num { font-weight: 900; font-size: 16px; width: 18px; text-align: center; }
+
+  .conseq-row { display: flex; align-items: center; gap: 4px; height: 22px; }
+  .conseq-row .num { font-weight: 900; font-size: 14px; width: 18px; text-align: center; }
+  .conseq-row .label { font-size: 10px; color: #888; width: 60px; }
+  .conseq-row input { flex: 1; height: 100%; }
+
+  .bottom-sections {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 10px;
+  }
+
+  .bottom-section {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .bottom-section textarea {
+    flex: 1;
+    min-height: 120px;
+    width: 100%;
+  }
+
+  #settings-panel {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    width: 280px;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.25);
+    z-index: 1000;
+    overflow: hidden;
+    font-size: 13px;
+    transition: transform 0.3s ease;
+  }
+  #settings-panel.hidden { transform: translateX(320px); }
+  .panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    background: #f8f8f8;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+    user-select: none;
+    font-weight: 600;
+  }
+  .panel-header:hover { background: #f0f0f0; }
+  .panel-body { padding: 14px; display: flex; flex-direction: column; gap: 12px; }
+  .panel-section { border-bottom: 1px solid #eee; padding-bottom: 10px; }
+  .panel-section:last-child { border-bottom: none; padding-bottom: 0; }
+  .panel-section h4 { margin-bottom: 8px; font-size: 12px; color: #666; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+  .control-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+  .control-row label { flex: 1; font-size: 12px; color: #444; }
+  .control-row input[type="color"] { width: 32px; height: 26px; border: 1px solid #ddd; padding: 0; cursor: pointer; border-radius: 4px; }
+  .control-row input[type="range"] { flex: 1; margin-left: 8px; }
+  .control-row input[type="file"] { width: 100%; font-size: 11px; }
+  .btn-small {
+    padding: 5px 10px; font-size: 11px; background: #333; color: #fff;
+    border: none; border-radius: 4px; cursor: pointer; width: 100%;
+    transition: background 0.2s;
+  }
+  .btn-small:hover { background: #555; }
+  .btn-export { background: #2563eb; margin-bottom: 4px; }
+  .btn-export:hover { background: #1d4ed8; }
+  .btn-import { background: #059669; }
+  .btn-import:hover { background: #047857; }
+  .decal-list-item {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 6px 8px; background: #f9f9f9; border-radius: 4px; margin-bottom: 4px;
+    font-size: 11px;
+  }
+  .decal-list-item button {
+    background: #ff4444; color: white; border: none; border-radius: 3px;
+    padding: 2px 8px; cursor: pointer; font-size: 10px;
+    transition: background 0.2s;
+  }
+  .decal-list-item button:hover { background: #ff6666; }
+
+  .fab-container {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    display: flex;
+    gap: 12px;
+    z-index: 999;
+  }
+
+  .fab {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: var(--btn-bg);
+    color: white;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    transition: all 0.2s ease;
+    position: relative;
+  }
+
+  .fab:hover {
+    background: var(--btn-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.4);
+  }
+
+  .fab:active {
+    transform: translateY(0);
+  }
+
+  .fab svg {
+    width: 24px;
+    height: 24px;
+    fill: currentColor;
+  }
+
+  .fab::before {
+    content: attr(data-tooltip);
+    position: absolute;
+    right: 60px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0,0,0,0.85);
+    color: white;
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s;
+  }
+
+  .fab:hover::before {
+    opacity: 1;
+  }
+
+  .fab-print { background: #2563eb; }
+  .fab-print:hover { background: #1d4ed8; }
+
+  .fab-settings { background: #333; }
+  .fab-settings:hover { background: #555; }
+
+  .shortcut-hint {
+    position: fixed;
+    bottom: 24px;
+    left: 24px;
+    background: rgba(0,0,0,0.7);
+    color: white;
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 12px;
+    z-index: 998;
+    max-width: 280px;
+    line-height: 1.6;
+    backdrop-filter: blur(8px);
+  }
+
+  .shortcut-hint kbd {
+    background: rgba(255,255,255,0.2);
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-family: monospace;
+    font-size: 11px;
+    font-weight: 600;
+  }
+
+  @media print {
+  body {
+    background: white;
+    padding: 0;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+  .page {
+    box-shadow: none;
+    margin: 0;
+    padding: 12mm 10mm;   /* ← ТО ЖЕ САМОЕ, что и в screen! */
+  }
+  #settings-panel, .fab-container, .shortcut-hint {
+    display: none !important;
+  }
+  .decal .handle, .decal .rotate-handle, .decal .rotate-line {
+    display: none !important;
+  }
+}
+  
+</style>
+</head>
+<body>
+
+<div class="fab-container">
+  <button class="fab fab-print" data-tooltip="Сохранить в PDF" onclick="window.print()">
+    <svg viewBox="0 0 24 24">
+      <path d="M19 8H5c-1.66 0-3 1.34-3 3v6h4v4h12v-4h4v-6c0-1.66-1.34-3-3-3zm-3 11H8v-5h8v5zm3-7c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm-1-9H6v4h12V3z"/>
+    </svg>
+  </button>
+  <button class="fab fab-settings" data-tooltip="Настройки" onclick="document.getElementById('settings-panel').classList.toggle('hidden')">
+    <svg viewBox="0 0 24 24">
+      <path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L3.16 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/>
+    </svg>
+  </button>
+</div>
+
+<div class="shortcut-hint">
+  <strong>Горячие клавиши:</strong><br>
+  <kbd>Del</kbd> — удалить декаль &nbsp; <kbd>Ctrl+P</kbd> — экспорт в PDF
+</div>
+
+<div id="settings-panel">
+  <div class="panel-header" onclick="document.getElementById('settings-panel').classList.toggle('hidden')">
+    <span>⚙️ Настройки оформления</span>
+    <span id="toggle-icon">▲</span>
+  </div>
+  <div class="panel-body">
+    <div class="panel-section">
+      <h4>💾 Экспорт / Импорт</h4>
+      <button class="btn-small btn-export" onclick="exportData()">⬇️ Экспорт формы</button>
+      <button class="btn-small btn-import" onclick="document.getElementById('import-file').click()">⬆️ Импорт формы</button>
+      <input type="file" id="import-file" accept=".json" style="display:none" onchange="importData(event)">
+    </div>
+    <div class="panel-section">
+      <h4>🎨 Цвета</h4>
+      <div class="control-row"><label>Фон блоков</label><input type="color" id="col-header-bg" value="#000000"></div>
+      <div class="control-row"><label>Текст блоков</label><input type="color" id="col-header-text" value="#ffffff"></div>
+      <div class="control-row"><label>Рамки</label><input type="color" id="col-border" value="#333333"></div>
+      <div class="control-row"><label>Основной текст</label><input type="color" id="col-text" value="#111111"></div>
+    </div>
+    <div class="panel-section">
+      <h4>🖼️ Фон листа</h4>
+      <input type="file" id="bg-upload" accept="image/*">
+      <div class="control-row">
+        <label>Прозрачность фона</label>
+        <input type="range" id="bg-opacity" min="0" max="1" step="0.05" value="1">
+      </div>
+      <button class="btn-small" onclick="removeBg()"> Убрать фон</button>
+    </div>
+    <div class="panel-section">
+      <h4>🏷️ Декали (наклейки)</h4>
+      <input type="file" id="decal-upload" accept="image/*">
+      <div class="control-row">
+        <label>Размер новых декалей</label>
+        <input type="range" id="decal-size" min="30" max="300" step="10" value="120">
+      </div>
+      <div id="decal-list" style="max-height: 120px; overflow-y: auto; margin-top: 4px;"></div>
+    </div>
+  </div>
+</div>
+
+<div class="page">
+  <div class="page-bg"></div>
+  <div class="decal-container"></div>
+  <div class="sheet-content">
+    <div class="p1-header">
+      <div class="col-name">
+        <div class="hbar">Персонаж</div>
+        <input type="text" placeholder="Имя" style="width:100%; height:22px;" data-field="char-name">
+      </div>
+      <div class="col-desc">
+        <textarea placeholder="Описание" style="width:100%; height:48px;" data-field="char-desc"></textarea>
+      </div>
+      <div class="col-portrait">
+        <div class="hbar" style="margin-bottom:3px;">Цветки</div>
+        <div class="portrait-box">фото</div>
+      </div>
+      <div class="logo-area">
+        <div class="iris-logo">IRIS</div>
+        <div class="iris-sub">CORE SYSTEM</div>
+      </div>
+    </div>
+
+    <div class="p1-body">
+      <div class="aspects">
+        <div class="hbar">Аспекты</div>
+        <div class="row"><input type="text" data-field="aspect-1"></div>
+        <div class="row"><input type="text" data-field="aspect-2"></div>
+        <div class="row"><input type="text" data-field="aspect-3"></div>
+        <div class="row"><input type="text" data-field="aspect-4"></div>
+        <div class="row"><input type="text" data-field="aspect-5"></div>
+      </div>
+      <div class="skills">
+        <div class="hbar">Навыки</div>
+        <div class="skills-grid">
+          <div class="skill-row">
+            <div class="skill-label">Великолепн. <span class="rank">(+5)</span></div>
+            <div class="skill-boxes">
+              <div class="sbox"><input type="text" data-field="skill-5-1"></div>
+              <div class="sbox"><input type="text" data-field="skill-5-2"></div>
+              <div class="sbox"><input type="text" data-field="skill-5-3"></div>
+              <div class="sbox"><input type="text" data-field="skill-5-4"></div>
+              <div class="sbox"><input type="text" data-field="skill-5-5"></div>
+            </div>
+          </div>
+          <div class="skill-row">
+            <div class="skill-label">Отличный <span class="rank">(+4)</span></div>
+            <div class="skill-boxes">
+              <div class="sbox"><input type="text" data-field="skill-4-1"></div>
+              <div class="sbox"><input type="text" data-field="skill-4-2"></div>
+              <div class="sbox"><input type="text" data-field="skill-4-3"></div>
+              <div class="sbox"><input type="text" data-field="skill-4-4"></div>
+              <div class="sbox"><input type="text" data-field="skill-4-5"></div>
+            </div>
+          </div>
+          <div class="skill-row">
+            <div class="skill-label">Хороший <span class="rank">(+3)</span></div>
+            <div class="skill-boxes">
+              <div class="sbox"><input type="text" data-field="skill-3-1"></div>
+              <div class="sbox"><input type="text" data-field="skill-3-2"></div>
+              <div class="sbox"><input type="text" data-field="skill-3-3"></div>
+              <div class="sbox"><input type="text" data-field="skill-3-4"></div>
+              <div class="sbox"><input type="text" data-field="skill-3-5"></div>
+            </div>
+          </div>
+          <div class="skill-row">
+            <div class="skill-label">Неплохой <span class="rank">(+2)</span></div>
+            <div class="skill-boxes">
+              <div class="sbox"><input type="text" data-field="skill-2-1"></div>
+              <div class="sbox"><input type="text" data-field="skill-2-2"></div>
+              <div class="sbox"><input type="text" data-field="skill-2-3"></div>
+              <div class="sbox"><input type="text" data-field="skill-2-4"></div>
+              <div class="sbox"><input type="text" data-field="skill-2-5"></div>
+            </div>
+          </div>
+          <div class="skill-row">
+            <div class="skill-label">Средний <span class="rank">(+1)</span></div>
+            <div class="skill-boxes">
+              <div class="sbox"><input type="text" data-field="skill-1-1"></div>
+              <div class="sbox"><input type="text" data-field="skill-1-2"></div>
+              <div class="sbox"><input type="text" data-field="skill-1-3"></div>
+              <div class="sbox"><input type="text" data-field="skill-1-4"></div>
+              <div class="sbox"><input type="text" data-field="skill-1-5"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="p1-bottom">
+      <div class="extras">
+        <div class="hbar">Дополнения</div>
+        <textarea data-field="extras"></textarea>
+      </div>
+      <div class="tricks">
+        <div class="hbar">Трюки</div>
+        <textarea data-field="tricks"></textarea>
+      </div>
+    </div>
+
+    <div class="p1-footer">
+      <div>
+        <div class="stress-group">
+          <div class="hbar">Физ. стресс <span style="font-weight:400; font-size:9px; letter-spacing:0;">(Телосложение)</span></div>
+          <div class="stress-track">
+            <div class="num">1</div><div class="cb" data-field="stress-phys-1" onclick="this.classList.toggle('checked')"></div>
+            <div class="num">2</div><div class="cb" data-field="stress-phys-2" onclick="this.classList.toggle('checked')"></div>
+            <div class="num">3</div><div class="cb disabled" data-field="stress-phys-3" onclick="this.classList.toggle('checked')"></div>
+            <div class="num">4</div><div class="cb disabled" data-field="stress-phys-4" onclick="this.classList.toggle('checked')"></div>
+          </div>
+        </div>
+        <div class="stress-group">
+          <div class="hbar">Ментал. стресс <span style="font-weight:400; font-size:9px; letter-spacing:0;">(Воля)</span></div>
+          <div class="stress-track">
+            <div class="num">1</div><div class="cb" data-field="stress-mental-1" onclick="this.classList.toggle('checked')"></div>
+            <div class="num">2</div><div class="cb" data-field="stress-mental-2" onclick="this.classList.toggle('checked')"></div>
+            <div class="num">3</div><div class="cb disabled" data-field="stress-mental-3" onclick="this.classList.toggle('checked')"></div>
+            <div class="num">4</div><div class="cb disabled" data-field="stress-mental-4" onclick="this.classList.toggle('checked')"></div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="hbar">Последствия</div>
+        <div class="conseq-row">
+          <div class="num">2</div><div class="label">Легкое</div><input type="text" data-field="conseq-2">
+        </div>
+        <div class="conseq-row">
+          <div class="num">4</div><div class="label">Среднее</div><input type="text" data-field="conseq-4">
+        </div>
+        <div class="conseq-row">
+          <div class="num">6</div><div class="label">Серьезное</div><input type="text" data-field="conseq-6">
+        </div>
+      </div>
+    </div>
+
+    <div class="bottom-sections">
+      <div class="bottom-section">
+        <div class="hbar">Заметки</div>
+        <textarea placeholder="Ваши заметки..." data-field="notes"></textarea>
+      </div>
+      <div class="bottom-section">
+        <div class="hbar">Иллюстрации</div>
+        <textarea placeholder="Эскизы и рисунки..." data-field="illustrations"></textarea>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const root = document.documentElement;
+  document.getElementById('col-header-bg').addEventListener('input', e => root.style.setProperty('--header-bg', e.target.value));
+  document.getElementById('col-header-text').addEventListener('input', e => root.style.setProperty('--header-text', e.target.value));
+  document.getElementById('col-border').addEventListener('input', e => root.style.setProperty('--border-color', e.target.value));
+  document.getElementById('col-text').addEventListener('input', e => root.style.setProperty('--text-color', e.target.value));
+
+  const bgLayers = document.querySelectorAll('.page-bg');
+  document.getElementById('bg-upload').addEventListener('change', e => {
+    if(e.target.files[0]) {
+      const url = URL.createObjectURL(e.target.files[0]);
+      bgLayers.forEach(layer => { layer.style.backgroundImage = `url(${url})`; });
+    }
+  });
+  document.getElementById('bg-opacity').addEventListener('input', e => root.style.setProperty('--bg-opacity', e.target.value));
+  function removeBg() {
+    bgLayers.forEach(layer => { layer.style.backgroundImage = ''; });
+    document.getElementById('bg-upload').value = '';
+  }
+
+  const decalContainers = document.querySelectorAll('.decal-container');
+  const decalList = document.getElementById('decal-list');
+  let activeDecal = null;
+
+  document.getElementById('decal-upload').addEventListener('change', e => {
+    if(e.target.files[0]) {
+      addDecal(e.target.files[0]);
+      e.target.value = '';
+    }
+  });
+
+  document.getElementById('decal-size').addEventListener('input', e => root.style.setProperty('--decal-default-size', e.target.value + 'px'));
+
+  function addDecal(file, restoreData = null) {
+    const id = restoreData ? restoreData.id : 'd_' + Date.now();
+    
+    // Парсим размеры из строк типа "120px" в числа
+    const defaultSize = parseInt(getComputedStyle(root).getPropertyValue('--decal-default-size')) || 120;
+    const width = restoreData ? parseInt(restoreData.width) || defaultSize : defaultSize;
+    const height = restoreData ? parseInt(restoreData.height) || width : width;
+    const left = restoreData ? restoreData.left : '100px';
+    const top = restoreData ? restoreData.top : '100px';
+    const rotation = restoreData ? (restoreData.rotation || 0) : 0;
+    
+    const wrap = document.createElement('div');
+    wrap.className = 'decal';
+    wrap.id = id;
+    wrap.style.width = width + 'px';
+    wrap.style.height = height + 'px';
+    wrap.style.left = left;
+    wrap.style.top = top;
+    wrap.style.transform = `rotate(${rotation}deg)`;
+    wrap.dataset.rotation = rotation;
+    
+    const img = document.createElement('img');
+    img.src = restoreData ? restoreData.imageSrc : URL.createObjectURL(file);
+    img.draggable = false;
+    wrap.appendChild(img);
+
+    const rotateLine = document.createElement('div');
+    rotateLine.className = 'rotate-line';
+    rotateLine.style.height = '28px';
+    wrap.appendChild(rotateLine);
+
+    const handlePositions = ['nw','ne','se','sw','n','s','e','w'];
+    handlePositions.forEach(pos => {
+      const h = document.createElement('div');
+      h.className = 'handle' + (['nw','ne','se','sw'].includes(pos) ? ' corner' : '');
+      h.classList.add(pos);
+      h.dataset.handle = pos;
+      wrap.appendChild(h);
+    });
+
+    const rotateHandle = document.createElement('div');
+    rotateHandle.className = 'rotate-handle';
+    rotateHandle.dataset.handle = 'rotate';
+    wrap.appendChild(rotateHandle);
+
+    let isDragging = false, startX, startY, origLeft, origTop;
+    wrap.addEventListener('mousedown', e => {
+      if(e.target.dataset.handle) return;
+      isDragging = true;
+      startX = e.clientX; startY = e.clientY;
+      origLeft = parseFloat(wrap.style.left) || 0;
+      origTop = parseFloat(wrap.style.top) || 0;
+      setActiveDecal(wrap);
+      e.preventDefault();
+    });
+
+    handlePositions.forEach(pos => {
+      const handle = wrap.querySelector(`.handle.${pos}`);
+      let isResizing = false, startMouseX, startMouseY, startW, startH, startLeft, startTop;
+
+      handle.addEventListener('mousedown', (e) => {
+        e.stopPropagation();
+        isResizing = true;
+        startMouseX = e.clientX;
+        startMouseY = e.clientY;
+        startW = wrap.offsetWidth;
+        startH = wrap.offsetHeight;
+        startLeft = parseFloat(wrap.style.left) || 0;
+        startTop = parseFloat(wrap.style.top) || 0;
+        setActiveDecal(wrap);
+      });
+
+      document.addEventListener('mousemove', (e) => {
+        if (!isResizing) return;
+        const dx = e.clientX - startMouseX;
+        const dy = e.clientY - startMouseY;
+
+        let newW = startW;
+        let newH = startH;
+        let newLeft = startLeft;
+        let newTop = startTop;
+
+        if (pos.includes('e')) {
+          newW = Math.max(30, startW + dx);
+        } else if (pos.includes('w')) {
+          newW = Math.max(30, startW - dx);
+          newLeft = startLeft + (startW - newW);
+        }
+        if (pos.includes('s')) {
+          newH = Math.max(30, startH + dy);
+        } else if (pos.includes('n')) {
+          newH = Math.max(30, startH - dy);
+          newTop = startTop + (startH - newH);
+        }
+
+        wrap.style.width = newW + 'px';
+        wrap.style.height = newH + 'px';
+        wrap.style.left = newLeft + 'px';
+        wrap.style.top = newTop + 'px';
+      });
+
+      document.addEventListener('mouseup', () => { isResizing = false; });
+    });
+
+    let isRotating = false;
+    let startAngle = 0;
+    let startRotation = 0;
+
+    rotateHandle.addEventListener('mousedown', (e) => {
+      e.stopPropagation();
+      e.preventDefault();
+      isRotating = true;
+      setActiveDecal(wrap);
+
+      const rect = wrap.getBoundingClientRect();
+      const centerX = rect.left + rect.width / 2;
+      const centerY = rect.top + rect.height / 2;
+
+      startAngle = Math.atan2(e.clientY - centerY, e.clientX - centerX);
+      startRotation = parseFloat(wrap.dataset.rotation) || 0;
+    });
+
+    document.addEventListener('mousemove', (e) => {
+      if (isDragging) {
+        wrap.style.left = (origLeft + e.clientX - startX) + 'px';
+        wrap.style.top = (origTop + e.clientY - startY) + 'px';
+      }
+      if (isRotating) {
+        const rect = wrap.getBoundingClientRect();
+        const centerX = rect.left + rect.width / 2;
+        const centerY = rect.top + rect.height / 2;
+        const currentAngle = Math.atan2(e.clientY - centerY, e.clientX - centerX);
+        const delta = (currentAngle - startAngle) * (180 / Math.PI);
+        const newRotation = startRotation + delta;
+        wrap.style.transform = `rotate(${newRotation}deg)`;
+        wrap.dataset.rotation = newRotation;
+      }
+    });
+
+    document.addEventListener('mouseup', () => {
+      isDragging = false;
+      isRotating = false;
+    });
+
+    decalContainers[0].appendChild(wrap);
+    
+    if (!restoreData) {
+      const item = document.createElement('div');
+      item.className = 'decal-list-item';
+      item.id = 'list_' + id;
+      item.innerHTML = `<span>🖼️ ${file.name.substring(0,15)}...</span><button onclick="removeDecal('${id}')">Удалить</button>`;
+      decalList.appendChild(item);
+    }
+  }
+
+  function setActiveDecal(wrap) {
+    document.querySelectorAll('.decal').forEach(d => d.classList.remove('active'));
+    wrap.classList.add('active');
+    activeDecal = wrap;
+  }
+
+  function removeDecal(id) {
+    const el = document.getElementById(id);
+    if(el) el.remove();
+    const listEl = document.getElementById('list_' + id);
+    if(listEl) listEl.remove();
+    if(activeDecal === el) activeDecal = null;
+  }
+
+  document.addEventListener('click', (e) => {
+    if(!e.target.closest('.decal') && !e.target.closest('#settings-panel') && !e.target.closest('.fab')) {
+      document.querySelectorAll('.decal').forEach(d => d.classList.remove('active'));
+      activeDecal = null;
+    }
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if((e.key === 'Delete' || e.key === 'Backspace') && activeDecal && document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA') {
+      removeDecal(activeDecal.id);
+      e.preventDefault();
+    }
+  });
+
+  document.querySelector('.panel-header').addEventListener('click', () => {
+    const panel = document.getElementById('settings-panel');
+    document.getElementById('toggle-icon').textContent = panel.classList.contains('hidden') ? '▼' : '▲';
+  });
+
+  // ===== EXPORT / IMPORT =====
+async function exportData() {
+  const data = {
+    version: '1.0',
+    timestamp: new Date().toISOString(),
+    colors: {
+      headerBg: document.getElementById('col-header-bg').value,
+      headerText: document.getElementById('col-header-text').value,
+      border: document.getElementById('col-border').value,
+      text: document.getElementById('col-text').value
+    },
+    bgOpacity: document.getElementById('bg-opacity').value,
+    fields: {},
+    decals: []
+  };
+
+  // Save all fields
+  document.querySelectorAll('[data-field]').forEach(el => {
+    const field = el.dataset.field;
+    if (el.tagName === 'INPUT' && el.type === 'text') {
+      data.fields[field] = el.value;
+    } else if (el.tagName === 'TEXTAREA') {
+      data.fields[field] = el.value;
+    } else if (el.classList.contains('cb')) {
+      data.fields[field] = el.classList.contains('checked');
+    }
+  });
+
+  // Save background image (convert to base64 via canvas)
+  const bgLayer = document.querySelector('.page-bg');
+  if (bgLayer.style.backgroundImage && bgLayer.style.backgroundImage !== 'none') {
+    const bgUrl = bgLayer.style.backgroundImage.slice(5, -2);
+    try {
+      data.background = await imageToBase64(bgUrl);
+    } catch (e) {
+      console.warn('Failed to export background:', e);
+    }
+  }
+
+  // Save decals (convert each image to base64)
+  const decalEls = document.querySelectorAll('.decal');
+  for (const decal of decalEls) {
+    const img = decal.querySelector('img');
+    if (img && img.src) {
+      try {
+        const imgBase64 = await imageToBase64(img.src);
+        const decalData = {
+          id: decal.id,
+          imageSrc: imgBase64,
+          left: decal.style.left,
+          top: decal.style.top,
+          width: decal.style.width,
+          height: decal.style.height,
+          rotation: decal.dataset.rotation || 0
+        };
+        data.decals.push(decalData);
+      } catch (e) {
+        console.warn('Failed to export decal:', decal.id, e);
+      }
+    }
+  }
+
+  const json = JSON.stringify(data, null, 2);
+  const blob = new Blob([json], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `character-sheet-${Date.now()}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+async function importData(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  try {
+    const text = await file.text();
+    const data = JSON.parse(text);
+
+    if (!data.version) {
+      alert('Неверный формат файла');
+      return;
+    }
+
+    // Restore colors
+    if (data.colors) {
+      if (data.colors.headerBg) {
+        document.getElementById('col-header-bg').value = data.colors.headerBg;
+        root.style.setProperty('--header-bg', data.colors.headerBg);
+      }
+      if (data.colors.headerText) {
+        document.getElementById('col-header-text').value = data.colors.headerText;
+        root.style.setProperty('--header-text', data.colors.headerText);
+      }
+      if (data.colors.border) {
+        document.getElementById('col-border').value = data.colors.border;
+        root.style.setProperty('--border-color', data.colors.border);
+      }
+      if (data.colors.text) {
+        document.getElementById('col-text').value = data.colors.text;
+        root.style.setProperty('--text-color', data.colors.text);
+      }
+    }
+
+    // Restore background opacity
+    if (data.bgOpacity !== undefined) {
+      document.getElementById('bg-opacity').value = data.bgOpacity;
+      root.style.setProperty('--bg-opacity', data.bgOpacity);
+    }
+
+    // Restore background image
+    if (data.background) {
+      bgLayers.forEach(layer => {
+        layer.style.backgroundImage = `url(${data.background})`;
+      });
+    }
+
+    // Restore fields
+    if (data.fields) {
+      document.querySelectorAll('[data-field]').forEach(el => {
+        const field = el.dataset.field;
+        if (data.fields[field] !== undefined) {
+          if (el.tagName === 'INPUT' && el.type === 'text') {
+            el.value = data.fields[field];
+          } else if (el.tagName === 'TEXTAREA') {
+            el.value = data.fields[field];
+          } else if (el.classList.contains('cb')) {
+            if (data.fields[field]) {
+              el.classList.add('checked');
+            } else {
+              el.classList.remove('checked');
+            }
+          }
+        }
+      });
+    }
+
+    // Restore decals
+    if (data.decals && data.decals.length > 0) {
+      // Clear existing decals
+      document.querySelectorAll('.decal').forEach(d => d.remove());
+      decalList.innerHTML = '';
+      
+      // Add decals from data
+      for (const decalData of data.decals) {
+        await addDecal(null, decalData);
+        // Add to decal list for UI
+        const item = document.createElement('div');
+        item.className = 'decal-list-item';
+        item.id = 'list_' + decalData.id;
+        const nameMatch = decalData.imageSrc.match(/;base64,(.{10})/);
+        const name = nameMatch ? 'decal_' + nameMatch[1] + '...' : 'decal...';
+        item.innerHTML = `<span>🖼️ ${name}</span><button onclick="removeDecal('${decalData.id}')">Удалить</button>`;
+        decalList.appendChild(item);
+      }
+    }
+
+    alert('Форма успешно загружена!');
+  } catch (e) {
+    console.error('Import error:', e);
+    alert('Ошибка при загрузке файла: ' + e.message);
+  }
+
+  event.target.value = '';
+}
+
+// Универсальная функция конвертации любого изображения (URL, blob:, base64) в base64
+function imageToBase64(src) {
+  return new Promise((resolve, reject) => {
+    // Если уже base64 — возвращаем как есть
+    if (src.startsWith('data:')) {
+      resolve(src);
+      return;
+    }
+
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.onload = () => {
+      try {
+        const canvas = document.createElement('canvas');
+        canvas.width = img.naturalWidth;
+        canvas.height = img.naturalHeight;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0);
+        const dataUrl = canvas.toDataURL('image/png');
+        resolve(dataUrl);
+      } catch (err) {
+        // Если canvas tainted (CORS) — пробуем вернуть оригинальный src
+        reject(new Error('Canvas tainted: ' + err.message));
+      }
+    };
+    img.onerror = () => reject(new Error('Failed to load image: ' + src));
+    img.src = src;
+  });
+}
+</script>
+
+</body>
+</html>

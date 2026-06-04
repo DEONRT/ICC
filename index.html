@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<link rel="shortcut icon" type="image/png" href="favicon.png">
+<link rel="icon" type="image/png" href="iris-icon.png">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>IRIS Character Constructor</title>
 <style>
@@ -376,8 +376,8 @@
   border: none;
   text-align: center;
   padding: 0;
-  font-size: 14px;
-  font-weight: 400;
+  font-size: 11px;
+  font-weight: 600;
 }
 
 /* НИЖНЯЯ ЧАСТЬ — ОСТАВЛЯЕМ МАСШТАБИРОВАНИЕ только для Дополнений и Трюков */
@@ -386,7 +386,7 @@
   grid-template-columns: 1fr 1fr;
   gap: 12px;
   margin-bottom: 0;
-  height: 160px; /* увеличенная высота */
+  height: 240px; /* увеличенная высота */
 }
 
 /* Делаем контейнеры flex, чтобы textarea занял всё оставшееся место */
@@ -434,6 +434,7 @@
   align-items: center;
   gap: 4px;
   height: 28px;
+  margin-top: 15px;
 }
 
 .conseq-row .num {
@@ -1018,63 +1019,23 @@
       <div class="row"><input type="text" data-field="aspect-4"></div>
       <div class="row"><input type="text" data-field="aspect-5"></div>
     </div>
-    <div class="skills">
-      <div class="hbar">Навыки</div>
-      <div class="skills-grid">
-        <div class="skill-row">
-          <div class="skill-label">Великолепн. <span class="rank">(+5)</span></div>
-          <div class="skill-boxes">
-            <div class="sbox"><input type="text" data-field="skill-5-1"></div>
-            <div class="sbox"><input type="text" data-field="skill-5-2"></div>
-            <div class="sbox"><input type="text" data-field="skill-5-3"></div>
-            <div class="sbox"><input type="text" data-field="skill-5-4"></div>
-            <div class="sbox"><input type="text" data-field="skill-5-5"></div>
-          </div>
-        </div>
-        <div class="skill-row">
-          <div class="skill-label">Отличный <span class="rank">(+4)</span></div>
-          <div class="skill-boxes">
-            <div class="sbox"><input type="text" data-field="skill-4-1"></div>
-            <div class="sbox"><input type="text" data-field="skill-4-2"></div>
-            <div class="sbox"><input type="text" data-field="skill-4-3"></div>
-            <div class="sbox"><input type="text" data-field="skill-4-4"></div>
-            <div class="sbox"><input type="text" data-field="skill-4-5"></div>
-          </div>
-        </div>
-        <div class="skill-row">
-          <div class="skill-label">Хороший <span class="rank">(+3)</span></div>
-          <div class="skill-boxes">
-            <div class="sbox"><input type="text" data-field="skill-3-1"></div>
-            <div class="sbox"><input type="text" data-field="skill-3-2"></div>
-            <div class="sbox"><input type="text" data-field="skill-3-3"></div>
-            <div class="sbox"><input type="text" data-field="skill-3-4"></div>
-            <div class="sbox"><input type="text" data-field="skill-3-5"></div>
-          </div>
-        </div>
-        <div class="skill-row">
-          <div class="skill-label">Неплохой <span class="rank">(+2)</span></div>
-          <div class="skill-boxes">
-            <div class="sbox"><input type="text" data-field="skill-2-1"></div>
-            <div class="sbox"><input type="text" data-field="skill-2-2"></div>
-            <div class="sbox"><input type="text" data-field="skill-2-3"></div>
-            <div class="sbox"><input type="text" data-field="skill-2-4"></div>
-            <div class="sbox"><input type="text" data-field="skill-2-5"></div>
-          </div>
-        </div>
-        <div class="skill-row">
-          <div class="skill-label">Средний <span class="rank">(+1)</span></div>
-          <div class="skill-boxes">
-            <div class="sbox"><input type="text" data-field="skill-1-1"></div>
-            <div class="sbox"><input type="text" data-field="skill-1-2"></div>
-            <div class="sbox"><input type="text" data-field="skill-1-3"></div>
-            <div class="sbox"><input type="text" data-field="skill-1-4"></div>
-            <div class="sbox"><input type="text" data-field="skill-1-5"></div>
-          </div>
-        </div>
-      </div>
+    <div class="conseq-col">
+    <div class="hbar">Последствия</div>
+      <div class="conseq-row">
+      <div class="label">Легкое</div>
+      <input type="text" data-field="conseq-2">
+    </div>
+    <div class="conseq-row">
+      <div class="label">Среднее</div>
+      <input type="text" data-field="conseq-4">
+    </div>
+    <div class="conseq-row">
+      <div class="label">Серьезное</div>
+      <input type="text" data-field="conseq-6">
     </div>
   </div>
-
+  </div>
+  
   <!-- НИЖНЯЯ СТРОКА: дополнения + трюки + стресс + последствия -->
   <!-- ДОПОЛНЕНИЯ И ТРЮКИ — отдельная строка на всю ширину -->
 <div class="p1-bottom">
@@ -1088,41 +1049,6 @@
   </div>
 </div>
 
-<!-- СТРЕСС И ПОСЛЕДСТВИЯ — отдельная строка -->
-<div class="p1-footer">
-  <div class="stress-col">
-    <div class="stress-group">
-      <div class="hbar">Физ. стресс <span style="font-weight:400; font-size:9px;">(Телосложение)</span></div>
-      <div class="stress-track">
-        <div class="num">1</div><div class="cb" data-field="stress-phys-1" onclick="this.classList.toggle('checked')"></div>
-        <div class="num">2</div><div class="cb" data-field="stress-phys-2" onclick="this.classList.toggle('checked')"></div>
-        <div class="num">3</div><div class="cb disabled" data-field="stress-phys-3" onclick="this.classList.toggle('checked')"></div>
-        <div class="num">4</div><div class="cb disabled" data-field="stress-phys-4" onclick="this.classList.toggle('checked')"></div>
-      </div>
-    </div>
-    <div class="stress-group">
-      <div class="hbar">Ментал. стресс <span style="font-weight:400; font-size:9px;">(Воля)</span></div>
-      <div class="stress-track">
-        <div class="num">1</div><div class="cb" data-field="stress-mental-1" onclick="this.classList.toggle('checked')"></div>
-        <div class="num">2</div><div class="cb" data-field="stress-mental-2" onclick="this.classList.toggle('checked')"></div>
-        <div class="num">3</div><div class="cb disabled" data-field="stress-mental-3" onclick="this.classList.toggle('checked')"></div>
-        <div class="num">4</div><div class="cb disabled" data-field="stress-mental-4" onclick="this.classList.toggle('checked')"></div>
-      </div>
-    </div>
-  </div>
-  <div class="conseq-col">
-    <div class="hbar">Последствия</div>
-    <div class="conseq-row">
-      <div class="num">2</div><div class="label">Легкое</div><input type="text" data-field="conseq-2">
-    </div>
-    <div class="conseq-row">
-      <div class="num">4</div><div class="label">Среднее</div><input type="text" data-field="conseq-4">
-    </div>
-    <div class="conseq-row">
-      <div class="num">6</div><div class="label">Серьезное</div><input type="text" data-field="conseq-6">
-    </div>
-  </div>
-</div>
 
 </div>
 

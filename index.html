@@ -193,7 +193,7 @@
     width: 18px; height: 18px;
     border: 2px solid var(--border-color);
     cursor: pointer; flex-shrink: 0;
-    position: relative; background: #fff;
+    position: relative;
     transition: border-color 0.2s;
   }
   .cb:hover { border-color: var(--accent); }
@@ -201,7 +201,7 @@
     content: '✓'; font-size: 14px; font-weight: 900; color: var(--text-color);
     position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
   }
-  .cb.disabled { opacity: 0.25; }
+  .cb.disabled { opacity: 0.5; }
 
   .row { display: flex; gap: 8px; align-items: flex-start; margin-bottom: 4px; }
 
@@ -2958,16 +2958,41 @@ function applyPageTransform() {
   const page = document.querySelector('.page');
   if (!page) return;
   
+  const isPortrait = window.matchMedia('(orientation: portrait)').matches;
+  const mmToPx = 3.7795275591;
+  const pageWidth = 297 * mmToPx;
+  const pageHeight = 210 * mmToPx;
   const finalScale = baseScale * currentZoom;
-  page.style.transform = `translate(${pageOffsetX}px, ${pageOffsetY}px) scale(${finalScale})`;
-  page.style.transformOrigin = '0 0'; // Важно: точка отсчёта в левом верхнем углу
+  
+  page.style.transformOrigin = '0 0';
+  
+  if (isPortrait) {
+    // В портретной ориентации:
+    // 1. Сначала сдвигаем лист в начальную позицию (pageOffsetX, pageOffsetY)
+    // 2. Поворачиваем на 90°
+    // 3. Компенсируем поворот сдвигом на -pageHeight (иначе лист "упадёт")
+    // 4. Масштабируем
+    page.style.transform = `
+      translate(${pageOffsetX}px, ${pageOffsetY}px) 
+      rotate(90deg) 
+      translate(0px, ${-pageHeight}px) 
+      scale(${finalScale})
+    `;
+  } else {
+    // В альбомной ориентации: просто масштаб + смещение
+    page.style.transform = `translate(${pageOffsetX}px, ${pageOffsetY}px) scale(${finalScale})`;
+  }
+  
+  showZoomIndicator();
 }
 
 // Вычислить базовый масштаб под экран
 function updateBaseScale() {
   const isTouchDevice = window.matchMedia('(hover: none) and (pointer: coarse)').matches;
+  const isPortrait = window.matchMedia('(orientation: portrait)').matches;
   
   if (!isTouchDevice) {
+    // Десктоп
     baseScale = 1;
     currentZoom = 1;
     pageOffsetX = 0;
@@ -2980,6 +3005,7 @@ function updateBaseScale() {
       page.style.top = 'auto';
       page.style.left = 'auto';
       page.style.margin = '0 auto 20px auto';
+      page.style.width = '297mm';
     }
     return;
   }
@@ -2988,23 +3014,50 @@ function updateBaseScale() {
   if (!page) return;
   
   const mmToPx = 3.7795275591;
-  const pageWidth = 297 * mmToPx;
-  const pageHeight = 210 * mmToPx;
+  const pageWidthMM = 297;
+  const pageHeightMM = 210;
+  const pageWidth = pageWidthMM * mmToPx;
+  const pageHeight = pageHeightMM * mmToPx;
+  
   const viewportWidth = window.innerWidth;
   const viewportHeight = window.innerHeight;
   
-  const scaleX = viewportWidth / pageWidth;
-  const scaleY = viewportHeight / pageHeight;
-  baseScale = Math.min(scaleX, scaleY, 1);
-  
-  // Центрируем лист по экрану
-  const scaledW = pageWidth * baseScale;
-  const scaledH = pageHeight * baseScale;
-  pageOffsetX = (viewportWidth - scaledW) / 2;
-  pageOffsetY = (viewportHeight - scaledH) / 2;
-  
-  currentZoom = 1;
-  applyPageTransform();
+  if (isPortrait) {
+    // ПОРТРЕТНАЯ ОРИЕНТАЦИЯ
+    // Лист A4 альбомный (297×210) поворачиваем на 90°
+    // После поворота: визуальная ширина = 210mm, визуальная высота = 297mm
+    
+    // Масштаб: чтобы лист поместился по ширине экрана
+    const visualWidth = pageHeight; // 210mm после поворота
+    const visualHeight = pageWidth; // 297mm после поворота
+    
+    const scaleX = viewportWidth / visualWidth;
+    const scaleY = viewportHeight / visualHeight;
+    baseScale = Math.min(scaleX, scaleY);
+    
+    // Начальная позиция: центрируем
+    const scaledVisualWidth = visualWidth * baseScale;
+    const scaledVisualHeight = visualHeight * baseScale;
+    
+    pageOffsetX = (viewportWidth - scaledVisualWidth) / 2;
+    pageOffsetY = (viewportHeight - scaledVisualHeight) / 2;
+    
+    currentZoom = 1;
+    applyPageTransform();
+  } else {
+    // АЛЬБОМНАЯ ОРИЕНТАЦИЯ
+    const scaleX = viewportWidth / pageWidth;
+    const scaleY = viewportHeight / pageHeight;
+    baseScale = Math.min(scaleX, scaleY, 1);
+    
+    const scaledW = pageWidth * baseScale;
+    const scaledH = pageHeight * baseScale;
+    pageOffsetX = (viewportWidth - scaledW) / 2;
+    pageOffsetY = (viewportHeight - scaledH) / 2;
+    
+    currentZoom = 1;
+    applyPageTransform();
+  }
 }
 
 // ===== TOUCH-ОБРАБОТЧИКИ =====
@@ -3048,23 +3101,16 @@ document.addEventListener('touchmove', (e) => {
     return;
   }
   
-  // Перетаскивание листа — только если начали drag (значит, не на интерактивном элементе)
+  // Перетаскивание листа
   if (isDraggingPage && e.touches.length === 1) {
     e.preventDefault();
-    const isPortrait = window.matchMedia('(orientation: portrait)').matches;
+    const dx = e.touches[0].clientX - dragStartX;
+    const dy = e.touches[0].clientY - dragStartY;
     
-    let dx = e.touches[0].clientX - dragStartX;
-    let dy = e.touches[0].clientY - dragStartY;
-    
-    // В портретной ориентации меняем оси местами из-за поворота на 90°
-    if (isPortrait) {
-      const temp = dx;
-      dx = dy;
-      dy = -temp;
-    }
-    
+    // Просто добавляем смещение — CSS transform сам учтёт поворот
     pageOffsetX = dragStartOffsetX + dx;
     pageOffsetY = dragStartOffsetY + dy;
+    
     applyPageTransform();
   }
 }, { passive: false });

@@ -2,9 +2,8 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<link rel="icon" type="image/png" href="favicon.png">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>IRIS Character Constructor</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>IRIS — Лист персонажа (Редактор)</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&family=JetBrains+Mono:wght@500;600&display=swap');
 
@@ -20,7 +19,7 @@
     --btn-hover: #444;
   }
 
-  * { margin: 0; padding: 0; box-sizing: border-box; }
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
   body {
     font-family: 'Inter', Arial, Helvetica, sans-serif;
@@ -36,21 +35,19 @@
     min-height: 100vh;
   }
 
-  /* Альбомная A4: 297 x 210 мм */
   .page {
-  width: 297mm;
-  min-height: 210mm;
-  background: #fff;
-  padding: 12mm 10mm;
-  margin-bottom: 20px;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.3);
-  position: relative;
-  overflow: hidden;
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  /* убираем display: flex и flex-direction */
-}
+    width: 297mm;
+    min-height: 210mm;
+    background: #fff;
+    padding: 12mm 10mm;
+    margin-bottom: 20px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+    position: relative;
+    overflow: hidden;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+  }
 
   .page-bg {
     position: absolute;
@@ -75,6 +72,7 @@
     user-select: none;
     pointer-events: auto;
     transform-origin: center center;
+    touch-action: none;
   }
 
   .decal img {
@@ -95,6 +93,7 @@
     display: none;
     z-index: 5;
     pointer-events: auto;
+    touch-action: none;
   }
 
   .decal.active .handle { display: block; }
@@ -123,6 +122,7 @@
     cursor: crosshair;
     z-index: 6;
     pointer-events: auto;
+    touch-action: none;
   }
   .rotate-handle::after {
     content: '↻';
@@ -157,10 +157,9 @@
   }
 
   .sheet-content {
-  position: relative;
-  z-index: 1;
-  /* убираем display: flex и flex: 1 */
-}
+    position: relative;
+    z-index: 1;
+  }
 
   .hbar {
     background: var(--header-bg);
@@ -205,264 +204,176 @@
   .cb.disabled { opacity: 0.25; }
 
   .row { display: flex; gap: 8px; align-items: flex-start; margin-bottom: 4px; }
-  .row-full { width: 100%; }
 
   .p1-header {
-  display: flex;
-  gap: 8px;
-  align-items: flex-start;
-  margin-bottom: 10px;
-  padding-bottom: 6px;
-  border-bottom: 1px solid #ccc;
-}
-
-/* Свободное место слева под портрет-декаль */
-.p1-header .spacer {
-  flex: 0 0 120px;
-  height: 110px;
-  flex-shrink: 0;
-}
-
-/* Центральная колонка: имя сверху, описание снизу */
-.p1-header .col-center {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.p1-header .col-center .col-name {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-}
-
-.p1-header .col-center .col-name input {
-  width: 100%;
-  height: 22px;
-}
-
-.p1-header .col-center .col-desc {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-}
-
-.p1-header .col-center .col-desc textarea {
-  width: 100%;
-  height: 55px;
-}
-
-/* ЦВЕТКИ справа от центра */
-.p1-header .col-portrait {
-  flex: 0 0 90px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 3px;
-  flex-shrink: 0;
-}
-
-.p1-header .col-portrait .portrait-box {
-  width: 80px;
-  height: 80px;
-  border: 1px solid var(--border-color);
-  background: rgba(255,255,255,0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 10px;
-  color: #999;
-}
-
-.logo-area {
-  text-align: right;
-  line-height: 1;
-  margin-left: auto;
-  align-self: flex-start;
-}
-.sheet-logo {
-  height: 110px; /* Подбери высоту под дизайн */
-  width: auto;
-  display: block;
-  object-fit: contain;
-  /* Если логотип черный, а фон темный - можно добавить фильтр: */
-  /* filter: invert(1); */ 
-}
-
-/* ОСНОВНАЯ ЧАСТЬ — растягивается */
-.p1-body {
-  display: grid;
-  grid-template-columns: 1fr 1.4fr;
-  gap: 12px;
-  margin-bottom: 10px;
-  /* убираем flex: 1 и min-height: 0 */
-}
-  .logo-area .iris-logo {
-    font-size: 38px; font-weight: 900; letter-spacing: 2px; line-height: 1;
-    color: var(--header-bg);
-  }
-  .logo-area .iris-sub {
-    font-size: 9px; font-weight: 700; letter-spacing: 3px; margin-top: 2px;
-    color: var(--header-bg);
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+    margin-bottom: 10px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid #ccc;
   }
 
-  .p1-body { display: grid; grid-template-columns: 1fr 1.4fr; gap: 12px; margin-bottom: 10px; }
+  .p1-header .spacer {
+    flex: 0 0 120px;
+    height: 110px;
+    flex-shrink: 0;
+  }
+
+  .p1-header .col-center {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .p1-header .col-center .col-name {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+
+  .p1-header .col-center .col-name input {
+    width: 100%;
+    height: 22px;
+  }
+
+  .p1-header .col-center .col-desc {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+
+  .p1-header .col-center .col-desc textarea {
+    width: 100%;
+    height: 55px;
+  }
+
+  .p1-header .col-portrait {
+    flex: 0 0 90px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    flex-shrink: 0;
+  }
+
+  .p1-header .col-portrait .portrait-box {
+    width: 80px;
+    height: 80px;
+    border: 1px solid var(--border-color);
+    background: rgba(255,255,255,0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    color: #999;
+  }
+
+  .logo-area {
+    text-align: right;
+    line-height: 1.2;
+    margin-left: auto;
+    align-self: flex-start;
+    padding-top: 20px;
+  }
+
+  .logo-area .sheet-logo {
+    height: 50px;
+    width: auto;
+    display: block;
+    object-fit: contain;
+  }
+
+  .p1-body {
+    display: grid;
+    grid-template-columns: 1fr 1.4fr;
+    gap: 12px;
+    margin-bottom: 10px;
+  }
+
   .aspects {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
 
-.aspects .row {
-  /* убираем flex: 1 */
-}
+  .aspects .row input {
+    width: 100%;
+    height: 22px;
+  }
 
-.aspects .row input {
-  width: 100%;
-  height: 22px; /* фиксированная высота */
-}
+  .skills {
+    display: flex;
+    flex-direction: column;
+  }
 
-.skills {
-  display: flex;
-  flex-direction: column;
-}
+  .skills-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
 
-.skills-grid {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-  /* убираем flex: 1 */
-}
+  .skill-row {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    height: 22px;
+  }
 
-.skill-row {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  height: 22px; /* фиксированная высота строки */
-  /* убираем flex: 1 и height: auto */
-}
+  .skill-label {
+    width: 110px;
+    font-size: 11px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
 
-.skill-label {
-  width: 110px;
-  font-size: 11px;
-  font-weight: 700;
-  flex-shrink: 0;
-}
+  .skill-label .rank { color: #888; font-weight: 400; margin-left: 2px; }
 
-.skill-label .rank {
-  color: #888;
-  font-weight: 400;
-  margin-left: 2px;
-}
+  .skill-boxes { display: flex; gap: 3px; flex: 1; }
+  .sbox { flex: 1; height: 100%; border: 1px solid var(--border-color); background: transparent; }
+  .sbox input { width: 100%; height: 100%; border: none; text-align: center; padding: 0; font-size: 11px; font-weight: 600; }
 
-.skill-boxes {
-  display: flex;
-  gap: 3px;
-  flex: 1;
-  /* убираем height: 100% */
-}
+  .p1-bottom {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 0;
+    height: 160px;
+  }
 
-.sbox {
-  flex: 1;
-  height: 100%;
-  border: 1px solid var(--border-color);
-  background: transparent;
-}
+  .p1-bottom .extras,
+  .p1-bottom .tricks {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-height: 0;
+  }
 
-.sbox input {
-  width: 100%;
-  height: 100%;
-  border: none;
-  text-align: center;
-  padding: 0;
-  font-size: 11px;
-  font-weight: 600;
-}
+  .p1-bottom textarea {
+    flex: 1;
+    width: 100%;
+    min-height: 0;
+  }
 
-/* НИЖНЯЯ ЧАСТЬ — ОСТАВЛЯЕМ МАСШТАБИРОВАНИЕ только для Дополнений и Трюков */
-.p1-bottom {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-  margin-bottom: 0;
-  height: 240px; /* увеличенная высота */
-}
+  .p1-footer {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 14px;
+  }
 
-/* Делаем контейнеры flex, чтобы textarea занял всё оставшееся место */
-.p1-bottom .extras,
-.p1-bottom .tricks {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  min-height: 0; /* важно для вложенного flex */
-}
+  .stress-group { margin-bottom: 4px; }
+  .stress-track { display: flex; align-items: center; gap: 5px; }
+  .stress-track .num { font-weight: 900; font-size: 16px; width: 18px; text-align: center; }
 
-.p1-bottom textarea {
-  flex: 1;           /* занимает всё пространство под заголовком */
-  width: 100%;
-  min-height: 0;
-}
+  .conseq-row { display: flex; align-items: center; gap: 4px; height: 28px; }
+  .conseq-row .num { font-weight: 900; font-size: 14px; width: 18px; text-align: center; }
+  .conseq-row .label { font-size: 10px; color: #888; width: 60px; }
+  .conseq-row input { flex: 1; height: 100%; }
 
-/* ОТСТУП сверху у блока со стрессом/последствиями */
-.p1-footer {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-  margin-top: 14px; /* явный отступ от Дополнений/Трюков */
-}
-
-.stress-group {
-  margin-bottom: 4px;
-}
-
-.stress-track {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-}
-
-.stress-track .num {
-  font-weight: 900;
-  font-size: 16px;
-  width: 18px;
-  text-align: center;
-}
-
-.conseq-col {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-  
-.conseq-row {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  height: 28px;
-  margin-top: 15px;
-}
-
-.conseq-row .num {
-  font-weight: 900;
-  font-size: 14px;
-  width: 18px;
-  text-align: center;
-}
-
-.conseq-row .label {
-  font-size: 10px;
-  color: #888;
-  width: 60px;
-}
-
-.conseq-row input {
-  flex: 1;
-  height: 100%;
-}
-  /* Settings Panel */
-
-#settings-panel {
+  /* ===== ПАНЕЛЬ-ШТОРКА СПРАВА ===== */
+  #settings-panel {
   position: fixed;
   top: 20px;
   right: 20px;
@@ -477,14 +388,17 @@
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   font-family: 'Inter', sans-serif;
-  overflow: hidden;
   transition: box-shadow 0.3s ease;
+  
+  /* Ограничиваем высоту по экрану и включаем flex */
+  max-height: calc(100vh - 40px);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden; /* Чтобы скругления не обрезались */
 }
-#settings-panel:hover {
-  box-shadow: 0 16px 48px rgba(0,0,0,0.6);
-}
+  #settings-panel:hover { box-shadow: 0 16px 48px rgba(0,0,0,0.6); }
 
-.panel-header {
+  .panel-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -497,403 +411,940 @@
   color: #8ab4ff;
   font-size: 13px;
   letter-spacing: 1px;
+  flex-shrink: 0;
 }
-.panel-header:hover { background: rgba(255,255,255,0.07); }
+  .panel-header:hover { background: rgba(255,255,255,0.07); }
 
-#toggle-icon {
+  #toggle-icon {
   color: #8ab4ff;
   font-size: 10px;
   transition: transform 0.3s ease;
   display: inline-block;
 }
-#settings-panel.collapsed #toggle-icon {
-  transform: rotate(180deg);
-}
+  #settings-panel.collapsed #toggle-icon { transform: rotate(180deg); }
 
-/* Содержимое сворачивается через max-height, панель остаётся на месте */
-.panel-body {
-  max-height: 800px;
+  .panel-body {
+  max-height: calc(100vh - 100px); /* Высота минус заголовок */
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
   padding: 14px 18px 18px;
   display: flex;
   flex-direction: column;
   gap: 14px;
-  overflow: hidden;
   transition: max-height 0.4s ease, padding 0.3s ease, opacity 0.3s ease;
   opacity: 1;
 }
-#settings-panel.collapsed .panel-body {
+  #settings-panel.collapsed .panel-body {
   max-height: 0;
   padding: 0 18px;
   opacity: 0;
+  overflow: hidden;
 }
 
-/* Остальные стили панели (секции, кнопки, file-drop и т.д.) — оставляем как были */
-
-.panel-section {
-  border-bottom: 1px solid rgba(255,255,255,0.08);
-  padding-bottom: 12px;
+/* Кастомный скроллбар — тонкий и аккуратный */
+.panel-body::-webkit-scrollbar {
+  width: 6px;
 }
-.panel-section:last-child { border-bottom: none; padding-bottom: 0; }
-
-.panel-section h4 {
-  margin: 0 0 8px 0;
-  font-size: 11px;
-  color: #8ab4ff;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.8px;
-}
-
-/* Цветовые поля */
-.color-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 6px;
-}
-.color-row label { flex: 1; font-size: 12px; color: #ccc; }
-.color-row input[type="color"] {
-  width: 34px;
-  height: 26px;
-  border: 1px solid rgba(255,255,255,0.15);
-  padding: 2px;
-  cursor: pointer;
-  border-radius: 5px;
+.panel-body::-webkit-scrollbar-track {
   background: transparent;
-  transition: border-color 0.2s;
 }
-.color-row input[type="color"]:hover { border-color: #4488ff; }
-
-/* File drop */
-.file-drop {
-  position: relative;
-  border: 1.5px dashed rgba(255,255,255,0.2);
-  border-radius: 8px;
-  padding: 12px 14px;
-  cursor: pointer;
-  transition: all 0.2s;
-  text-align: center;
-  background: rgba(255,255,255,0.02);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 3px;
+.panel-body::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 3px;
 }
-.file-drop:hover {
-  border-color: #4488ff;
-  background: rgba(68,136,255,0.06);
-}
-.file-drop.dragover {
-  border-color: #4488ff;
-  background: rgba(68,136,255,0.12);
-  transform: scale(1.01);
-}
-.file-drop input[type="file"] {
-  position: absolute;
-  inset: 0;
-  opacity: 0;
-  cursor: pointer;
-  width: 100%;
-  height: 100%;
-}
-.file-drop-text {
-  font-size: 12px;
-  color: #bbb;
-  line-height: 1.4;
-}
-.file-drop-text strong {
-  color: #e8e8ee;
-  font-weight: 600;
-}
-.file-drop-name {
-  margin-top: 4px;
-  font-size: 11px;
-  color: #8ab4ff;
-  font-weight: 600;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  max-width: 100%;
+.panel-body::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
 }
 
-/* Слайдеры */
-.slider-row {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-top: 8px;
-}
-.slider-row label {
-  flex: 1;
-  font-size: 11px;
-  color: #aaa;
-}
-.slider-row input[type="range"] {
-  flex: 1.5;
-  -webkit-appearance: none;
-  appearance: none;
-  height: 4px;
-  background: rgba(255,255,255,0.15);
-  border-radius: 2px;
-  outline: none;
-  cursor: pointer;
-}
-.slider-row input[type="range"]::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  appearance: none;
-  width: 14px;
-  height: 14px;
-  background: #4488ff;
-  border-radius: 50%;
-  border: 2px solid #fff;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.4);
-  cursor: pointer;
-}
-.slider-row input[type="range"]::-webkit-slider-thumb:hover {
-  transform: scale(1.2);
-}
+  .panel-section {
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    padding-bottom: 12px;
+  }
+  .panel-section:last-child { border-bottom: none; padding-bottom: 0; }
 
-/* Кнопки */
-.btn-panel {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  padding: 7px 12px;
-  font-size: 12px;
-  font-weight: 600;
-  color: #fff;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  width: 100%;
-  transition: all 0.2s;
-  font-family: inherit;
-  margin-bottom: 5px;
-}
-.btn-panel:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
-.btn-panel:active { transform: translateY(0); }
-.btn-pdf { background: linear-gradient(135deg, #2563eb, #1d4ed8); margin-bottom: 6px; }
-.btn-pdf:hover { background: linear-gradient(135deg, #1d4ed8, #1e3a8a); }
-.btn-export { background: #2563eb; }
-.btn-export:hover { background: #1d4ed8; }
-.btn-import { background: #059669; }
-.btn-import:hover { background: #047857; }
-.btn-danger { background: #b91c1c; font-size: 11px; padding: 6px 10px; }
-.btn-danger:hover { background: #991b1b; }
+  .panel-section h4 {
+    margin: 0 0 8px 0;
+    font-size: 11px;
+    color: #8ab4ff;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+  }
 
-/* Список декалей */
-.decal-list {
-  max-height: 110px;
-  overflow-y: auto;
-  margin-top: 8px;
-  border-radius: 6px;
-  background: rgba(0,0,0,0.2);
-}
-.decal-list::-webkit-scrollbar { width: 6px; }
-.decal-list::-webkit-scrollbar-track { background: transparent; }
-.decal-list::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 3px; }
+  .color-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 6px;
+  }
+  .color-row label { flex: 1; font-size: 12px; color: #ccc; }
+  .color-row input[type="color"] {
+    width: 34px; height: 26px;
+    border: 1px solid rgba(255,255,255,0.15);
+    padding: 2px; cursor: pointer;
+    border-radius: 5px; background: transparent;
+    transition: border-color 0.2s;
+  }
+  .color-row input[type="color"]:hover { border-color: #4488ff; }
 
-.decal-list-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 6px 10px;
-  font-size: 11px;
-  border-bottom: 1px solid rgba(255,255,255,0.05);
-  color: #ddd;
-  gap: 8px;
-}
-.decal-list-item:last-child { border-bottom: none; }
+  .file-drop {
+    position: relative;
+    border: 1.5px dashed rgba(255,255,255,0.2);
+    border-radius: 8px;
+    padding: 12px 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+    background: rgba(255,255,255,0.02);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+  }
+  .file-drop:hover { border-color: #4488ff; background: rgba(68,136,255,0.06); }
+  .file-drop.dragover { border-color: #4488ff; background: rgba(68,136,255,0.12); transform: scale(1.01); }
+  .file-drop input[type="file"] {
+    position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%;
+  }
+  .file-drop-text { font-size: 12px; color: #bbb; line-height: 1.4; }
+  .file-drop-text strong { color: #e8e8ee; font-weight: 600; }
+  .file-drop-name {
+    margin-top: 4px; font-size: 11px; color: #8ab4ff; font-weight: 600;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 100%;
+  }
 
-.decal-thumb {
-  width: 28px;
-  height: 28px;
-  border-radius: 4px;
-  object-fit: contain;
-  background: rgba(255,255,255,0.05);
-  border: 1px solid rgba(255,255,255,0.1);
-  flex-shrink: 0;
-}
+  .slider-row { display: flex; align-items: center; gap: 8px; margin-top: 8px; }
+  .slider-row label { flex: 1; font-size: 11px; color: #aaa; }
+  .slider-row input[type="range"] {
+    flex: 1.5; -webkit-appearance: none; appearance: none;
+    height: 4px; background: rgba(255,255,255,0.15); border-radius: 2px; outline: none; cursor: pointer;
+  }
+  .slider-row input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none; appearance: none;
+    width: 14px; height: 14px; background: #4488ff; border-radius: 50%;
+    border: 2px solid #fff; box-shadow: 0 1px 3px rgba(0,0,0,0.4); cursor: pointer;
+  }
+  .slider-row input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.2); }
 
-.decal-item-info {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex: 1;
-  min-width: 0;
-}
+  .btn-panel {
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+    padding: 7px 12px; font-size: 12px; font-weight: 600; color: #fff;
+    border: none; border-radius: 6px; cursor: pointer; width: 100%;
+    transition: all 0.2s; font-family: inherit; margin-bottom: 5px;
+  }
+  .btn-panel:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
+  .btn-panel:active { transform: translateY(0); }
+  .btn-pdf { background: linear-gradient(135deg, #2563eb, #1d4ed8); margin-bottom: 6px; }
+  .btn-pdf:hover { background: linear-gradient(135deg, #1d4ed8, #1e3a8a); }
+  .btn-export { background: #2563eb; }
+  .btn-export:hover { background: #1d4ed8; }
+  .btn-import { background: #059669; }
+  .btn-import:hover { background: #047857; }
+  .btn-danger { background: #b91c1c; font-size: 11px; padding: 6px 10px; }
+  .btn-danger:hover { background: #991b1b; }
 
-.decal-item-name {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
+  .decal-list {
+    max-height: 110px; overflow-y: auto; margin-top: 8px;
+    border-radius: 6px; background: rgba(0,0,0,0.2);
+  }
+  .decal-list::-webkit-scrollbar { width: 6px; }
+  .decal-list::-webkit-scrollbar-track { background: transparent; }
+  .decal-list::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 3px; }
 
-.decal-list-item button {
-  background: rgba(255,68,68,0.2);
-  color: #ff8888;
-  border: 1px solid rgba(255,68,68,0.3);
-  border-radius: 4px;
-  padding: 3px 8px;
-  cursor: pointer;
-  font-size: 10px;
-  transition: all 0.2s;
-  flex-shrink: 0;
-}
-.decal-list-item button:hover {
-  background: rgba(255,68,68,0.4);
-  color: #fff;}
-  /* ===== НОВЫЙ ДИЗАЙН ПОДСКАЗОК ===== */
+  .decal-list-item {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 6px 10px; font-size: 11px;
+    border-bottom: 1px solid rgba(255,255,255,0.05); color: #ddd; gap: 8px;
+  }
+  .decal-list-item:last-child { border-bottom: none; }
+
+  .decal-thumb {
+    width: 28px; height: 28px; border-radius: 4px; object-fit: contain;
+    background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); flex-shrink: 0;
+  }
+  .decal-item-info { display: flex; align-items: center; gap: 8px; flex: 1; min-width: 0; }
+  .decal-item-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .decal-list-item button {
+    background: rgba(255,68,68,0.2); color: #ff8888;
+    border: 1px solid rgba(255,68,68,0.3); border-radius: 4px;
+    padding: 3px 8px; cursor: pointer; font-size: 10px; transition: all 0.2s; flex-shrink: 0;
+  }
+  .decal-list-item button:hover { background: rgba(255,68,68,0.4); color: #fff; }
+
+  /* FAB */
+  .fab-container {
+    position: fixed; bottom: 24px; right: 24px;
+    display: flex; gap: 12px; z-index: 999;
+  }
+  .fab {
+    width: 52px; height: 52px; border-radius: 50%;
+    background: #2563eb; color: white; border: none;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    transition: all 0.2s ease; position: relative;
+  }
+  .fab:hover {
+    background: #1d4ed8; transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.4);
+  }
+  .fab svg { width: 24px; height: 24px; fill: currentColor; }
+  .fab::before {
+    content: attr(data-tooltip);
+    position: absolute; right: 60px; top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0,0,0,0.85); color: white;
+    padding: 6px 10px; border-radius: 6px;
+    font-size: 12px; font-weight: 600; white-space: nowrap;
+    opacity: 0; pointer-events: none; transition: opacity 0.2s;
+  }
+  .fab:hover::before { opacity: 1; }
+
+  /* Подсказки */
   .shortcut-hint {
-    position: fixed;
-    bottom: 24px;
-    left: 24px;
-    background: rgba(20, 20, 30, 0.88);
-    color: #e8e8ee;
-    padding: 14px 16px;
-    border-radius: 10px;
-    font-size: 12px;
-    z-index: 998;
+    position: fixed; bottom: 24px; left: 24px;
+    background: rgba(20, 20, 30, 0.88); color: #e8e8ee;
+    padding: 14px 16px; border-radius: 10px;
+    font-size: 12px; z-index: 998;
     min-width: 290px;
     backdrop-filter: blur(12px);
     border: 1px solid rgba(255,255,255,0.08);
     box-shadow: 0 8px 24px rgba(0,0,0,0.4);
     font-family: 'Inter', sans-serif;
   }
-
   .shortcut-hint .section-title {
-    font-weight: 700;
-    margin: 8px 0 4px 0;
-    color: #8ab4ff;
-    font-size: 11px;
-    text-transform: uppercase;
-    letter-spacing: 0.6px;
+    font-weight: 700; margin: 8px 0 4px 0;
+    color: #8ab4ff; font-size: 11px;
+    text-transform: uppercase; letter-spacing: 0.6px;
   }
-  .shortcut-hint .section-title:first-child {
-    margin-top: 0;
-  }
-
+  .shortcut-hint .section-title:first-child { margin-top: 0; }
   .shortcut-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 3px 0;
-    gap: 10px;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 3px 0; gap: 10px;
     border-bottom: 1px solid rgba(255,255,255,0.04);
   }
-  .shortcut-row:last-child {
-    border-bottom: none;
-  }
-
-  .shortcut-row .keys {
-    display: flex;
-    gap: 4px;
-    flex-shrink: 0;
-  }
-
+  .shortcut-row:last-child { border-bottom: none; }
+  .shortcut-row .keys { display: flex; gap: 4px; flex-shrink: 0; }
   .shortcut-row kbd {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
-    font-weight: 600;
-    background: rgba(255,255,255,0.12);
-    color: #fff;
-    padding: 2px 7px;
-    border-radius: 4px;
+    font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 600;
+    background: rgba(255,255,255,0.12); color: #fff;
+    padding: 2px 7px; border-radius: 4px;
     border: 1px solid rgba(255,255,255,0.15);
-    box-shadow: 0 1px 2px rgba(0,0,0,0.3);
-    letter-spacing: 0.3px;
-    white-space: nowrap;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.3); letter-spacing: 0.3px; white-space: nowrap;
   }
-
   .shortcut-row kbd.mod {
-    background: rgba(68,136,255,0.25);
-    border-color: rgba(68,136,255,0.4);
-    color: #a8cfff;
+    background: rgba(68,136,255,0.25); border-color: rgba(68,136,255,0.4); color: #a8cfff;
   }
-
-  .shortcut-row .desc {
-    color: #ccc;
-    font-size: 12px;
-    text-align: right;
-    flex: 1;
-    white-space: nowrap;
-  }
+  .shortcut-row .desc { color: #ccc; font-size: 12px; text-align: right; flex: 1; white-space: nowrap; }
 
   /* Context Menu */
   #context-menu {
-    position: fixed;
-    background: #fff;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.25);
-    padding: 4px;
-    min-width: 200px;
-    z-index: 2000;
-    display: none;
-    font-size: 13px;
+    position: fixed; background: #fff; border: 1px solid #ddd;
+    border-radius: 8px; box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+    padding: 4px; min-width: 200px; z-index: 2000; display: none; font-size: 13px;
   }
   #context-menu .cm-item {
-    padding: 6px 12px;
-    cursor: pointer;
-    border-radius: 4px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    padding: 6px 12px; cursor: pointer; border-radius: 4px;
+    display: flex; justify-content: space-between; align-items: center;
   }
-  #context-menu .cm-item:hover {
-    background: #f0f0f0;
-  }
-  #context-menu .cm-item .shortcut {
-    color: #888; font-size: 11px; margin-left: 16px;
-  }
-  #context-menu .cm-separator {
-    height: 1px; background: #eee; margin: 4px 0;
-  }
+  #context-menu .cm-item:hover { background: #f0f0f0; }
+  #context-menu .cm-item .shortcut { color: #888; font-size: 11px; margin-left: 16px; }
+  #context-menu .cm-separator { height: 1px; background: #eee; margin: 4px 0; }
   #context-menu .cm-item.danger { color: #d33; }
   #context-menu .cm-item.danger:hover { background: #fff0f0; }
 
-  @page {
-    size: A4 landscape;
-    margin: 0;
-  }
+  @page { size: A4 landscape; margin: 0; }
 
   @media print {
+    body { background: white; padding: 0; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+    .page { box-shadow: none; margin: 0; padding: 12mm 10mm; width: 297mm; min-height: 210mm; }
+    #settings-panel, .fab-container, .shortcut-hint, #context-menu { display: none !important; }
+    .decal .handle, .decal .rotate-handle, .decal .rotate-line, .decal.active::before { display: none !important; }
+  }
+
+  /* АЛЬБОМНАЯ ОРИЕНТАЦИЯ тач-устройств — динамическое масштабирование */
+@media (hover: none) and (pointer: coarse) and (orientation: landscape) {
   body {
-    background: white; padding: 0;
-    -webkit-print-color-adjust: exact !important;
-    print-color-adjust: exact !important;
+    padding: 10px;
+    padding-bottom: 90px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    overflow-x: hidden;
   }
+
   .page {
-    box-shadow: none; margin: 0; padding: 12mm 10mm;
+    /* Убираем фиксированные размеры — масштабирование через JS */
+    width: 297mm;
+    min-height: 210mm;
+    transform-origin: center top;
+    margin: 0 auto;
   }
-  #settings-panel, .fab-container, .shortcut-hint, #context-menu {
-    display: none !important;
+
+  /* Панель настроек — справа, компактная */
+  #settings-panel {
+    top: 10px;
+    right: 10px;
+    width: 240px;
+    max-height: calc(100vh - 20px);
+    border-radius: 10px;
+    font-size: 12px;
   }
-  .decal .handle, .decal .rotate-handle, .decal .rotate-line, .decal.active::before {
-    display: none !important;
+  #settings-panel.collapsed .panel-body {
+    max-height: 0;
+    padding: 0 12px;
+    opacity: 0;
+  }
+
+  .panel-header { padding: 8px 12px; font-size: 11px; }
+  .panel-body { padding: 8px 12px 12px; gap: 8px; }
+  .panel-section { padding-bottom: 6px; }
+  .panel-section h4 { font-size: 10px; margin-bottom: 4px; }
+
+  .color-row { margin-bottom: 3px; }
+  .color-row label { font-size: 10px; }
+  .color-row input[type="color"] { width: 26px; height: 20px; }
+
+  .file-drop { padding: 6px 8px; }
+  .file-drop-text { font-size: 10px; }
+  .file-drop-name { font-size: 9px; }
+
+  .slider-row { margin-top: 4px; }
+  .slider-row label { font-size: 9px; }
+
+  .btn-panel { padding: 5px 8px; font-size: 10px; margin-bottom: 3px; }
+
+  .decal-list { max-height: 60px; }
+  .decal-list-item { padding: 3px 6px; font-size: 9px; }
+  .decal-thumb { width: 20px; height: 20px; }
+
+  /* FAB — горизонтально */
+  .fab-container {
+    bottom: 10px;
+    right: 10px;
+    flex-direction: row;
+    gap: 8px;
+  }
+  .fab { width: 44px; height: 44px; }
+/* Подсказки */
+  .shortcut-hint {
+    bottom: 65px;
+    left: 10px;
+    right: auto;
+    min-width: 220px;
+    max-height: 45vh;
+    font-size: 10px;
+    padding: 8px 10px;
+  }
+  .shortcut-row kbd { font-size: 9px; padding: 1px 4px; }
+  .shortcut-row .desc { font-size: 10px; }
+}
+
+  /* Скрываем подсказки по умолчанию на мобильных */
+  .shortcut-hint {
+    display: none;
+  }
+  .shortcut-hint.visible {
+    display: block;
+  }
+
+  /* Кнопка "?" остаётся, но скрыта по умолчанию */
+  .fab-help {
+    display: flex;
+  }
+
+  @media (hover: none) and (pointer: coarse) {
+  body {
+    padding: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Центрируем по горизонтали */
+    justify-content: flex-start;
+    min-height: 100vh;
+  }
+
+  .page {
+    width: 297mm;
+    min-height: 210mm;
+    margin: 0 auto; /* Центрируем лист */
+    transform-origin: top center;
+    flex-shrink: 0;
+  }
+
+  /* Скрываем подсказки на мобильных */
+  .shortcut-hint { display: none !important; }
+  .fab-help { display: none !important; }
+}
+@media (hover: none) and (pointer: coarse) and (orientation: landscape) {
+  /* Панель настроек — справа, с прокруткой */
+  #settings-panel {
+    top: 10px;
+    right: 10px;
+    width: 240px;
+    max-height: calc(100vh - 20px);
+    border-radius: 10px;
+    font-size: 12px;
+    overflow-y: auto; /* Добавляем прокрутку */
+    -webkit-overflow-scrolling: touch; /* Плавный скролл на iOS */
+  }
+
+  #settings-panel.collapsed .panel-body {
+    max-height: 0;
+    padding: 0 12px;
+    opacity: 0;
+  }
+
+  #settings-panel:not(.collapsed) .panel-body {
+    max-height: calc(100vh - 80px); /* Ограничиваем высоту контента */
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .panel-header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: rgba(20, 20, 32, 0.98);
+  }
+
+  .panel-body {
+    padding: 8px 12px 12px;
+    gap: 8px;
+  }
+
+  .panel-section {
+    padding-bottom: 6px;
+  }
+
+  .panel-section h4 {
+    font-size: 10px;
+    margin-bottom: 4px;
+  }
+
+  .color-row {
+    margin-bottom: 3px;
+  }
+
+  .color-row label {
+    font-size: 10px;
+  }
+
+  .color-row input[type="color"] {
+    width: 26px;
+    height: 20px;
+  }
+
+  .file-drop {
+    padding: 6px 8px;
+  }
+
+  .file-drop-text {
+    font-size: 10px;
+  }
+
+  .file-drop-name {
+    font-size: 9px;
+  }
+
+  .slider-row {
+    margin-top: 4px;
+  }
+
+  .slider-row label {
+    font-size: 9px;
+  }
+
+  .btn-panel {
+    padding: 5px 8px;
+    font-size: 10px;
+    margin-bottom: 3px;
+  }
+
+  .decal-list {
+    max-height: 60px;
+  }
+
+  .decal-list-item {
+    padding: 3px 6px;
+    font-size: 9px;
+  }
+
+  .decal-thumb {
+    width: 20px;
+    height: 20px;
+  }
+
+  /* Кастомный скроллбар для мобильных */
+  #settings-panel::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  #settings-panel::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  #settings-panel::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 2px;
   }
 }
-  .btn-pdf {
-  background: linear-gradient(135deg, #2563eb, #1d4ed8);
-  margin-bottom: 6px;
-}
-  .btn-pdf:hover {
-    background: linear-gradient(135deg, #1d4ed8, #1e3a8a);
+
+/* Портретная ориентация — тоже добавляем прокрутку */
+@media (hover: none) and (pointer: coarse) and (orientation: portrait) {
+  #settings-panel {
+    top: auto;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    width: 100%;
+    max-height: 85vh;
+    border-radius: 16px 16px 0 0;
+    transform: translateY(calc(100% - 50px));
+    transition: transform 0.3s ease;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
   }
+
+  #settings-panel:not(.collapsed) {
+    transform: translateY(0);
+  }
+
+  #settings-panel:not(.collapsed) .panel-body {
+    max-height: calc(85vh - 50px);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .panel-header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: rgba(20, 20, 32, 0.98);
+  }
+}
+
+/* ===== СТИЛИ ДЛЯ ШАБЛОНОВ ===== */
+.btn-template {
+  background: linear-gradient(135deg, #7c3aed, #6d28d9);
+  margin-bottom: 10px;
+}
+.btn-template:hover { background: linear-gradient(135deg, #6d28d9, #5b21b6); }
+
+.templates-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 8px;
+  max-height: 200px;
+  overflow-y: auto;
+  padding: 4px;
+}
+.templates-list::-webkit-scrollbar { width: 4px; }
+.templates-list::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 2px; }
+
+.template-card {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 6px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+}
+.template-card:hover {
+  border-color: #7c3aed;
+  background: rgba(124,58,237,0.1);
+  transform: translateY(-2px);
+}
+.template-card .thumb {
+  width: 100%;
+  height: 70px;
+  background: #fff;
+  display: block;
+  object-fit: cover;
+}
+.template-card .name {
+  padding: 4px 6px;
+  font-size: 10px;
+  color: #ddd;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.template-card .actions {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  display: none;
+  gap: 2px;
+}
+.template-card:hover .actions { display: flex; }
+.template-card .actions button {
+  width: 20px;
+  height: 20px;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  font-size: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.template-card .btn-apply-template {
+  background: #7c3aed;
+  color: white;
+}
+.template-card .btn-delete-template {
+  background: #dc2626;
+  color: white;
+}
+
+.templates-empty {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 16px;
+  color: #888;
+  font-size: 11px;
+  font-style: italic;
+}
+
+/* ===== МОДАЛЬНЫЕ ОКНА ===== */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+  backdrop-filter: blur(4px);
+  z-index: 2000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.modal-overlay.active { display: flex; }
+
+.modal-content {
+  background: rgba(20, 20, 32, 0.98);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 12px;
+  width: 100%;
+  max-width: 400px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+  overflow: hidden;
+}
+.modal-large { max-width: 650px; }
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 18px;
+  background: rgba(255,255,255,0.04);
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  color: #8ab4ff;
+  font-weight: 700;
+  font-size: 14px;
+}
+.modal-close {
+  background: none;
+  border: none;
+  color: #8ab4ff;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 0;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+}
+.modal-close:hover { background: rgba(255,255,255,0.1); }
+
+.modal-body {
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.modal-label {
+  font-size: 12px;
+  color: #aaa;
+  font-weight: 600;
+}
+.modal-input {
+  width: 100%;
+  padding: 8px 12px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 6px;
+  color: #e8e8ee;
+  font-size: 13px;
+  font-family: inherit;
+  outline: none;
+}
+.modal-input:focus { border-color: #7c3aed; }
+.modal-hint {
+  font-size: 11px;
+  color: #888;
+  line-height: 1.4;
+  padding: 8px;
+  background: rgba(255,255,255,0.03);
+  border-radius: 4px;
+  border-left: 3px solid #7c3aed;
+}
+.modal-preview {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.preview-label {
+  font-size: 11px;
+  color: #aaa;
+  font-weight: 600;
+}
+#template-canvas, #preview-canvas {
+  width: 100%;
+  background: #fff;
+  border-radius: 6px;
+  border: 1px solid rgba(255,255,255,0.1);
+}
+#preview-canvas { max-height: 400px; object-fit: contain; }
+.preview-info {
+  font-size: 11px;
+  color: #aaa;
+  padding: 8px;
+  background: rgba(255,255,255,0.03);
+  border-radius: 4px;
+}
+
+.modal-footer {
+  display: flex;
+  gap: 8px;
+  padding: 14px 18px;
+  border-top: 1px solid rgba(255,255,255,0.08);
+}
+.btn-modal {
+  flex: 1;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: inherit;
+}
+.btn-cancel {
+  background: rgba(255,255,255,0.1);
+  color: #ccc;
+}
+.btn-cancel:hover { background: rgba(255,255,255,0.15); }
+.btn-save, .btn-apply {
+  background: #7c3aed;
+  color: white;
+}
+.btn-save:hover, .btn-apply:hover { background: #6d28d9; }
+
+/* Мобильная адаптация модалок */
+@media (hover: none) and (pointer: coarse) {
+  .modal-content { max-width: 90vw; }
+  .modal-large { max-width: 95vw; }
+  .templates-list { grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); }
+}
+
+
+/* ===== ШАБЛОНЫ ===== */
+.btn-template {
+  background: linear-gradient(135deg, #7c3aed, #6d28d9);
+  margin-bottom: 10px;
+}
+.btn-template:hover { background: linear-gradient(135deg, #6d28d9, #5b21b6); }
+
+.templates-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 8px;
+  max-height: 200px;
+  overflow-y: auto;
+  padding: 4px;
+}
+.templates-list::-webkit-scrollbar { width: 4px; }
+.templates-list::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 2px; }
+
+.template-card {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 6px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+}
+.template-card:hover {
+  border-color: #7c3aed;
+  background: rgba(124,58,237,0.1);
+  transform: translateY(-2px);
+}
+.template-card .thumb {
+  width: 100%;
+  height: 70px;
+  background: #fff;
+  display: block;
+  object-fit: cover;
+}
+.template-card .name {
+  padding: 4px 6px;
+  font-size: 10px;
+  color: #ddd;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.template-card .actions {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  display: none;
+  gap: 2px;
+}
+.template-card:hover .actions { display: flex; }
+.template-card .actions button {
+  width: 20px; height: 20px;
+  border: none; border-radius: 3px;
+  cursor: pointer; font-size: 10px;
+  display: flex; align-items: center; justify-content: center;
+}
+.template-card .btn-apply-template { background: #7c3aed; color: white; }
+.template-card .btn-delete-template { background: #dc2626; color: white; }
+
+.templates-empty {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 16px;
+  color: #888;
+  font-size: 11px;
+  font-style: italic;
+}
+
+/* ===== МОДАЛЬНЫЕ ОКНА ===== */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+  backdrop-filter: blur(4px);
+  z-index: 2000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.modal-overlay.active { display: flex; }
+
+.modal-content {
+  background: rgba(20, 20, 32, 0.98);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 12px;
+  width: 100%;
+  max-width: 400px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+  overflow: hidden;
+}
+.modal-large { max-width: 650px; }
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 18px;
+  background: rgba(255,255,255,0.04);
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  color: #8ab4ff;
+  font-weight: 700;
+  font-size: 14px;
+}
+.modal-close {
+  background: none; border: none; color: #8ab4ff;
+  font-size: 20px; cursor: pointer; padding: 0;
+  width: 28px; height: 28px;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 4px;
+}
+.modal-close:hover { background: rgba(255,255,255,0.1); }
+
+.modal-body {
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.modal-label { font-size: 12px; color: #aaa; font-weight: 600; }
+.modal-input {
+  width: 100%; padding: 8px 12px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 6px;
+  color: #e8e8ee; font-size: 13px;
+  font-family: inherit; outline: none;
+}
+.modal-input:focus { border-color: #7c3aed; }
+.modal-hint {
+  font-size: 11px; color: #888; line-height: 1.4;
+  padding: 8px; background: rgba(255,255,255,0.03);
+  border-radius: 4px; border-left: 3px solid #7c3aed;
+}
+.modal-preview { display: flex; flex-direction: column; gap: 6px; }
+.preview-label { font-size: 11px; color: #aaa; font-weight: 600; }
+#template-canvas, #preview-canvas {
+  width: 100%; height: auto;
+  background: #fff; border-radius: 6px;
+  border: 1px solid rgba(255,255,255,0.1);
+  display: block;
+}
+.preview-info {
+  font-size: 11px; color: #aaa; padding: 8px;
+  background: rgba(255,255,255,0.03); border-radius: 4px;
+}
+.modal-footer {
+  display: flex; gap: 8px;
+  padding: 14px 18px;
+  border-top: 1px solid rgba(255,255,255,0.08);
+}
+.btn-modal {
+  flex: 1; padding: 8px 16px;
+  border: none; border-radius: 6px;
+  font-size: 12px; font-weight: 600;
+  cursor: pointer; transition: all 0.2s;
+  font-family: inherit;
+}
+.btn-cancel { background: rgba(255,255,255,0.1); color: #ccc; }
+.btn-cancel:hover { background: rgba(255,255,255,0.15); }
+.btn-save, .btn-apply { background: #7c3aed; color: white; }
+.btn-save:hover, .btn-apply:hover { background: #6d28d9; }
+
+@media (hover: none) and (pointer: coarse) {
+  .modal-content { max-width: 90vw; }
+  .modal-large { max-width: 95vw; }
+  .templates-list { grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); }
+}
 </style>
 </head>
 <body>
 
+<div class="fab-container">
+  <button class="fab fab-help" data-tooltip="Подсказки" onclick="document.querySelector('.shortcut-hint').classList.toggle('visible')">
+    <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"/></svg>
+  </button>
+</div>
 
-<!-- НОВЫЙ ДИЗАЙН ПОДСКАЗОК -->
 <div class="shortcut-hint">
-  <div class="section-title"> Буфер обмена</div>
+  <div class="section-title">🖱️ Буфер обмена</div>
   <div class="shortcut-row"><div class="keys"><kbd class="mod">Ctrl</kbd><kbd>C</kbd></div><div class="desc">Копировать</div></div>
   <div class="shortcut-row"><div class="keys"><kbd class="mod">Ctrl</kbd><kbd>V</kbd></div><div class="desc">Вставить</div></div>
   <div class="shortcut-row"><div class="keys"><kbd class="mod">Ctrl</kbd><kbd>D</kbd></div><div class="desc">Дублировать</div></div>
 
-  <div class="section-title"> Трансформация</div>
+  <div class="section-title">Трансформация</div>
   <div class="shortcut-row"><div class="keys"><kbd>←</kbd><kbd>→</kbd><kbd>↑</kbd><kbd>↓</kbd></div><div class="desc">Сдвинуть на 1px</div></div>
   <div class="shortcut-row"><div class="keys"><kbd class="mod">Shift</kbd><kbd>← → ↑ ↓</kbd></div><div class="desc">Сдвинуть на 10px</div></div>
   <div class="shortcut-row"><div class="keys"><kbd>R</kbd></div><div class="desc">Повернуть +90°</div></div>
@@ -902,9 +1353,9 @@
   <div class="shortcut-row"><div class="keys"><kbd class="mod">Shift</kbd><kbd>F</kbd></div><div class="desc">Отразить ↕</div></div>
   <div class="shortcut-row"><div class="keys"><kbd>[</kbd><kbd>]</kbd></div><div class="desc">Размер − / +</div></div>
 
-  <div class="section-title"> Общее</div>
+  <div class="section-title">⚙️ Общее</div>
   <div class="shortcut-row"><div class="keys"><kbd>Del</kbd></div><div class="desc">Удалить</div></div>
-  <div class="shortcut-row"><div class="keys"><kbd>Esc</kbd></div><div class="desc">Снять выделение</div></div>
+  <div class="shortcut-row"><div class="keys"><kbd>Esc</kbd></div><div class="desc">Снять вёделение</div></div>
   <div class="shortcut-row"><div class="keys"><kbd class="mod">Ctrl</kbd><kbd>S</kbd></div><div class="desc">Сохранить JSON</div></div>
   <div class="shortcut-row"><div class="keys"><kbd class="mod">Ctrl</kbd><kbd>P</kbd></div><div class="desc">Экспорт PDF</div></div>
   <div class="shortcut-row"><div class="keys"><kbd>ПКМ</kbd></div><div class="desc">Контекстное меню</div></div>
@@ -912,7 +1363,7 @@
 
 <div id="settings-panel" class="collapsed">
   <div class="panel-header" onclick="document.getElementById('settings-panel').classList.toggle('collapsed')">
-    <span>️ НАСТРОЙКИ</span>
+    <span>⚙️ НАСТРОЙКИ</span>
     <span id="toggle-icon">▲</span>
   </div>
   <div class="panel-body">
@@ -960,11 +1411,57 @@
       </div>
       <div class="decal-list" id="decal-list"></div>
     </div>
+    <div class="panel-section">
+      <h4>ШАБЛОНЫ</h4>
+      <button class="btn-panel btn-template" onclick="showCreateTemplateModal()">Сохранить как шаблон</button>
+      <div class="templates-list" id="templates-list"></div>
+    </div>
+
+    <!-- Модалка создания шаблона -->
+    <div id="template-modal" class="modal-overlay">
+      <div class="modal-content">
+        <div class="modal-header">
+          <span>Создать шаблон</span>
+          <button class="modal-close" onclick="closeTemplateModal()">×</button>
+        </div>
+        <div class="modal-body">
+          <label class="modal-label">Название шаблона</label>
+          <input type="text" id="template-name-input" placeholder="Например: Тёмная тема" class="modal-input">
+          <div class="modal-hint">Будет сохранено: цвета, фон и все декали. Содержимое полей (имя, навыки и т.д.) не сохраняется.</div>
+          <div class="modal-preview">
+            <div class="preview-label">Предпросмотр:</div>
+            <canvas id="template-canvas" width="400" height="283"></canvas>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn-modal btn-cancel" onclick="closeTemplateModal()">Отмена</button>
+          <button class="btn-modal btn-save" onclick="confirmCreateTemplate()">Создать</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Модалка предпросмотра шаблона -->
+    <div id="preview-modal" class="modal-overlay">
+      <div class="modal-content modal-large">
+        <div class="modal-header">
+          <span id="preview-title">Предпросмотр шаблона</span>
+          <button class="modal-close" onclick="closePreviewModal()">×</button>
+        </div>
+        <div class="modal-body">
+          <canvas id="preview-canvas" width="800" height="566"></canvas>
+          <div class="preview-info" id="preview-info"></div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn-modal btn-cancel" onclick="closePreviewModal()">Закрыть</button>
+          <button class="btn-modal btn-apply" id="preview-apply-btn">Применить шаблон</button>
+        </div>
+      </div>
+    </div>
+    
 
   </div>
 </div>
 
-<!-- Context Menu -->
 <div id="context-menu">
   <div class="cm-item" data-action="copy">Копировать <span class="shortcut">Ctrl+C</span></div>
   <div class="cm-item" data-action="duplicate">Дублировать <span class="shortcut">Ctrl+D</span></div>
@@ -985,77 +1482,138 @@
   <div class="page-bg"></div>
   <div class="decal-container"></div>
   <div class="sheet-content">
-  
-  <!-- ШАПКА: spacer + имя + портрет + описание + логотип -->
-  <div class="p1-header">
-  <!-- Свободное место слева для портрета-декали -->
-  <div class="spacer"></div>
-
-  <!-- Имя + Описание друг под другом -->
-  <div class="col-center">
-    <div class="col-name">
-      <div class="hbar">Персонаж</div>
-      <input type="text" placeholder="Имя" data-field="char-name">
+    <div class="p1-header">
+      <div class="spacer"></div>
+      <div class="col-center">
+        <div class="col-name">
+          <div class="hbar">Персонаж</div>
+          <input type="text" placeholder="Имя" data-field="char-name">
+        </div>
+        <div class="col-desc">
+          <textarea placeholder="Описание" data-field="char-desc"></textarea>
+        </div>
+      </div>
+      <div class="col-portrait">
+        <div class="hbar" style="margin-bottom:3px;">Цветки</div>
+        <div class="portrait-box">фото</div>
+      </div>
+      <div class="logo-area">
+        <img src="logo.png" alt="IRIS Core System" class="sheet-logo" onerror="this.style.display='none'">
+      </div>
     </div>
-    <div class="col-desc">
-      <textarea placeholder="Описание" data-field="char-desc"></textarea>
+
+    <div class="p1-body">
+      <div class="aspects">
+        <div class="hbar">Аспекты</div>
+        <div class="row"><input type="text" data-field="aspect-1"></div>
+        <div class="row"><input type="text" data-field="aspect-2"></div>
+        <div class="row"><input type="text" data-field="aspect-3"></div>
+        <div class="row"><input type="text" data-field="aspect-4"></div>
+        <div class="row"><input type="text" data-field="aspect-5"></div>
+      </div>
+      <div class="skills">
+        <div class="hbar">Навыки</div>
+        <div class="skills-grid">
+          <div class="skill-row">
+            <div class="skill-label">Великолепн. <span class="rank">(+5)</span></div>
+            <div class="skill-boxes">
+              <div class="sbox"><input type="text" data-field="skill-5-1"></div>
+              <div class="sbox"><input type="text" data-field="skill-5-2"></div>
+              <div class="sbox"><input type="text" data-field="skill-5-3"></div>
+              <div class="sbox"><input type="text" data-field="skill-5-4"></div>
+              <div class="sbox"><input type="text" data-field="skill-5-5"></div>
+            </div>
+          </div>
+          <div class="skill-row">
+            <div class="skill-label">Отличный <span class="rank">(+4)</span></div>
+            <div class="skill-boxes">
+              <div class="sbox"><input type="text" data-field="skill-4-1"></div>
+              <div class="sbox"><input type="text" data-field="skill-4-2"></div>
+              <div class="sbox"><input type="text" data-field="skill-4-3"></div>
+              <div class="sbox"><input type="text" data-field="skill-4-4"></div>
+              <div class="sbox"><input type="text" data-field="skill-4-5"></div>
+            </div>
+          </div>
+          <div class="skill-row">
+            <div class="skill-label">Хороший <span class="rank">(+3)</span></div>
+            <div class="skill-boxes">
+              <div class="sbox"><input type="text" data-field="skill-3-1"></div>
+              <div class="sbox"><input type="text" data-field="skill-3-2"></div>
+              <div class="sbox"><input type="text" data-field="skill-3-3"></div>
+              <div class="sbox"><input type="text" data-field="skill-3-4"></div>
+              <div class="sbox"><input type="text" data-field="skill-3-5"></div>
+            </div>
+          </div>
+          <div class="skill-row">
+            <div class="skill-label">Неплохой <span class="rank">(+2)</span></div>
+            <div class="skill-boxes">
+              <div class="sbox"><input type="text" data-field="skill-2-1"></div>
+              <div class="sbox"><input type="text" data-field="skill-2-2"></div>
+              <div class="sbox"><input type="text" data-field="skill-2-3"></div>
+              <div class="sbox"><input type="text" data-field="skill-2-4"></div>
+              <div class="sbox"><input type="text" data-field="skill-2-5"></div>
+            </div>
+          </div>
+          <div class="skill-row">
+            <div class="skill-label">Средний <span class="rank">(+1)</span></div>
+            <div class="skill-boxes">
+              <div class="sbox"><input type="text" data-field="skill-1-1"></div>
+              <div class="sbox"><input type="text" data-field="skill-1-2"></div>
+              <div class="sbox"><input type="text" data-field="skill-1-3"></div>
+              <div class="sbox"><input type="text" data-field="skill-1-4"></div>
+              <div class="sbox"><input type="text" data-field="skill-1-5"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="p1-bottom">
+      <div class="extras">
+        <div class="hbar">Дополнения</div>
+        <textarea data-field="extras"></textarea>
+      </div>
+      <div class="tricks">
+        <div class="hbar">Трюки</div>
+        <textarea data-field="tricks"></textarea>
+      </div>
+    </div>
+
+    <div class="p1-footer">
+      <div class="stress-col">
+        <div class="stress-group">
+          <div class="hbar">Физ. стресс <span style="font-weight:400; font-size:9px;">(Телосложение)</span></div>
+          <div class="stress-track">
+            <div class="num">1</div><div class="cb" data-field="stress-phys-1" onclick="this.classList.toggle('checked')"></div>
+            <div class="num">2</div><div class="cb" data-field="stress-phys-2" onclick="this.classList.toggle('checked')"></div>
+            <div class="num">3</div><div class="cb disabled" data-field="stress-phys-3" onclick="this.classList.toggle('checked')"></div>
+            <div class="num">4</div><div class="cb disabled" data-field="stress-phys-4" onclick="this.classList.toggle('checked')"></div>
+          </div>
+        </div>
+        <div class="stress-group">
+          <div class="hbar">Ментал. стресс <span style="font-weight:400; font-size:9px;">(Воля)</span></div>
+          <div class="stress-track">
+            <div class="num">1</div><div class="cb" data-field="stress-mental-1" onclick="this.classList.toggle('checked')"></div>
+            <div class="num">2</div><div class="cb" data-field="stress-mental-2" onclick="this.classList.toggle('checked')"></div>
+            <div class="num">3</div><div class="cb disabled" data-field="stress-mental-3" onclick="this.classList.toggle('checked')"></div>
+            <div class="num">4</div><div class="cb disabled" data-field="stress-mental-4" onclick="this.classList.toggle('checked')"></div>
+          </div>
+        </div>
+      </div>
+      <div class="conseq-col">
+        <div class="hbar">Последствия</div>
+        <div class="conseq-row">
+          <div class="num">2</div><div class="label">Легкое</div><input type="text" data-field="conseq-2">
+        </div>
+        <div class="conseq-row">
+          <div class="num">4</div><div class="label">Среднее</div><input type="text" data-field="conseq-4">
+        </div>
+        <div class="conseq-row">
+          <div class="num">6</div><div class="label">Серьезное</div><input type="text" data-field="conseq-6">
+        </div>
+      </div>
     </div>
   </div>
-
-  <!-- ЦВЕТКИ справа -->
-  <div class="col-portrait">
-    <div class="hbar" style="margin-bottom:3px;">Цветки</div>
-    <div class="portrait-box">фото</div>
-  </div>
-
-  <!-- Логотип -->
-  <div class="logo-area">
-
-  <img src="iris-logo.png" alt="IRIS Core System Logo" class="sheet-logo">
-</div>
-</div>
-
-  <!-- АСПЕКТЫ + НАВЫКИ (растягивается) -->
-  <div class="p1-body">
-    <div class="aspects">
-      <div class="hbar">Аспекты</div>
-      <div class="row"><input type="text" data-field="aspect-1"></div>
-      <div class="row"><input type="text" data-field="aspect-2"></div>
-      <div class="row"><input type="text" data-field="aspect-3"></div>
-      <div class="row"><input type="text" data-field="aspect-4"></div>
-      <div class="row"><input type="text" data-field="aspect-5"></div>
-    </div>
-    <div class="conseq-col">
-    <div class="hbar">Последствия</div>
-      <div class="conseq-row">
-      <div class="label">Легкое</div>
-      <input type="text" data-field="conseq-2">
-    </div>
-    <div class="conseq-row">
-      <div class="label">Среднее</div>
-      <input type="text" data-field="conseq-4">
-    </div>
-    <div class="conseq-row">
-      <div class="label">Серьезное</div>
-      <input type="text" data-field="conseq-6">
-    </div>
-  </div>
-  </div>
-  
-  <!-- НИЖНЯЯ СТРОКА: дополнения + трюки + стресс + последствия -->
-  <!-- ДОПОЛНЕНИЯ И ТРЮКИ — отдельная строка на всю ширину -->
-<div class="p1-bottom">
-  <div class="extras">
-    <div class="hbar">Дополнения</div>
-    <textarea data-field="extras"></textarea>
-  </div>
-  <div class="tricks">
-    <div class="hbar">Трюки</div>
-    <textarea data-field="tricks"></textarea>
-  </div>
-</div>
-
-
 </div>
 
 <script>
@@ -1070,12 +1628,16 @@
     if(e.target.files[0]) {
       const url = URL.createObjectURL(e.target.files[0]);
       bgLayers.forEach(layer => { layer.style.backgroundImage = `url(${url})`; });
+      const bgFileName = document.getElementById('bg-file-name');
+      if (bgFileName) { bgFileName.textContent = e.target.files[0].name; bgFileName.style.color = '#4ade80'; }
     }
   });
   document.getElementById('bg-opacity').addEventListener('input', e => root.style.setProperty('--bg-opacity', e.target.value));
   function removeBg() {
     bgLayers.forEach(layer => { layer.style.backgroundImage = ''; });
     document.getElementById('bg-upload').value = '';
+    const bgFileName = document.getElementById('bg-file-name');
+    if (bgFileName) { bgFileName.textContent = 'Файл не выбран'; bgFileName.style.color = '#8ab4ff'; }
   }
 
   const decalContainers = document.querySelectorAll('.decal-container');
@@ -1095,7 +1657,6 @@
 
   function addDecal(file, restoreData = null) {
     const id = restoreData ? restoreData.id : 'd_' + Date.now();
-    
     const defaultSize = parseInt(getComputedStyle(root).getPropertyValue('--decal-default-size')) || 120;
     const width = restoreData ? parseInt(restoreData.width) || defaultSize : defaultSize;
     const height = restoreData ? parseInt(restoreData.height) || width : width;
@@ -1122,7 +1683,11 @@
     if (zIndex > decalZIndex) decalZIndex = zIndex;
     
     const img = document.createElement('img');
-    img.src = restoreData ? restoreData.imageSrc : URL.createObjectURL(file);
+    img.src = restoreData 
+      ? (restoreData.imageBlob 
+      ? URL.createObjectURL(restoreData.imageBlob) 
+      : restoreData.imageSrc) 
+  : URL.createObjectURL(file);
     img.draggable = false;
     wrap.appendChild(img);
 
@@ -1145,6 +1710,7 @@
     rotateHandle.dataset.handle = 'rotate';
     wrap.appendChild(rotateHandle);
 
+    // Mouse drag
     let isDragging = false, startX, startY, origLeft, origTop;
     wrap.addEventListener('mousedown', e => {
       if(e.target.dataset.handle) return;
@@ -1157,6 +1723,32 @@
       e.preventDefault();
     });
 
+    // Touch drag
+    let isTouchDragging = false, touchStartX, touchStartY, touchOrigLeft, touchOrigTop;
+    wrap.addEventListener('touchstart', (e) => {
+      if (e.target.dataset.handle) return;
+      if (e.touches.length !== 1) return;
+      e.preventDefault();
+      const touch = e.touches[0];
+      isTouchDragging = true;
+      touchStartX = touch.clientX;
+      touchStartY = touch.clientY;
+      touchOrigLeft = parseFloat(wrap.style.left) || 0;
+      touchOrigTop = parseFloat(wrap.style.top) || 0;
+      setActiveDecal(wrap);
+    }, { passive: false });
+
+    wrap.addEventListener('touchmove', (e) => {
+      if (!isTouchDragging || e.touches.length !== 1) return;
+      e.preventDefault();
+      const touch = e.touches[0];
+      wrap.style.left = (touchOrigLeft + touch.clientX - touchStartX) + 'px';
+      wrap.style.top = (touchOrigTop + touch.clientY - touchStartY) + 'px';
+    }, { passive: false });
+
+    wrap.addEventListener('touchend', () => { isTouchDragging = false; });
+
+    // Context menu
     wrap.addEventListener('contextmenu', e => {
       e.preventDefault();
       e.stopPropagation();
@@ -1164,6 +1756,20 @@
       showContextMenu(e.clientX, e.clientY, wrap);
     });
 
+    // Long press for mobile context menu
+    let longPressTimer;
+    wrap.addEventListener('touchstart', (e) => {
+      if (e.target.dataset.handle) return;
+      longPressTimer = setTimeout(() => {
+        setActiveDecal(wrap);
+        const touch = e.touches[0];
+        showContextMenu(touch.clientX, touch.clientY, wrap);
+      }, 500);
+    });
+    wrap.addEventListener('touchend', () => clearTimeout(longPressTimer));
+    wrap.addEventListener('touchmove', () => clearTimeout(longPressTimer));
+
+    // Resize handles
     handlePositions.forEach(pos => {
       const handle = wrap.querySelector(`.handle.${pos}`);
       let isResizing = false, startMouseX, startMouseY, startW, startH, startLeft, startTop;
@@ -1171,14 +1777,27 @@
       handle.addEventListener('mousedown', (e) => {
         e.stopPropagation();
         isResizing = true;
-        startMouseX = e.clientX;
-        startMouseY = e.clientY;
-        startW = wrap.offsetWidth;
-        startH = wrap.offsetHeight;
+        startMouseX = e.clientX; startMouseY = e.clientY;
+        startW = wrap.offsetWidth; startH = wrap.offsetHeight;
         startLeft = parseFloat(wrap.style.left) || 0;
         startTop = parseFloat(wrap.style.top) || 0;
         setActiveDecal(wrap);
       });
+
+      // Touch resize
+      let touchIsResizing = false;
+      let touchStartX, touchStartY, touchStartW, touchStartH, touchStartLeft, touchStartTop;
+      handle.addEventListener('touchstart', (e) => {
+        e.stopPropagation();
+        e.preventDefault();
+        const touch = e.touches[0];
+        touchIsResizing = true;
+        touchStartX = touch.clientX; touchStartY = touch.clientY;
+        touchStartW = wrap.offsetWidth; touchStartH = wrap.offsetHeight;
+        touchStartLeft = parseFloat(wrap.style.left) || 0;
+        touchStartTop = parseFloat(wrap.style.top) || 0;
+        setActiveDecal(wrap);
+      }, { passive: false });
 
       document.addEventListener('mousemove', (e) => {
         if (!isResizing) return;
@@ -1195,21 +1814,50 @@
         wrap.style.top = newTop + 'px';
       });
 
+      document.addEventListener('touchmove', (e) => {
+        if (!touchIsResizing || e.touches.length !== 1) return;
+        e.preventDefault();
+        const touch = e.touches[0];
+        const dx = touch.clientX - touchStartX;
+        const dy = touch.clientY - touchStartY;
+        let newW = touchStartW, newH = touchStartH, newLeft = touchStartLeft, newTop = touchStartTop;
+        if (pos.includes('e')) newW = Math.max(30, touchStartW + dx);
+        else if (pos.includes('w')) { newW = Math.max(30, touchStartW - dx); newLeft = touchStartLeft + (touchStartW - newW); }
+        if (pos.includes('s')) newH = Math.max(30, touchStartH + dy);
+        else if (pos.includes('n')) { newH = Math.max(30, touchStartH - dy); newTop = touchStartTop + (touchStartH - newH); }
+        wrap.style.width = newW + 'px';
+        wrap.style.height = newH + 'px';
+        wrap.style.left = newLeft + 'px';
+        wrap.style.top = newTop + 'px';
+      }, { passive: false });
+
       document.addEventListener('mouseup', () => { isResizing = false; });
+      document.addEventListener('touchend', () => { touchIsResizing = false; });
     });
 
+    // Rotate handle
     let isRotating = false, startAngle = 0, startRotation = 0;
     rotateHandle.addEventListener('mousedown', (e) => {
-      e.stopPropagation();
-      e.preventDefault();
-      isRotating = true;
-      setActiveDecal(wrap);
+      e.stopPropagation(); e.preventDefault();
+      isRotating = true; setActiveDecal(wrap);
       const rect = wrap.getBoundingClientRect();
       const centerX = rect.left + rect.width / 2;
       const centerY = rect.top + rect.height / 2;
       startAngle = Math.atan2(e.clientY - centerY, e.clientX - centerX);
       startRotation = parseFloat(wrap.dataset.rotation) || 0;
     });
+
+    let touchIsRotating = false, touchStartAngle = 0, touchStartRotation = 0;
+    rotateHandle.addEventListener('touchstart', (e) => {
+      e.stopPropagation(); e.preventDefault();
+      const touch = e.touches[0];
+      touchIsRotating = true; setActiveDecal(wrap);
+      const rect = wrap.getBoundingClientRect();
+      const centerX = rect.left + rect.width / 2;
+      const centerY = rect.top + rect.height / 2;
+      touchStartAngle = Math.atan2(touch.clientY - centerY, touch.clientX - centerX);
+      touchStartRotation = parseFloat(wrap.dataset.rotation) || 0;
+    }, { passive: false });
 
     document.addEventListener('mousemove', (e) => {
       if (isDragging) {
@@ -1221,13 +1869,25 @@
         const centerX = rect.left + rect.width / 2;
         const centerY = rect.top + rect.height / 2;
         const currentAngle = Math.atan2(e.clientY - centerY, e.clientX - centerX);
-        const delta = (currentAngle - startAngle) * (180 / Math.PI);
-        wrap.dataset.rotation = startRotation + delta;
+        wrap.dataset.rotation = startRotation + (currentAngle - startAngle) * (180 / Math.PI);
         applyTransform(wrap);
       }
     });
 
+    document.addEventListener('touchmove', (e) => {
+      if (!touchIsRotating || e.touches.length !== 1) return;
+      e.preventDefault();
+      const touch = e.touches[0];
+      const rect = wrap.getBoundingClientRect();
+      const centerX = rect.left + rect.width / 2;
+      const centerY = rect.top + rect.height / 2;
+      const currentAngle = Math.atan2(touch.clientY - centerY, touch.clientX - centerX);
+      wrap.dataset.rotation = touchStartRotation + (currentAngle - touchStartAngle) * (180 / Math.PI);
+      applyTransform(wrap);
+    }, { passive: false });
+
     document.addEventListener('mouseup', () => { isDragging = false; isRotating = false; });
+    document.addEventListener('touchend', () => { isTouchDragging = false; touchIsRotating = false; });
 
     decalContainers[0].appendChild(wrap);
     
@@ -1235,10 +1895,8 @@
       const item = document.createElement('div');
       item.className = 'decal-list-item';
       item.id = 'list_' + id;
-      
       const imgSrc = URL.createObjectURL(file);
       const name = file ? file.name : 'decal';
-      
       item.innerHTML = `
         <div class="decal-item-info">
           <img src="${imgSrc}" class="decal-thumb" alt="preview">
@@ -1246,7 +1904,6 @@
         </div>
         <button onclick="removeDecal('${id}')">Удалить</button>
       `;
-      
       decalList.appendChild(item);
     }
   }
@@ -1277,6 +1934,7 @@
     const img = activeDecal.querySelector('img');
     clipboard = {
       imageSrc: img ? img.src : '',
+      imageBlob: img ? img.src : null,
       width: activeDecal.offsetWidth,
       height: activeDecal.offsetHeight,
       rotation: parseFloat(activeDecal.dataset.rotation) || 0,
@@ -1284,11 +1942,11 @@
       flipV: parseFloat(activeDecal.dataset.flipV) || 1,
       imageName: activeDecal.dataset.originalImageName || ''
     };
-    flashNotification(' Скопировано');
+    flashNotification('Скопировано');
   }
 
   function pasteDecal() {
-    if (!clipboard) { flashNotification('⚠️ Буфер пуст'); return; }
+    if (!clipboard) { flashNotification('Буфер пуст'); return; }
     const data = { ...clipboard };
     data.id = 'd_' + Date.now();
     const origLeft = parseFloat(activeDecal?.style.left) || 100;
@@ -1301,52 +1959,47 @@
     const item = document.createElement('div');
     item.className = 'decal-list-item';
     item.id = 'list_' + data.id;
-    item.innerHTML = `<span>🖼️ (копия)...</span><button onclick="removeDecal('${data.id}')">Удалить</button>`;
+    const thumbSrc = data.imageBlob 
+  ? URL.createObjectURL(data.imageBlob) 
+  : data.imageSrc;
+    item.innerHTML = `
+      <div class="decal-item-info">
+        <img src="${thumbSrc}" class="decal-thumb" alt="preview">
+        <span class="decal-item-name">(копия)</span>
+      </div>
+      <button onclick="removeDecal('${data.id}')">Удалить</button>
+    `;
     decalList.appendChild(item);
   }
 
   function duplicateDecal() { if (!activeDecal) return; copyDecal(); pasteDecal(); }
-
   function flipDecal(axis) {
     if (!activeDecal) return;
     if (axis === 'h') activeDecal.dataset.flipH = -(parseFloat(activeDecal.dataset.flipH) || 1);
     else activeDecal.dataset.flipV = -(parseFloat(activeDecal.dataset.flipV) || 1);
     applyTransform(activeDecal);
   }
-
   function rotateDecal(delta) {
     if (!activeDecal) return;
-    const cur = parseFloat(activeDecal.dataset.rotation) || 0;
-    activeDecal.dataset.rotation = cur + delta;
+    activeDecal.dataset.rotation = (parseFloat(activeDecal.dataset.rotation) || 0) + delta;
     applyTransform(activeDecal);
   }
-
-  function resetRotation() {
-    if (!activeDecal) return;
-    activeDecal.dataset.rotation = 0;
-    applyTransform(activeDecal);
-  }
-
+  function resetRotation() { if (!activeDecal) return; activeDecal.dataset.rotation = 0; applyTransform(activeDecal); }
   function bringToFront() { if (!activeDecal) return; activeDecal.style.zIndex = ++decalZIndex; }
   function sendToBack() { if (!activeDecal) return; activeDecal.style.zIndex = 1; }
-
   function moveDecal(dx, dy) {
     if (!activeDecal) return;
-    const curLeft = parseFloat(activeDecal.style.left) || 0;
-    const curTop = parseFloat(activeDecal.style.top) || 0;
-    activeDecal.style.left = (curLeft + dx) + 'px';
-    activeDecal.style.top = (curTop + dy) + 'px';
+    activeDecal.style.left = (parseFloat(activeDecal.style.left) || 0) + dx + 'px';
+    activeDecal.style.top = (parseFloat(activeDecal.style.top) || 0) + dy + 'px';
   }
-
   function resizeDecal(delta) {
     if (!activeDecal) return;
     const curW = activeDecal.offsetWidth;
     const curH = activeDecal.offsetHeight;
     const ratio = curH / curW;
     const newW = Math.max(30, curW + delta);
-    const newH = Math.max(30, newW * ratio);
     activeDecal.style.width = newW + 'px';
-    activeDecal.style.height = newH + 'px';
+    activeDecal.style.height = (newW * ratio) + 'px';
   }
 
   function showContextMenu(x, y, target) {
@@ -1360,9 +2013,7 @@
     menu.style.top = finalY + 'px';
   }
 
-  function hideContextMenu() {
-    document.getElementById('context-menu').style.display = 'none';
-  }
+  function hideContextMenu() { document.getElementById('context-menu').style.display = 'none'; }
 
   document.querySelectorAll('#context-menu .cm-item').forEach(item => {
     item.addEventListener('click', () => {
@@ -1403,105 +2054,564 @@
     setTimeout(() => { n.remove(); }, 1200);
   }
 
-  // ===== КЛАВИАТУРНЫЕ СОКРАЩЕНИЯ (с поддержкой русской раскладки) =====
-document.addEventListener('keydown', (e) => {
-  const inInput = document.activeElement && 
-    (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA');
+  // Keyboard shortcuts with Russian layout support
+  document.addEventListener('keydown', (e) => {
+    const inInput = document.activeElement && 
+      (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA');
+    const isCtrl = e.ctrlKey || e.metaKey;
+    const key = e.key;
+    const keyLower = key.toLowerCase();
 
-  const isCtrl = e.ctrlKey || e.metaKey;
-  const key = e.key;
-  const keyLower = key.toLowerCase();
+    if (isCtrl && (keyLower === 'c' || keyLower === 'с') && activeDecal && !inInput) {
+      e.preventDefault(); copyDecal(); return;
+    }
+    if (isCtrl && (keyLower === 'v' || keyLower === 'м') && clipboard && !inInput) {
+      e.preventDefault(); pasteDecal(); return;
+    }
+    if (isCtrl && (keyLower === 'd' || keyLower === 'в') && activeDecal && !inInput) {
+      e.preventDefault(); duplicateDecal(); return;
+    }
+    if (isCtrl && (keyLower === 's' || keyLower === 'ы') && !inInput) {
+      e.preventDefault(); exportData(); return;
+    }
 
-  // ===== Ctrl-команды (работают на любой раскладке через e.key) =====
-  if (isCtrl && (keyLower === 'c' || keyLower === 'с') && activeDecal && !inInput) {
-    // C (англ) или С (рус)
-    e.preventDefault();
-    copyDecal();
-    return;
-  }
-  if (isCtrl && (keyLower === 'v' || keyLower === 'м') && clipboard && !inInput) {
-    // V (англ) или М (рус)
-    e.preventDefault();
-    pasteDecal();
-    return;
-  }
-  if (isCtrl && (keyLower === 'd' || keyLower === 'в') && activeDecal && !inInput) {
-    // D (англ) или В (рус)
-    e.preventDefault();
-    duplicateDecal();
-    return;
-  }
-  if (isCtrl && (keyLower === 's' || keyLower === 'ы') && !inInput) {
-    // S (англ) или Ы (рус)
-    e.preventDefault();
-    exportData();
-    return;
-  }
+    if (!activeDecal || inInput) return;
+    const step = e.shiftKey ? 10 : 1;
 
-  if (!activeDecal || inInput) return;
-
-  const step = e.shiftKey ? 10 : 1;
-
-  // Стрелки (не зависят от раскладки)
-  if (key === 'ArrowLeft')  { e.preventDefault(); moveDecal(-step, 0); return; }
-  if (key === 'ArrowRight') { e.preventDefault(); moveDecal(step, 0); return; }
-  if (key === 'ArrowUp')    { e.preventDefault(); moveDecal(0, -step); return; }
-  if (key === 'ArrowDown')  { e.preventDefault(); moveDecal(0, step); return; }
-
-  // R / К — поворот
-  if (keyLower === 'r' || keyLower === 'к') {
-    e.preventDefault();
-    rotateDecal(e.shiftKey ? -90 : 90);
-    return;
-  }
-
-  // F / А — отражение
-  if (keyLower === 'f' || keyLower === 'а') {
-    e.preventDefault();
-    flipDecal(e.shiftKey ? 'v' : 'h');
-    return;
-  }
-
-  // [ / Х — уменьшить размер
-  if (key === '[' || keyLower === 'х') {
-    e.preventDefault();
-    resizeDecal(-10);
-    return;
-  }
-
-  // ] / Ъ — увеличить размер
-  if (key === ']' || keyLower === 'ъ') {
-    e.preventDefault();
-    resizeDecal(10);
-    return;
-  }
-
-  // Delete / Backspace — удалить
-  if (key === 'Delete' || key === 'Backspace') {
-    e.preventDefault();
-    removeDecal(activeDecal.id);
-    return;
-  }
-
-  // Escape — снять выделение
-  if (key === 'Escape') {
-    e.preventDefault();
-    activeDecal.classList.remove('active');
-    activeDecal = null;
-    return;
-  }
-});
-
-  document.querySelector('.panel-header').addEventListener('click', () => {
-    const panel = document.getElementById('settings-panel');
-    document.getElementById('toggle-icon').textContent = panel.classList.contains('hidden') ? '▼' : '▲';
+    if (key === 'ArrowLeft')  { e.preventDefault(); moveDecal(-step, 0); return; }
+    if (key === 'ArrowRight') { e.preventDefault(); moveDecal(step, 0); return; }
+    if (key === 'ArrowUp')    { e.preventDefault(); moveDecal(0, -step); return; }
+    if (key === 'ArrowDown')  { e.preventDefault(); moveDecal(0, step); return; }
+    if (keyLower === 'r' || keyLower === 'к') { e.preventDefault(); rotateDecal(e.shiftKey ? -90 : 90); return; }
+    if (keyLower === 'f' || keyLower === 'а') { e.preventDefault(); flipDecal(e.shiftKey ? 'v' : 'h'); return; }
+    if (key === '[' || keyLower === 'х') { e.preventDefault(); resizeDecal(-10); return; }
+    if (key === ']' || keyLower === 'ъ') { e.preventDefault(); resizeDecal(10); return; }
+    if (key === 'Delete' || key === 'Backspace') { e.preventDefault(); removeDecal(activeDecal.id); return; }
+    if (key === 'Escape') { e.preventDefault(); activeDecal.classList.remove('active'); activeDecal = null; return; }
   });
 
-  // ===== EXPORT / IMPORT =====
-async function exportData() {
-  const data = {
-    version: '2.0',
-    timestamp: new Date().toISOString(),
+  // File drop setup
+  function setupFileDrop(dropId, inputId, nameId) {
+    const drop = document.getElementById(dropId);
+    const input = document.getElementById(inputId);
+    const nameEl = document.getElementById(nameId);
+    input.addEventListener('change', (e) => {
+      if (e.target.files[0]) {
+        nameEl.textContent = e.target.files[0].name;
+        nameEl.style.color = '#4ade80';
+      }
+    });
+    ['dragenter','dragover'].forEach(evt => {
+      drop.addEventListener(evt, e => { e.preventDefault(); drop.classList.add('dragover'); });
+    });
+    ['dragleave','drop'].forEach(evt => {
+      drop.addEventListener(evt, e => { e.preventDefault(); drop.classList.remove('dragover'); });
+    });
+    drop.addEventListener('drop', e => {
+      e.preventDefault();
+      if (e.dataTransfer.files[0]) {
+        input.files = e.dataTransfer.files;
+        input.dispatchEvent(new Event('change'));
+      }
+    });
+  }
+  setupFileDrop('bg-file-drop', 'bg-upload', 'bg-file-name');
+  setupFileDrop('decal-file-drop', 'decal-upload', 'decal-file-name');
+
+  // Export/Import
+  async function exportData() {
+    const data = {
+      version: '2.0',
+      timestamp: new Date().toISOString(),
+      colors: {
+        headerBg: document.getElementById('col-header-bg').value,
+        headerText: document.getElementById('col-header-text').value,
+        border: document.getElementById('col-border').value,
+        text: document.getElementById('col-text').value
+      },
+      bgOpacity: document.getElementById('bg-opacity').value,
+      fields: {},
+      decals: []
+    };
+
+    document.querySelectorAll('[data-field]').forEach(el => {
+      const field = el.dataset.field;
+      if (el.tagName === 'INPUT' && el.type === 'text') data.fields[field] = el.value;
+      else if (el.tagName === 'TEXTAREA') data.fields[field] = el.value;
+      else if (el.classList.contains('cb')) data.fields[field] = el.classList.contains('checked');
+    });
+
+    const bgLayer = document.querySelector('.page-bg');
+    if (bgLayer.style.backgroundImage && bgLayer.style.backgroundImage !== 'none') {
+      const bgUrl = bgLayer.style.backgroundImage.slice(5, -2);
+      try { data.background = await imageToBase64(bgUrl); } catch (e) { console.warn('BG export failed:', e); }
+    }
+
+    const decalElements = document.querySelectorAll('.decal');
+    for (const decal of decalElements) {
+      const img = decal.querySelector('img');
+      if (img && img.src) {
+        try {
+          const imgBase64 = await imageToBase64(img.src);
+          data.decals.push({
+            id: decal.id,
+            imageSrc: imgBase64,
+            imageName: decal.dataset.originalImageName || '',
+            left: decal.style.left,
+            top: decal.style.top,
+            width: decal.offsetWidth,
+            height: decal.offsetHeight,
+            rotation: parseFloat(decal.dataset.rotation) || 0,
+            flipH: parseFloat(decal.dataset.flipH) || 1,
+            flipV: parseFloat(decal.dataset.flipV) || 1,
+            zIndex: parseInt(decal.style.zIndex) || 10
+          });
+        } catch (e) { console.warn('Failed to export decal:', decal.id, e); }
+      }
+    }
+
+    const json = JSON.stringify(data, null, 2);
+    const blob = new Blob([json], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `character-sheet-${Date.now()}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+    flashNotification('Форма экспортирована');
+  }
+
+  async function importData(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    try {
+      const text = await file.text();
+      const data = JSON.parse(text);
+      if (!data.version) { alert('Неверный формат файла'); return; }
+
+      if (data.colors) {
+        const colorMap = {headerBg:'col-header-bg', headerText:'col-header-text', border:'col-border', text:'col-text'};
+        const cssMap = {headerBg:'--header-bg', headerText:'--header-text', border:'--border-color', text:'--text-color'};
+        for (const [key, value] of Object.entries(data.colors)) {
+          if (value && colorMap[key]) {
+            document.getElementById(colorMap[key]).value = value;
+            root.style.setProperty(cssMap[key], value);
+          }
+        }
+      }
+      if (data.bgOpacity !== undefined) {
+        document.getElementById('bg-opacity').value = data.bgOpacity;
+        root.style.setProperty('--bg-opacity', data.bgOpacity);
+      }
+      if (data.background) {
+        bgLayers.forEach(l => { l.style.backgroundImage = `url(${data.background})`; });
+        const bgFileName = document.getElementById('bg-file-name');
+        if (bgFileName) { bgFileName.textContent = 'Файл загружен'; bgFileName.style.color = '#4ade80'; }
+      }
+      if (data.fields) {
+        document.querySelectorAll('[data-field]').forEach(el => {
+          const field = el.dataset.field;
+          if (data.fields[field] !== undefined) {
+            if (el.tagName === 'INPUT' && el.type === 'text') el.value = data.fields[field];
+            else if (el.tagName === 'TEXTAREA') el.value = data.fields[field];
+            else if (el.classList.contains('cb')) el.classList.toggle('checked', !!data.fields[field]);
+          }
+        });
+      }
+      if (data.decals && data.decals.length > 0) {
+        document.querySelectorAll('.decal').forEach(d => d.remove());
+        decalList.innerHTML = '';
+        decalZIndex = 10;
+        for (const decalData of data.decals) {
+          await addDecal(null, decalData);
+          const item = document.createElement('div');
+          item.className = 'decal-list-item';
+          item.id = 'list_' + decalData.id;
+          const name = decalData.imageName ? decalData.imageName : 'decal';
+          item.innerHTML = `
+            <div class="decal-item-info">
+              <img src="${decalData.imageSrc}" class="decal-thumb" alt="preview">
+              <span class="decal-item-name">${name}</span>
+            </div>
+            <button onclick="removeDecal('${decalData.id}')">Удалить</button>
+          `;
+          decalList.appendChild(item);
+        }
+      }
+      flashNotification('Форма импортирована');
+    } catch (e) {
+      alert('Ошибка импорта: ' + e.message);
+    }
+    event.target.value = '';
+  }
+
+  function imageToBase64(src) {
+    return new Promise((resolve, reject) => {
+      if (src.startsWith('data:image/')) { resolve(src); return; }
+      const img = new Image();
+      img.crossOrigin = 'anonymous';
+      img.onload = () => {
+        try {
+          const canvas = document.createElement('canvas');
+          canvas.width = img.naturalWidth;
+          canvas.height = img.naturalHeight;
+          canvas.getContext('2d').drawImage(img, 0, 0);
+          resolve(canvas.toDataURL('image/png'));
+        } catch (err) { reject(err); }
+      };
+      img.onerror = () => reject(new Error('Failed to load: ' + src));
+      img.src = src;
+    });
+  }
+  
+function scalePageToFit() {
+  const isTouchDevice = window.matchMedia('(hover: none) and (pointer: coarse)').matches;
+  if (!isTouchDevice) {
+    const page = document.querySelector('.page');
+    if (page) {
+      page.style.transform = 'none';
+      page.style.transformOrigin = 'top center';
+      page.style.marginTop = '0';
+      page.style.marginLeft = 'auto';
+      page.style.marginRight = 'auto';
+    }
+    return;
+  }
+
+  const page = document.querySelector('.page');
+  if (!page) return;
+
+  const viewportWidth = window.innerWidth;
+  const viewportHeight = window.innerHeight;
+  
+  const mmToPx = 3.7795275591;
+  const pageWidth = 297 * mmToPx;
+  const pageHeight = 210 * mmToPx;
+  
+  const padding = 16;
+  const fabSpace = 70;
+  const availableWidth = viewportWidth - padding * 2;
+  const availableHeight = viewportHeight - fabSpace - padding;
+  
+  const scaleX = availableWidth / pageWidth;
+  const scaleY = availableHeight / pageHeight;
+  const scale = Math.min(scaleX, scaleY, 1);
+  
+  page.style.transform = `scale(${scale})`;
+  page.style.transformOrigin = 'top center';
+  
+  const scaledHeight = pageHeight * scale;
+  const marginTop = Math.max(0, (availableHeight - scaledHeight) / 2) + padding;
+  page.style.marginTop = marginTop + 'px';
+  page.style.marginBottom = '0';
+  page.style.marginLeft = 'auto';
+  page.style.marginRight = 'auto';
+}
+
+// ===== СИСТЕМА ШАБЛОНОВ =====
+const TEMPLATES_KEY = 'iris_templates_v1';
+
+// ===== INDEXEDDB ДЛЯ ШАБЛОНОВ =====
+const DB_NAME = 'iris_templates_db';
+const DB_VERSION = 1;
+const STORE_NAME = 'templates';
+let dbInstance = null;
+
+function openDB() {
+  if (dbInstance) return Promise.resolve(dbInstance);
+  return new Promise((resolve, reject) => {
+    const request = indexedDB.open(DB_NAME, DB_VERSION);
+    request.onerror = () => reject(request.error);
+    request.onsuccess = () => { dbInstance = request.result; resolve(dbInstance); };
+    request.onupgradeneeded = (e) => {
+      const db = e.target.result;
+      if (!db.objectStoreNames.contains(STORE_NAME)) {
+        db.createObjectStore(STORE_NAME, { keyPath: 'id' });
+      }
+    };
+  });
+}
+
+async function getTemplates() {
+  try {
+    const db = await openDB();
+    return new Promise((resolve, reject) => {
+      const tx = db.transaction(STORE_NAME, 'readonly');
+      const store = tx.objectStore(STORE_NAME);
+      const request = store.getAll();
+      request.onsuccess = () => resolve(request.result || []);
+      request.onerror = () => reject(request.error);
+    });
+  } catch (e) {
+    console.warn('IndexedDB failed:', e);
+    return [];
+  }
+}
+
+async function saveTemplates(templates) {
+  try {
+    const db = await openDB();
+    return new Promise((resolve, reject) => {
+      const tx = db.transaction(STORE_NAME, 'readwrite');
+      const store = tx.objectStore(STORE_NAME);
+      store.clear();
+      templates.forEach(t => store.put(t));
+      tx.oncomplete = () => resolve();
+      tx.onerror = () => reject(tx.error);
+    });
+  } catch (e) {
+    console.error('Failed to save templates:', e);
+    throw e;
+  }
+}
+
+async function addTemplate(template) {
+  try {
+    const db = await openDB();
+    return new Promise((resolve, reject) => {
+      const tx = db.transaction(STORE_NAME, 'readwrite');
+      const store = tx.objectStore(STORE_NAME);
+      store.put(template);
+      tx.oncomplete = () => resolve();
+      tx.onerror = () => reject(tx.error);
+    });
+  } catch (e) {
+    console.error('Failed to add template:', e);
+    throw e;
+  }
+}
+
+async function deleteTemplateFromDB(id) {
+  try {
+    const db = await openDB();
+    return new Promise((resolve, reject) => {
+      const tx = db.transaction(STORE_NAME, 'readwrite');
+      const store = tx.objectStore(STORE_NAME);
+      store.delete(id);
+      tx.oncomplete = () => resolve();
+      tx.onerror = () => reject(tx.error);
+    });
+  } catch (e) {
+    console.error('Failed to delete template:', e);
+    throw e;
+  }
+}
+
+// Получить один шаблон по ID
+async function getTemplateById(id) {
+  try {
+    const db = await openDB();
+    return new Promise((resolve, reject) => {
+      const tx = db.transaction(STORE_NAME, 'readonly');
+      const store = tx.objectStore(STORE_NAME);
+      const request = store.get(id);
+      request.onsuccess = () => resolve(request.result || null);
+      request.onerror = () => reject(request.error);
+    });
+  } catch (e) {
+    console.error('Failed to get template:', e);
+    return null;
+  }
+}
+
+async function compressToBlob(src, maxWidth = 600) {
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      let w = img.naturalWidth;
+      let h = img.naturalHeight;
+      if (w > maxWidth) {
+        h = Math.round((maxWidth / w) * h);
+        w = maxWidth;
+      }
+      canvas.width = w;
+      canvas.height = h;
+      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+      canvas.toBlob((blob) => resolve(blob), 'image/png');
+    };
+    img.onerror = () => resolve(null);
+    img.src = src;
+  });
+}
+
+// Получить URL из Blob (для отображения)
+function getBlobUrl(blobOrString) {
+  if (!blobOrString) return '';
+  if (typeof blobOrString === 'string') return blobOrString; // старый base64
+  if (blobOrString instanceof Blob) return URL.createObjectURL(blobOrString);
+  return '';
+}
+
+
+
+function drawBarWithOutline(ctx, x, y, w, h, color, label, fontSize) {
+  ctx.fillStyle = 'rgba(255,255,255,0.3)';
+  ctx.fillRect(x - 1, y - 1, w + 2, h + 2);
+  ctx.fillStyle = color;
+  ctx.fillRect(x, y, w, h);
+  if (label && fontSize) {
+    ctx.font = `bold ${fontSize}px Inter, Arial, sans-serif`;
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'middle';
+    ctx.strokeStyle = 'white';
+    ctx.lineWidth = Math.max(2, fontSize * 0.15);
+    ctx.lineJoin = 'round';
+    ctx.strokeText(label, x + 3, y + h / 2);
+    ctx.fillStyle = '#fff';
+    ctx.fillText(label, x + 3, y + h / 2);
+  }
+}
+function drawField(ctx, x, y, w, h, borderColor) {
+  ctx.strokeStyle = borderColor;
+  ctx.lineWidth = 0.8;
+  ctx.strokeRect(x, y, w, h);
+}
+function drawCheckbox(ctx, x, y, size, borderColor) {
+  ctx.strokeStyle = borderColor;
+  ctx.lineWidth = 0.8;
+  ctx.strokeRect(x, y, size, size);
+}
+
+function drawFormStructure(ctx, W, H, colors) {
+  const scale = W / 297;
+  const mm = (v) => v * scale;
+  const labelSize = mm(3.5);
+  const smallLabel = mm(2.8);
+  
+  const headerTop = mm(12);
+  drawField(ctx, mm(10), headerTop, mm(30), mm(22), colors.border);
+  drawBarWithOutline(ctx, mm(45), headerTop, mm(165), mm(5), colors.headerBg, 'ПЕРСОНАЖ', labelSize);
+  drawField(ctx, mm(45), headerTop + mm(6), mm(165), mm(6), colors.border);
+  drawField(ctx, mm(45), headerTop + mm(13), mm(165), mm(8), colors.border);
+  drawBarWithOutline(ctx, mm(215), headerTop, mm(30), mm(5), colors.headerBg, 'ЦВЕТКИ', smallLabel);
+  drawField(ctx, mm(215), headerTop + mm(6), mm(30), mm(15), colors.border);
+  
+  ctx.strokeStyle = 'rgba(200,200,200,0.6)';
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(mm(10), headerTop + mm(26));
+  ctx.lineTo(mm(287), headerTop + mm(26));
+  ctx.stroke();
+  
+  const bodyTop = headerTop + mm(32);
+  drawBarWithOutline(ctx, mm(10), bodyTop, mm(130), mm(5), colors.headerBg, 'АСПЕКТЫ', labelSize);
+  for (let i = 0; i < 5; i++) drawField(ctx, mm(10), bodyTop + mm(7) + i * mm(7), mm(130), mm(6), colors.border);
+  drawBarWithOutline(ctx, mm(145), bodyTop, mm(142), mm(5), colors.headerBg, 'НАВЫКИ', labelSize);
+  for (let i = 0; i < 5; i++) {
+    const rowY = bodyTop + mm(7) + i * mm(7);
+    drawField(ctx, mm(145), rowY, mm(40), mm(6), colors.border);
+    for (let j = 0; j < 5; j++) drawField(ctx, mm(190) + j * mm(19), rowY, mm(18), mm(6), colors.border);
+  }
+  
+  const bottomTop = bodyTop + mm(45);
+  drawBarWithOutline(ctx, mm(10), bottomTop, mm(140), mm(5), colors.headerBg, 'ДОПОЛНЕНИЯ', labelSize);
+  drawBarWithOutline(ctx, mm(155), bottomTop, mm(132), mm(5), colors.headerBg, 'ТРЮКИ', labelSize);
+  drawField(ctx, mm(10), bottomTop + mm(7), mm(140), mm(30), colors.border);
+  drawField(ctx, mm(155), bottomTop + mm(7), mm(132), mm(30), colors.border);
+  
+  const footerTop = bottomTop + mm(42);
+  drawBarWithOutline(ctx, mm(10), footerTop, mm(70), mm(5), colors.headerBg, 'ФИЗ. СТРЕСС', smallLabel);
+  for (let i = 0; i < 4; i++) drawCheckbox(ctx, mm(12) + i * mm(17), footerTop + mm(7), mm(5), colors.border);
+  drawBarWithOutline(ctx, mm(10), footerTop + mm(12), mm(70), mm(5), colors.headerBg, 'МЕНТАЛ. СТРЕСС', smallLabel);
+  for (let i = 0; i < 4; i++) drawCheckbox(ctx, mm(12) + i * mm(17), footerTop + mm(19), mm(5), colors.border);
+  drawBarWithOutline(ctx, mm(155), footerTop, mm(132), mm(5), colors.headerBg, 'ПОСЛЕДСТВИЯ', labelSize);
+  for (let i = 0; i < 3; i++) drawField(ctx, mm(155), footerTop + mm(7) + i * mm(7), mm(132), mm(6), colors.border);
+}
+
+function drawDecalsOnCanvas(ctx, W, H) {
+  const decals = document.querySelectorAll('.decal');
+  const page = document.querySelector('.page');
+  const pageW = page.offsetWidth;
+  const pageH = page.offsetHeight;
+  const scaleX = W / pageW;
+  const scaleY = H / pageH;
+  const scale = Math.min(scaleX, scaleY);
+  
+  decals.forEach(decal => {
+    const img = decal.querySelector('img');
+    if (!img || !img.src) return;
+    const left = parseFloat(decal.style.left) || 0;
+    const top = parseFloat(decal.style.top) || 0;
+    const w = decal.offsetWidth;
+    const h = decal.offsetHeight;
+    const rot = parseFloat(decal.dataset.rotation) || 0;
+    const flipH = parseFloat(decal.dataset.flipH) || 1;
+    const flipV = parseFloat(decal.dataset.flipV) || 1;
+    // Сдвиг на 2% для соответствия превью и применению
+    const page = document.querySelector('.page');
+    const shiftX = (page.offsetWidth * 0.01) * scale;
+    const shiftY = (page.offsetHeight * 0.01) * scale;
+
+    ctx.save();
+    ctx.translate(left * scale + (w * scale) / 2, top * scale + (h * scale) / 2);
+    ctx.rotate(rot * Math.PI / 180);
+    ctx.scale(flipH, flipV);
+    ctx.drawImage(img, -(w * scale) / 2, -(h * scale) / 2, w * scale, h * scale);
+    ctx.restore();
+  });
+}
+
+async function generateTemplateThumbnail() {
+  return new Promise((resolve) => {
+    const canvas = document.getElementById('template-canvas');
+    canvas.width = 400;
+    canvas.height = 283;
+    const ctx = canvas.getContext('2d');
+    const W = canvas.width;
+    const H = canvas.height;
+    ctx.fillStyle = '#fff';
+    ctx.fillRect(0, 0, W, H);
+    
+    const colors = {
+      headerBg: document.getElementById('col-header-bg').value,
+      border: document.getElementById('col-border').value
+    };
+    
+    const bgLayer = document.querySelector('.page-bg');
+    const bgImage = bgLayer.style.backgroundImage;
+    
+    const drawContent = () => {
+      drawFormStructure(ctx, W, H, colors);
+      drawDecalsOnCanvas(ctx, W, H);
+      resolve(canvas.toDataURL('image/png'));
+    };
+    
+    if (bgImage && bgImage !== 'none') {
+      const bgUrl = bgImage.slice(5, -2);
+      const img = new Image();
+      img.onload = () => { ctx.drawImage(img, 0, 0, W, H); drawContent(); };
+      img.onerror = drawContent;
+      img.src = bgUrl;
+    } else { drawContent(); }
+  });
+}
+
+async function showCreateTemplateModal() {
+  const modal = document.getElementById('template-modal');
+  modal.classList.add('active');
+  document.getElementById('template-name-input').value = '';
+  document.getElementById('template-name-input').focus();
+  await generateTemplateThumbnail();
+}
+
+function closeTemplateModal() {
+  document.getElementById('template-modal').classList.remove('active');
+}
+
+async function confirmCreateTemplate() {
+  const name = document.getElementById('template-name-input').value.trim();
+  if (!name) { alert('Введите название шаблона'); return; }
+  
+  const thumbnail = document.getElementById('template-canvas').toDataURL('image/png');
+  
+  const template = {
+    id: 'tpl_' + Date.now(),
+    name: name,
+    type: 'template',
+    version: '1.0',
+    createdAt: new Date().toISOString(),
+    thumbnail: thumbnail,
     colors: {
       headerBg: document.getElementById('col-header-bg').value,
       headerText: document.getElementById('col-header-text').value,
@@ -1509,252 +2619,252 @@ async function exportData() {
       text: document.getElementById('col-text').value
     },
     bgOpacity: document.getElementById('bg-opacity').value,
-    fields: {},
+    background: null,
     decals: []
   };
-
-  // Сохраняем все поля формы
-  document.querySelectorAll('[data-field]').forEach(el => {
-    const field = el.dataset.field;
-    if (el.tagName === 'INPUT' && el.type === 'text') {
-      data.fields[field] = el.value;
-    } else if (el.tagName === 'TEXTAREA') {
-      data.fields[field] = el.value;
-    } else if (el.classList.contains('cb')) {
-      data.fields[field] = el.classList.contains('checked');
-    }
-  });
-
-  // Сохраняем фон
+  
+  // Фон — сохраняем как Blob
   const bgLayer = document.querySelector('.page-bg');
   if (bgLayer.style.backgroundImage && bgLayer.style.backgroundImage !== 'none') {
     const bgUrl = bgLayer.style.backgroundImage.slice(5, -2);
-    try {
-      data.background = await imageToBase64(bgUrl);
-    } catch (e) {
-      console.warn('Background export failed:', e);
-    }
+    try { template.background = await compressToBlob(bgUrl, 1200); } 
+    catch (e) { console.warn('BG compress failed:', e); }
   }
-
-  // Сохраняем декали (ждем конвертацию всех изображений)
+  
+  // Декали — сохраняем как Blob со сдвигом 2%
   const decalElements = document.querySelectorAll('.decal');
+  const page = document.querySelector('.page');
+  const pageW = page.offsetWidth;
+  const pageH = page.offsetHeight;
+  
   for (const decal of decalElements) {
     const img = decal.querySelector('img');
     if (img && img.src) {
       try {
-        const imgBase64 = await imageToBase64(img.src);
-        data.decals.push({
-          id: decal.id,
-          imageSrc: imgBase64,
+        const blob = await compressToBlob(img.src, 600);
+        const leftPx = parseFloat(decal.style.left) || 0;
+        const topPx = parseFloat(decal.style.top) || 0;
+        const widthPx = decal.offsetWidth;
+        const heightPx = decal.offsetHeight;
+        
+        // Сдвиг на 2%
+        const shiftX = 0;
+        const shiftY = 0;
+        
+        template.decals.push({
+          imageBlob: blob,
           imageName: decal.dataset.originalImageName || '',
-          left: decal.style.left,
-          top: decal.style.top,
-          width: decal.offsetWidth,
-          height: decal.offsetHeight,
+          left: ((leftPx / pageW * 100) - shiftX) + '%',
+          top: ((topPx / pageH * 100) - shiftY) + '%',
+          width: (widthPx / pageW * 100) + '%',
+          height: (heightPx / pageH * 100) + '%',
           rotation: parseFloat(decal.dataset.rotation) || 0,
           flipH: parseFloat(decal.dataset.flipH) || 1,
           flipV: parseFloat(decal.dataset.flipV) || 1,
           zIndex: parseInt(decal.style.zIndex) || 10
         });
-      } catch (e) {
-        console.warn('Failed to export decal:', decal.id, e);
-      }
+      } catch (e) { console.warn('Decal compress failed:', e); }
     }
   }
-
-  const json = JSON.stringify(data, null, 2);
-  const blob = new Blob([json], { type: 'application/json' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = `character-sheet-${Date.now()}.json`;
-  a.click();
-  URL.revokeObjectURL(url);
   
-  flashNotification('💾 Форма экспортирована');
-}
-
-async function importData(event) {
-  const file = event.target.files[0];
-  if (!file) return;
-
   try {
-    const text = await file.text();
-    const data = JSON.parse(text);
-
-    if (!data.version) {
-      alert('Неверный формат файла');
-      return;
-    }
-
-    // Восстанавливаем цвета
-    if (data.colors) {
-      const colorMap = {
-        headerBg: 'col-header-bg',
-        headerText: 'col-header-text',
-        border: 'col-border',
-        text: 'col-text'
-      };
-      const cssMap = {
-        headerBg: '--header-bg',
-        headerText: '--header-text',
-        border: '--border-color',
-        text: '--text-color'
-      };
-
-      for (const [key, value] of Object.entries(data.colors)) {
-        if (value && colorMap[key]) {
-          document.getElementById(colorMap[key]).value = value;
-          root.style.setProperty(cssMap[key], value);
-        }
-      }
-    }
-
-    // Восстанавливаем прозрачность фона
-    if (data.bgOpacity !== undefined) {
-      document.getElementById('bg-opacity').value = data.bgOpacity;
-      root.style.setProperty('--bg-opacity', data.bgOpacity);
-    }
-
-    // Восстанавливаем фон
-    if (data.background) {
-      bgLayers.forEach(layer => {
-        layer.style.backgroundImage = `url(${data.background})`;
-      });
-      // Обновляем имя файла в UI
-      const bgFileName = document.getElementById('bg-file-name');
-      if (bgFileName) {
-        bgFileName.textContent = 'Файл загружен';
-        bgFileName.style.color = '#4ade80';
-      }
-    }
-
-    // Восстанавливаем поля формы
-    if (data.fields) {
-      document.querySelectorAll('[data-field]').forEach(el => {
-        const field = el.dataset.field;
-        if (data.fields[field] !== undefined) {
-          if (el.tagName === 'INPUT' && el.type === 'text') {
-            el.value = data.fields[field];
-          } else if (el.tagName === 'TEXTAREA') {
-            el.value = data.fields[field];
-          } else if (el.classList.contains('cb')) {
-            el.classList.toggle('checked', !!data.fields[field]);
-          }
-        }
-      });
-    }
-
-    // Восстанавливаем декали
-    if (data.decals && data.decals.length > 0) {
-      // Очищаем существующие декали
-      document.querySelectorAll('.decal').forEach(d => d.remove());
-      decalList.innerHTML = '';
-      decalZIndex = 10;
-
-      // Восстанавливаем каждую декаль
-      for (const decalData of data.decals) {
-        await addDecal(null, decalData);
-        
-        // Добавляем в список декалей
-        const item = document.createElement('div');
-        item.className = 'decal-list-item';
-        item.id = 'list_' + decalData.id;
-        const name = decalData.imageName ? decalData.imageName : 'decal';
-        item.innerHTML = `
-          <div class="decal-item-info">
-            <img src="${decalData.imageSrc}" class="decal-thumb" alt="preview">
-            <span class="decal-item-name">${name}</span>
-          </div>
-          <button onclick="removeDecal('${decalData.id}')">Удалить</button>
-        `;
-        decalList.appendChild(item);
-      }
-    }
-
-    flashNotification('✅ Форма импортирована');
+    await addTemplate(template);
+    closeTemplateModal();
+    renderTemplateList();
+    flashNotification('Шаблон сохранён');
   } catch (e) {
-    console.error('Import error:', e);
-    alert('Ошибка при загрузке файла: ' + e.message);
+    alert('Ошибка сохранения: ' + e.message);
   }
-
-  event.target.value = '';
 }
 
-// Универсальная функция конвертации изображения в base64
-function imageToBase64(src) {
-  return new Promise((resolve, reject) => {
-    // Если уже base64 — возвращаем как есть
-    if (src.startsWith('data:image/')) {
-      resolve(src);
-      return;
-    }
+async function renderTemplateList() {
+  const list = document.getElementById('templates-list');
+  const templates = await getTemplates();
+  
+  if (templates.length === 0) {
+    list.innerHTML = '<div class="templates-empty">Нет сохранённых шаблонов</div>';
+    return;
+  }
+  
+  list.innerHTML = templates.map(t => {
+    const thumbSrc = getBlobUrl(t.thumbnail);
+    return `
+      <div class="template-card" data-id="${t.id}">
+        <img src="${thumbSrc}" class="thumb" alt="${t.name}">
+        <div class="name">${t.name}</div>
+        <div class="actions">
+          <button class="btn-apply-template" onclick="event.stopPropagation(); applyTemplate('${t.id}')" title="Применить">✓</button>
+          <button class="btn-delete-template" onclick="event.stopPropagation(); deleteTemplate('${t.id}')" title="Удалить">×</button>
+        </div>
+      </div>
+    `;
+  }).join('');
+  
+  list.querySelectorAll('.template-card').forEach(card => {
+    card.addEventListener('click', () => showTemplatePreview(card.dataset.id));
+  });
+}
 
-    const img = new Image();
-    img.crossOrigin = 'anonymous';
-    
-    img.onload = () => {
-      try {
-        const canvas = document.createElement('canvas');
-        canvas.width = img.naturalWidth;
-        canvas.height = img.naturalHeight;
-        const ctx = canvas.getContext('2d');
-        ctx.drawImage(img, 0, 0);
-        const dataUrl = canvas.toDataURL('image/png');
-        resolve(dataUrl);
-      } catch (err) {
-        reject(new Error('Canvas tainted: ' + err.message));
+async function deleteTemplate(id) {
+  if (!confirm('Удалить шаблон?')) return;
+  try {
+    await deleteTemplateFromDB(id);
+    renderTemplateList();
+    flashNotification('Шаблон удалён');
+  } catch (e) {
+    alert('Ошибка удаления: ' + e.message);
+  }
+}
+
+async function applyTemplate(id) {
+  const template = await getTemplateById(id);
+  if (!template) return;
+  
+  if (template.colors) {
+    const colorMap = {headerBg:'col-header-bg', headerText:'col-header-text', border:'col-border', text:'col-text'};
+    const cssMap = {headerBg:'--header-bg', headerText:'--header-text', border:'--border-color', text:'--text-color'};
+    for (const [key, value] of Object.entries(template.colors)) {
+      if (value && colorMap[key]) {
+        document.getElementById(colorMap[key]).value = value;
+        root.style.setProperty(cssMap[key], value);
       }
-    };
+    }
+  }
+  if (template.bgOpacity !== undefined) {
+    document.getElementById('bg-opacity').value = template.bgOpacity;
+    root.style.setProperty('--bg-opacity', template.bgOpacity);
+  }
+  if (template.background) {
+    const bgUrl = getBlobUrl(template.background);
+    bgLayers.forEach(l => { l.style.backgroundImage = `url(${bgUrl})`; });
+    const bgFileName = document.getElementById('bg-file-name');
+    if (bgFileName) { bgFileName.textContent = '(из шаблона)'; bgFileName.style.color = '#7c3aed'; }
+  }
+  if (template.decals && template.decals.length > 0) {
+    const currentPage = document.querySelector('.page');
+    const currentPageW = currentPage.offsetWidth;
+    const currentPageH = currentPage.offsetHeight;
     
-    img.onerror = () => reject(new Error('Failed to load image: ' + src));
-    img.src = src;
-  });
-}
-  // ===== КРАСИВЫЙ FILE INPUT =====
-function setupFileDrop(dropId, inputId, nameId) {
-  const drop = document.getElementById(dropId);
-  const input = document.getElementById(inputId);
-  const nameEl = document.getElementById(nameId);
+    for (const decalData of template.decals) {
+      const leftPercent = parseFloat(decalData.left);
+      const topPercent = parseFloat(decalData.top);
+      const widthPercent = parseFloat(decalData.width);
+      const heightPercent = parseFloat(decalData.height);
+      
+      const newDecalData = {
+        ...decalData,
+        id: 'd_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5),
+        left: (leftPercent / 100 * currentPageW) + 'px',
+        top: (topPercent / 100 * currentPageH) + 'px',
+        width: (widthPercent / 100 * currentPageW) + 'px',
+        height: (heightPercent / 100 * currentPageH) + 'px',
+        zIndex: ++decalZIndex
+      };
+      await addDecal(null, newDecalData);
 
-  input.addEventListener('change', (e) => {
-    if (e.target.files[0]) {
-      nameEl.textContent = e.target.files[0].name;
-      nameEl.style.color = '#4ade80'; // зелёный — файл выбран
+    const item = document.createElement('div');
+    item.className = 'decal-list-item';
+    item.id = 'list_' + newDecalData.id;
+    const name = decalData.imageName ? decalData.imageName : 'decal';
+    const imgSrc = getBlobUrl(decalData.imageBlob);
+    item.innerHTML = `
+      <div class="decal-item-info">
+        <img src="${imgSrc}" class="decal-thumb" alt="preview">
+        <span class="decal-item-name">${name} (шаблон)</span>
+      </div>
+      <button onclick="removeDecal('${newDecalData.id}')">Удалить</button>
+    `;
+    decalList.appendChild(item);
     }
-  });
-
-  ['dragenter','dragover'].forEach(evt => {
-    drop.addEventListener(evt, e => {
-      e.preventDefault();
-      drop.classList.add('dragover');
-    });
-  });
-  ['dragleave','drop'].forEach(evt => {
-    drop.addEventListener(evt, e => {
-      e.preventDefault();
-      drop.classList.remove('dragover');
-    });
-  });
-  drop.addEventListener('drop', e => {
-    e.preventDefault();
-    if (e.dataTransfer.files[0]) {
-      input.files = e.dataTransfer.files;
-      input.dispatchEvent(new Event('change'));
-    }
-  });
+  }
+  flashNotification('Шаблон применён');
 }
 
-setupFileDrop('bg-file-drop', 'bg-upload', 'bg-file-name');
-setupFileDrop('decal-file-drop', 'decal-upload', 'decal-file-name');
+async function drawPreviewDecals(decals, W, H, templateColors) {
+  const canvas = document.getElementById('preview-canvas');
+  canvas.width = 800;
+  canvas.height = 566;
+  const ctx = canvas.getContext('2d');
+  ctx.fillStyle = '#fff';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  
+  if (templateColors && templateColors.background) {
+    const bgUrl = getBlobUrl(templateColors.background);
+    const img = new Image();
+    await new Promise((resolve) => { img.onload = resolve; img.onerror = resolve; img.src = bgUrl; });
+    if (img.complete && img.naturalWidth > 0) {
+      ctx.globalAlpha = templateColors.bgOpacity || 1;
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      ctx.globalAlpha = 1;
+    }
+  }
+  
+  const colors = templateColors?.colors || { headerBg: '#000', border: '#333' };
+  drawFormStructure(ctx, canvas.width, canvas.height, colors);
+  
+  for (const decal of decals) {
+    const imgSrc = getBlobUrl(decal.imageBlob);
+    const img = new Image();
+    await new Promise((resolve) => { img.onload = resolve; img.onerror = resolve; img.src = imgSrc; });
+    if (!img.complete || img.naturalWidth === 0) continue;
+    
+    const leftPercent = parseFloat(decal.left);
+    const topPercent = parseFloat(decal.top);
+    const widthPercent = parseFloat(decal.width);
+    const heightPercent = parseFloat(decal.height);
+    const left = ((leftPercent) / 100) * canvas.width;
+    const top = ((topPercent - 2) / 100) * canvas.height;
+    const w = (widthPercent / 100) * canvas.width;
+    const h = (heightPercent / 100) * canvas.height;
+    const rot = parseFloat(decal.rotation) || 0;
+    const flipH = parseFloat(decal.flipH) || 1;
+    const flipV = parseFloat(decal.flipV) || 1;
+    
+    ctx.save();
+    ctx.translate(left + w / 2, top + h / 2);
+    ctx.rotate(rot * Math.PI / 180);
+    ctx.scale(flipH, flipV);
+    ctx.drawImage(img, -w / 2, -h / 2, w, h);
+    ctx.restore();
+  }
+}
 
-// Обнуление имён файлов при очистке
-const origRemoveBg = removeBg;
-removeBg = function() {
-  origRemoveBg();
-  document.getElementById('bg-file-name').textContent = 'Файл не выбран';
-  document.getElementById('bg-file-name').style.color = '#8ab4ff';
-};
+async function showTemplatePreview(id) {
+  const template = await getTemplateById(id);
+  if (!template) return;
+  const modal = document.getElementById('preview-modal');
+  document.getElementById('preview-title').textContent = template.name;
+  await drawPreviewDecals(template.decals, 800, 566, {
+    colors: template.colors,
+    background: template.background,
+    bgOpacity: template.bgOpacity
+  });
+  document.getElementById('preview-info').innerHTML = `
+    <strong>Шаблон:</strong> ${template.name}<br>
+    <strong>Создан:</strong> ${new Date(template.createdAt).toLocaleString('ru-RU')}<br>
+    <strong>Декалей:</strong> ${template.decals.length}
+  `;
+  document.getElementById('preview-apply-btn').onclick = () => { applyTemplate(id); closePreviewModal(); };
+  modal.classList.add('active');
+}
+
+function closePreviewModal() {
+  document.getElementById('preview-modal').classList.remove('active');
+}
+
+document.querySelectorAll('.modal-overlay').forEach(modal => {
+  modal.addEventListener('click', (e) => { if (e.target === modal) modal.classList.remove('active'); });
+});
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    document.querySelectorAll('.modal-overlay.active').forEach(m => m.classList.remove('active'));
+  }
+});
+
+renderTemplateList();
+
+
 </script>
 
 </body>

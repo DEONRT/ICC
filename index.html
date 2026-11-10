@@ -2,7 +2,6 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<link rel="icon" href="/favicon.ico" type="image/x-icon">  
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>IRIS — Лист персонажа (Редактор)</title>
 <style>
@@ -2939,10 +2938,20 @@ function isTouchOnDecal(e) {
 }
 
 function isTouchOnUI(e) {
-  return e.target.closest('#settings-panel') !== null ||
-         e.target.closest('.fab-container') !== null ||
-         e.target.closest('.zoom-controls') !== null ||
-         e.target.closest('.modal-overlay') !== null;
+  const target = e.target;
+  
+  // Проверяем, является ли элемент (или его родитель) интерактивным
+  const isInteractive = target.closest('input, textarea, select, button, a, [contenteditable]') !== null;
+  
+  // Проверяем UI-элементы
+  const isUI = target.closest('#settings-panel') !== null ||
+               target.closest('.fab-container') !== null ||
+               target.closest('.zoom-controls') !== null ||
+               target.closest('.modal-overlay') !== null ||
+               target.closest('.shortcut-hint') !== null ||
+               target.closest('#context-menu') !== null;
+  
+  return isInteractive || isUI;
 }
 
 // Применяем transform: translate + scale
@@ -3014,8 +3023,8 @@ document.addEventListener('touchstart', (e) => {
     return;
   }
   
-  // Перетаскивание листа (один палец, не на декали)
-  if (e.touches.length === 1 && !isTouchOnDecal(e)) {
+  // Перетаскивание листа (один палец, не на декали и не на интерактивных элементах)
+  if (e.touches.length === 1 && !isTouchOnDecal(e) && !isTouchOnUI(e)) {
     isDraggingPage = true;
     dragStartX = e.touches[0].clientX;
     dragStartY = e.touches[0].clientY;
@@ -3029,7 +3038,7 @@ document.addEventListener('touchmove', (e) => {
   if (isTouchOnUI(e)) return;
   
   // Pinch-to-zoom
-  if (isPinching && e.touches.length === 2) {
+  if (isDraggingPage && e.touches.length === 1 && !isTouchOnUI(e)) {
     e.preventDefault();
     const currentDistance = getPinchDistance(e.touches);
     const scale = currentDistance / pinchStartDistance;
@@ -3057,7 +3066,7 @@ document.addEventListener('touchend', (e) => {
   if (e.touches.length === 0) {
     isDraggingPage = false;
     
-    // Двойной тап — быстрый зум (только если не двигали лист)
+    // Двойной тап — быстрый зум
     const touch = e.changedTouches[0];
     const now = Date.now();
     const dx = touch.clientX - lastTapX;
@@ -3071,7 +3080,6 @@ document.addEventListener('touchend', (e) => {
           currentZoom = 2;
         }
         applyPageTransform();
-        showZoomIndicator();
       }
     }
     

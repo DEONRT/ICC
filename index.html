@@ -2958,30 +2958,10 @@ function applyPageTransform() {
   const page = document.querySelector('.page');
   if (!page) return;
   
-  const isPortrait = window.matchMedia('(orientation: portrait)').matches;
-  const mmToPx = 3.7795275591;
-  const pageWidth = 297 * mmToPx;
-  const pageHeight = 210 * mmToPx;
   const finalScale = baseScale * currentZoom;
   
   page.style.transformOrigin = '0 0';
-  
-  if (isPortrait) {
-    // В портретной ориентации:
-    // 1. Сначала сдвигаем лист в начальную позицию (pageOffsetX, pageOffsetY)
-    // 2. Поворачиваем на 90°
-    // 3. Компенсируем поворот сдвигом на -pageHeight (иначе лист "упадёт")
-    // 4. Масштабируем
-    page.style.transform = `
-      translate(${pageOffsetX}px, ${pageOffsetY}px) 
-      rotate(90deg) 
-      translate(0px, ${-pageHeight}px) 
-      scale(${finalScale})
-    `;
-  } else {
-    // В альбомной ориентации: просто масштаб + смещение
-    page.style.transform = `translate(${pageOffsetX}px, ${pageOffsetY}px) scale(${finalScale})`;
-  }
+  page.style.transform = `translate(${pageOffsetX}px, ${pageOffsetY}px) scale(${finalScale})`;
   
   showZoomIndicator();
 }
@@ -2989,7 +2969,6 @@ function applyPageTransform() {
 // Вычислить базовый масштаб под экран
 function updateBaseScale() {
   const isTouchDevice = window.matchMedia('(hover: none) and (pointer: coarse)').matches;
-  const isPortrait = window.matchMedia('(orientation: portrait)').matches;
   
   if (!isTouchDevice) {
     // Десктоп
@@ -3014,50 +2993,25 @@ function updateBaseScale() {
   if (!page) return;
   
   const mmToPx = 3.7795275591;
-  const pageWidthMM = 297;
-  const pageHeightMM = 210;
-  const pageWidth = pageWidthMM * mmToPx;
-  const pageHeight = pageHeightMM * mmToPx;
+  const pageWidth = 297 * mmToPx;
+  const pageHeight = 210 * mmToPx;
   
   const viewportWidth = window.innerWidth;
   const viewportHeight = window.innerHeight;
   
-  if (isPortrait) {
-    // ПОРТРЕТНАЯ ОРИЕНТАЦИЯ
-    // Лист A4 альбомный (297×210) поворачиваем на 90°
-    // После поворота: визуальная ширина = 210mm, визуальная высота = 297mm
-    
-    // Масштаб: чтобы лист поместился по ширине экрана
-    const visualWidth = pageHeight; // 210mm после поворота
-    const visualHeight = pageWidth; // 297mm после поворота
-    
-    const scaleX = viewportWidth / visualWidth;
-    const scaleY = viewportHeight / visualHeight;
-    baseScale = Math.min(scaleX, scaleY);
-    
-    // Начальная позиция: центрируем
-    const scaledVisualWidth = visualWidth * baseScale;
-    const scaledVisualHeight = visualHeight * baseScale;
-    
-    pageOffsetX = (viewportWidth - scaledVisualWidth) / 2;
-    pageOffsetY = (viewportHeight - scaledVisualHeight) / 2;
-    
-    currentZoom = 1;
-    applyPageTransform();
-  } else {
-    // АЛЬБОМНАЯ ОРИЕНТАЦИЯ
-    const scaleX = viewportWidth / pageWidth;
-    const scaleY = viewportHeight / pageHeight;
-    baseScale = Math.min(scaleX, scaleY, 1);
-    
-    const scaledW = pageWidth * baseScale;
-    const scaledH = pageHeight * baseScale;
-    pageOffsetX = (viewportWidth - scaledW) / 2;
-    pageOffsetY = (viewportHeight - scaledH) / 2;
-    
-    currentZoom = 1;
-    applyPageTransform();
-  }
+  // Просто подгоняем лист под экран (и в альбоме, и в портрете)
+  const scaleX = viewportWidth / pageWidth;
+  const scaleY = viewportHeight / pageHeight;
+  baseScale = Math.min(scaleX, scaleY, 1);
+  
+  // Центрируем лист
+  const scaledW = pageWidth * baseScale;
+  const scaledH = pageHeight * baseScale;
+  pageOffsetX = (viewportWidth - scaledW) / 2;
+  pageOffsetY = (viewportHeight - scaledH) / 2;
+  
+  currentZoom = 1;
+  applyPageTransform();
 }
 
 // ===== TOUCH-ОБРАБОТЧИКИ =====
@@ -3088,7 +3042,6 @@ document.addEventListener('touchstart', (e) => {
 }, { passive: false });
 
 document.addEventListener('touchmove', (e) => {
-  // Фиксированный UI — не вмешиваемся
   if (isTouchOnFixedUI(e)) return;
   
   // Pinch-to-zoom
@@ -3101,13 +3054,12 @@ document.addEventListener('touchmove', (e) => {
     return;
   }
   
-  // Перетаскивание листа
+  // Перетаскивание листа (прямое, без инверсий)
   if (isDraggingPage && e.touches.length === 1) {
     e.preventDefault();
     const dx = e.touches[0].clientX - dragStartX;
     const dy = e.touches[0].clientY - dragStartY;
     
-    // Просто добавляем смещение — CSS transform сам учтёт поворот
     pageOffsetX = dragStartOffsetX + dx;
     pageOffsetY = dragStartOffsetY + dy;
     

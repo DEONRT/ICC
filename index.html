@@ -2937,21 +2937,20 @@ function isTouchOnDecal(e) {
   return e.target.closest('.decal') !== null;
 }
 
-function isTouchOnUI(e) {
+function isTouchOnFixedUI(e) {
   const target = e.target;
-  
-  // Проверяем, является ли элемент (или его родитель) интерактивным
-  const isInteractive = target.closest('input, textarea, select, button, a, [contenteditable]') !== null;
-  
-  // Проверяем UI-элементы
-  const isUI = target.closest('#settings-panel') !== null ||
-               target.closest('.fab-container') !== null ||
-               target.closest('.zoom-controls') !== null ||
-               target.closest('.modal-overlay') !== null ||
-               target.closest('.shortcut-hint') !== null ||
-               target.closest('#context-menu') !== null;
-  
-  return isInteractive || isUI;
+  return target.closest('#settings-panel') !== null ||
+         target.closest('.fab-container') !== null ||
+         target.closest('.zoom-controls') !== null ||
+         target.closest('.modal-overlay') !== null ||
+         target.closest('.shortcut-hint') !== null ||
+         target.closest('#context-menu') !== null;
+}
+
+
+function isTouchOnInteractive(e) {
+  const target = e.target;
+  return target.closest('input, textarea, select, button, a, [contenteditable]') !== null;
 }
 
 // Применяем transform: translate + scale
@@ -3011,10 +3010,10 @@ function updateBaseScale() {
 // ===== TOUCH-ОБРАБОТЧИКИ =====
 
 document.addEventListener('touchstart', (e) => {
-  // Не вмешиваемся в UI-элементы
-  if (isTouchOnUI(e)) return;
+  // Фиксированный UI — вообще не вмешиваемся
+  if (isTouchOnFixedUI(e)) return;
   
-  // Pinch-to-zoom (два пальца)
+  // Pinch-to-zoom (два пальца, не на декали)
   if (e.touches.length === 2 && !isTouchOnDecal(e)) {
     isPinching = true;
     pinchStartDistance = getPinchDistance(e.touches);
@@ -3023,8 +3022,8 @@ document.addEventListener('touchstart', (e) => {
     return;
   }
   
-  // Перетаскивание листа (один палец, не на декали и не на интерактивных элементах)
-  if (e.touches.length === 1 && !isTouchOnDecal(e) && !isTouchOnUI(e)) {
+  // Перетаскивание листа — только если палец НЕ на интерактивном элементе и НЕ на декали
+  if (e.touches.length === 1 && !isTouchOnDecal(e) && !isTouchOnInteractive(e)) {
     isDraggingPage = true;
     dragStartX = e.touches[0].clientX;
     dragStartY = e.touches[0].clientY;
@@ -3032,27 +3031,38 @@ document.addEventListener('touchstart', (e) => {
     dragStartOffsetY = pageOffsetY;
     e.preventDefault();
   }
+  // Если палец на поле ввода или кнопке — ничего не делаем, даём элементу получить фокус
 }, { passive: false });
 
 document.addEventListener('touchmove', (e) => {
-  if (isTouchOnUI(e)) return;
+  // Фиксированный UI — не вмешиваемся
+  if (isTouchOnFixedUI(e)) return;
   
   // Pinch-to-zoom
-  if (isDraggingPage && e.touches.length === 1 && !isTouchOnUI(e)) {
+  if (isPinching && e.touches.length === 2) {
     e.preventDefault();
     const currentDistance = getPinchDistance(e.touches);
     const scale = currentDistance / pinchStartDistance;
     currentZoom = Math.max(0.3, Math.min(4, pinchStartZoom * scale));
     applyPageTransform();
-    showZoomIndicator();
     return;
   }
   
-  // Перетаскивание листа
+  // Перетаскивание листа — только если начали drag (значит, не на интерактивном элементе)
   if (isDraggingPage && e.touches.length === 1) {
     e.preventDefault();
-    const dx = e.touches[0].clientX - dragStartX;
-    const dy = e.touches[0].clientY - dragStartY;
+    const isPortrait = window.matchMedia('(orientation: portrait)').matches;
+    
+    let dx = e.touches[0].clientX - dragStartX;
+    let dy = e.touches[0].clientY - dragStartY;
+    
+    // В портретной ориентации меняем оси местами из-за поворота на 90°
+    if (isPortrait) {
+      const temp = dx;
+      dx = dy;
+      dy = -temp;
+    }
+    
     pageOffsetX = dragStartOffsetX + dx;
     pageOffsetY = dragStartOffsetY + dy;
     applyPageTransform();
@@ -3066,14 +3076,14 @@ document.addEventListener('touchend', (e) => {
   if (e.touches.length === 0) {
     isDraggingPage = false;
     
-    // Двойной тап — быстрый зум
+    // Двойной тап — быстрый зум (только если не на интерактивном элементе)
     const touch = e.changedTouches[0];
     const now = Date.now();
     const dx = touch.clientX - lastTapX;
     const dy = touch.clientY - lastTapY;
     
     if (now - lastTapTime < 300 && Math.abs(dx) < 30 && Math.abs(dy) < 30) {
-      if (!isTouchOnDecal(e) && !isTouchOnUI(e)) {
+      if (!isTouchOnDecal(e) && !isTouchOnFixedUI(e) && !isTouchOnInteractive(e)) {
         if (currentZoom > 1.1) {
           currentZoom = 1;
         } else {

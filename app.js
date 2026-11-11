@@ -574,12 +574,32 @@ document.querySelectorAll('#context-menu .cm-item').forEach(item => {
 document.addEventListener('click', (e) => {
   if (!e.target.closest('#context-menu') && !e.target.closest('.decal')) {
     hideContextMenu();
-    if (!e.target.closest('#settings-panel') && !e.target.closest('.fab') && !e.target.closest('.modal-overlay')) {
+    if (!e.target.closest('#settings-panel') && !e.target.closest('.fab') &&
+        !e.target.closest('.modal-overlay') && !e.target.closest('.shortcut-hint')) {
       document.querySelectorAll('.decal').forEach(d => d.classList.remove('active'));
       activeDecal = null;
     }
   }
 });
+
+/* ---------- КНОПКА «ПОДСКАЗКИ» ---------- */
+(function setupHelpButton() {
+  const btnOpen = document.getElementById('btn-help');
+  const btnClose = document.getElementById('btn-help-close');
+  const hint = document.getElementById('shortcut-hint');
+  if (!btnOpen || !hint) return;
+  const toggleHint = () => hint.classList.toggle('visible');
+  const hideHint = () => hint.classList.remove('visible');
+  btnOpen.addEventListener('click', toggleHint);
+  if (btnClose) btnClose.addEventListener('click', hideHint);
+  // Esc закрывает панель подсказок (если она открыта)
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && hint.classList.contains('visible')) {
+      e.stopPropagation();
+      hideHint();
+    }
+  }, true);
+})();
 
 /* ---------- ГОРЯЧИЕ КЛАВИШИ (EN + RU) ---------- */
 document.addEventListener('keydown', (e) => {

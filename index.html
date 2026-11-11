@@ -15,8 +15,8 @@
     --bg-opacity: 1;
     --decal-default-size: 120px;
     --accent: #4488ff;
-    --btn-bg: #2a2a2a;
-    --btn-hover: #444;
+    --violet: #7c3aed;
+    --violet-light: #a78bfa;
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -24,81 +24,39 @@
   body {
     font-family: 'Inter', Arial, Helvetica, sans-serif;
     background: #3a3a3a;
-    background-image: 
+    background-image:
       radial-gradient(circle at 20% 50%, rgba(68,136,255,0.08) 0%, transparent 50%),
       radial-gradient(circle at 80% 80%, rgba(255,100,100,0.05) 0%, transparent 50%);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 20px;
-    padding-bottom: 100px;
-    min-height: 100vh;
+    display: flex; flex-direction: column; align-items: center;
+    padding: 20px; padding-bottom: 100px; min-height: 100vh;
   }
 
   .page {
-    width: 297mm;
-    min-height: 210mm;
-    background: #fff;
-    padding: 12mm 10mm;
-    margin-bottom: 20px;
+    width: 297mm; min-height: 210mm; background: #fff;
+    padding: 12mm 10mm; margin-bottom: 20px;
     box-shadow: 0 8px 32px rgba(0,0,0,0.3);
-    position: relative;
-    overflow: hidden;
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
+    position: relative; overflow: hidden;
+    background-size: cover; background-position: center; background-repeat: no-repeat;
   }
-
   .page-bg {
-    position: absolute;
-    inset: 0;
-    z-index: 0;
-    background-size: cover;
-    background-position: center;
-    opacity: var(--bg-opacity);
-    pointer-events: none;
+    position: absolute; inset: 0; z-index: 0;
+    background-size: cover; background-position: center;
+    opacity: var(--bg-opacity); pointer-events: none;
   }
-
-  .decal-container {
-    position: absolute;
-    inset: 0;
-    z-index: 2;
-    pointer-events: none;
-  }
-
+  .decal-container { position: absolute; inset: 0; z-index: 2; pointer-events: none; }
   .decal {
-    position: absolute;
-    cursor: move;
-    user-select: none;
-    pointer-events: auto;
-    transform-origin: center center;
-    touch-action: none;
+    position: absolute; cursor: move; user-select: none;
+    pointer-events: auto; transform-origin: center center; touch-action: none;
   }
-
-  .decal img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    pointer-events: none;
-    display: block;
-  }
+  .decal img { width: 100%; height: 100%; object-fit: contain; pointer-events: none; display: block; }
 
   .handle {
-    position: absolute;
-    width: 10px;
-    height: 10px;
-    background: white;
-    border: 2px solid var(--accent);
-    border-radius: 50%;
-    display: none;
-    z-index: 5;
-    pointer-events: auto;
-    touch-action: none;
+    position: absolute; width: 10px; height: 10px; background: white;
+    border: 2px solid var(--accent); border-radius: 50%;
+    display: none; z-index: 5; pointer-events: auto; touch-action: none;
   }
-
   .decal.active .handle { display: block; }
   .handle.corner { border-radius: 2px; }
-
   .handle.nw { top: -6px; left: -6px; cursor: nw-resize; }
   .handle.ne { top: -6px; right: -6px; cursor: ne-resize; }
   .handle.se { bottom: -6px; right: -6px; cursor: se-resize; }
@@ -109,404 +67,162 @@
   .handle.w  { left: -6px; top: 50%; transform: translateY(-50%); cursor: w-resize; }
 
   .rotate-handle {
-    position: absolute;
-    top: -40px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 14px;
-    height: 14px;
-    background: white;
-    border: 2px solid var(--accent);
-    border-radius: 50%;
-    display: none;
-    cursor: crosshair;
-    z-index: 6;
-    pointer-events: auto;
-    touch-action: none;
+    position: absolute; top: -40px; left: 50%; transform: translateX(-50%);
+    width: 14px; height: 14px; background: white; border: 2px solid var(--accent);
+    border-radius: 50%; display: none; cursor: crosshair; z-index: 6;
+    pointer-events: auto; touch-action: none;
   }
   .rotate-handle::after {
-    content: '↻';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 10px;
-    color: var(--accent);
-    font-weight: bold;
+    content: '↻'; position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -50%); font-size: 10px; color: var(--accent); font-weight: bold;
   }
   .decal.active .rotate-handle { display: block; }
-
   .rotate-line {
-    position: absolute;
-    top: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 2px;
-    background: var(--accent);
-    display: none;
-    pointer-events: none;
+    position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+    width: 2px; background: var(--accent); display: none; pointer-events: none;
   }
   .decal.active .rotate-line { display: block; }
-
   .decal.active::before {
-    content: '';
-    position: absolute;
-    inset: -1px;
-    border: 1.5px solid var(--accent);
-    pointer-events: none;
+    content: ''; position: absolute; inset: -1px;
+    border: 1.5px solid var(--accent); pointer-events: none;
   }
 
-  .sheet-content {
-    position: relative;
-    z-index: 1;
-  }
+  .sheet-content { position: relative; z-index: 1; }
 
   .hbar {
-    background: var(--header-bg);
-    color: var(--header-text);
-    font-size: 11px;
-    font-weight: 900;
-    letter-spacing: 1.2px;
-    text-transform: uppercase;
-    padding: 3px 8px;
-    border-radius: 3px;
-    display: inline-block;
-    margin-bottom: 4px;
-    line-height: 1.3;
+    background: var(--header-bg); color: var(--header-text);
+    font-size: 11px; font-weight: 900; letter-spacing: 1.2px; text-transform: uppercase;
+    padding: 3px 8px; border-radius: 3px; display: inline-block; margin-bottom: 4px; line-height: 1.3;
   }
 
   input[type="text"], textarea {
-    font-family: inherit;
-    font-size: 12px;
-    border: 1px solid var(--border-color);
-    background: transparent;
-    outline: none;
-    padding: 3px 5px;
-    color: var(--text-color);
-    transition: border-color 0.2s;
+    font-family: inherit; font-size: 12px; border: 1px solid var(--border-color);
+    background: transparent; outline: none; padding: 3px 5px;
+    color: var(--text-color); transition: border-color 0.2s;
   }
   input[type="text"]:focus, textarea:focus { border-color: var(--accent); }
   textarea { resize: none; line-height: 1.5; }
 
   .cb {
     display: inline-flex; align-items: center; justify-content: center;
-    width: 18px; height: 18px;
-    border: 2px solid var(--border-color);
-    cursor: pointer; flex-shrink: 0;
-    position: relative;
-    transition: border-color 0.2s;
+    width: 18px; height: 18px; border: 2px solid var(--border-color);
+    cursor: pointer; flex-shrink: 0; position: relative; transition: border-color 0.2s;
   }
   .cb:hover { border-color: var(--accent); }
   .cb.checked::after {
     content: '✓'; font-size: 14px; font-weight: 900; color: var(--text-color);
     position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
   }
-  .cb.disabled { opacity: 0.5; }
+  .cb.disabled { opacity: 0.25; }
 
   .row { display: flex; gap: 8px; align-items: flex-start; margin-bottom: 4px; }
 
   .p1-header {
-    display: flex;
-    gap: 8px;
-    align-items: flex-start;
-    margin-bottom: 10px;
-    padding-bottom: 6px;
-    border-bottom: 1px solid #ccc;
+    display: flex; gap: 8px; align-items: flex-start;
+    margin-bottom: 10px; padding-bottom: 6px; border-bottom: 1px solid #ccc;
   }
-
-  .p1-header .spacer {
-    flex: 0 0 120px;
-    height: 110px;
-    flex-shrink: 0;
-  }
-
-  .p1-header .col-center {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-  }
-
-  .p1-header .col-center .col-name {
-    display: flex;
-    flex-direction: column;
-    gap: 3px;
-  }
-
-  .p1-header .col-center .col-name input {
-    width: 100%;
-    height: 22px;
-  }
-
-  .p1-header .col-center .col-desc {
-    display: flex;
-    flex-direction: column;
-    gap: 3px;
-  }
-
-  .p1-header .col-center .col-desc textarea {
-    width: 100%;
-    height: 55px;
-  }
-
+  .p1-header .spacer { flex: 0 0 120px; height: 110px; flex-shrink: 0; }
+  .p1-header .col-center { flex: 1; display: flex; flex-direction: column; gap: 6px; }
+  .p1-header .col-center .col-name { display: flex; flex-direction: column; gap: 3px; }
+  .p1-header .col-center .col-name input { width: 100%; height: 22px; }
+  .p1-header .col-center .col-desc { display: flex; flex-direction: column; gap: 3px; }
+  .p1-header .col-center .col-desc textarea { width: 100%; height: 55px; }
   .p1-header .col-portrait {
-    flex: 0 0 90px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 3px;
-    flex-shrink: 0;
+    flex: 0 0 90px; display: flex; flex-direction: column;
+    align-items: center; gap: 3px; flex-shrink: 0;
   }
-
   .p1-header .col-portrait .portrait-box {
-    width: 80px;
-    height: 80px;
-    border: 1px solid var(--border-color);
-    background: rgba(255,255,255,0.5);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 10px;
-    color: #999;
+    width: 80px; height: 80px; border: 1px solid var(--border-color);
+    background: rgba(255,255,255,0.5); display: flex; align-items: center;
+    justify-content: center; font-size: 10px; color: #999;
   }
+  .logo-area { text-align: right; line-height: 1.2; margin-left: auto; align-self: flex-start; padding-top: 20px; }
+  .logo-area .sheet-logo { height: 50px; width: auto; display: block; object-fit: contain; }
 
-  .logo-area {
-    text-align: right;
-    line-height: 1.2;
-    margin-left: auto;
-    align-self: flex-start;
-    padding-top: 20px;
-  }
-
-  .logo-area .sheet-logo {
-    height: 50px;
-    width: auto;
-    display: block;
-    object-fit: contain;
-  }
-
-  .p1-body {
-    display: grid;
-    grid-template-columns: 1fr 1.4fr;
-    gap: 12px;
-    margin-bottom: 10px;
-  }
-
-  .aspects {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-  }
-
-  .aspects .row input {
-    width: 100%;
-    height: 22px;
-  }
-
-  .skills {
-    display: flex;
-    flex-direction: column;
-  }
-
-  .skills-grid {
-    display: flex;
-    flex-direction: column;
-    gap: 3px;
-  }
-
-  .skill-row {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    height: 22px;
-  }
-
-  .skill-label {
-    width: 110px;
-    font-size: 11px;
-    font-weight: 700;
-    flex-shrink: 0;
-  }
-
+  .p1-body { display: grid; grid-template-columns: 1fr 1.4fr; gap: 12px; margin-bottom: 10px; }
+  .aspects { display: flex; flex-direction: column; gap: 4px; }
+  .aspects .row input { width: 100%; height: 22px; }
+  .skills { display: flex; flex-direction: column; }
+  .skills-grid { display: flex; flex-direction: column; gap: 3px; }
+  .skill-row { display: flex; align-items: center; gap: 4px; height: 22px; }
+  .skill-label { width: 110px; font-size: 11px; font-weight: 700; flex-shrink: 0; }
   .skill-label .rank { color: #888; font-weight: 400; margin-left: 2px; }
-
   .skill-boxes { display: flex; gap: 3px; flex: 1; }
   .sbox { flex: 1; height: 100%; border: 1px solid var(--border-color); background: transparent; }
   .sbox input { width: 100%; height: 100%; border: none; text-align: center; padding: 0; font-size: 11px; font-weight: 600; }
 
-  .p1-bottom {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-    margin-bottom: 0;
-    height: 160px;
-  }
+  .p1-bottom { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 0; height: 160px; }
+  .p1-bottom .extras, .p1-bottom .tricks { display: flex; flex-direction: column; gap: 4px; min-height: 0; }
+  .p1-bottom textarea { flex: 1; width: 100%; min-height: 0; }
 
-  .p1-bottom .extras,
-  .p1-bottom .tricks {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    min-height: 0;
-  }
-
-  .p1-bottom textarea {
-    flex: 1;
-    width: 100%;
-    min-height: 0;
-  }
-
-  .p1-footer {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-    margin-top: 14px;
-  }
-
+  .p1-footer { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 14px; }
   .stress-group { margin-bottom: 4px; }
   .stress-track { display: flex; align-items: center; gap: 5px; }
   .stress-track .num { font-weight: 900; font-size: 16px; width: 18px; text-align: center; }
-
   .conseq-row { display: flex; align-items: center; gap: 4px; height: 28px; }
   .conseq-row .num { font-weight: 900; font-size: 14px; width: 18px; text-align: center; }
   .conseq-row .label { font-size: 10px; color: #888; width: 60px; }
   .conseq-row input { flex: 1; height: 100%; }
 
-  /* ===== ПАНЕЛЬ-ШТОРКА СПРАВА ===== */
+  /* ===== ПАНЕЛЬ НАСТРОЕК ===== */
   #settings-panel {
-  position: fixed;
-  top: 20px;
-  right: 20px;
-  width: 320px;
-  background: rgba(20, 20, 32, 0.95);
-  border: 1px solid rgba(255,255,255,0.1);
-  border-radius: 12px;
-  box-shadow: 0 12px 40px rgba(0,0,0,0.5);
-  z-index: 1000;
-  font-size: 13px;
-  color: #e8e8ee;
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  font-family: 'Inter', sans-serif;
-  transition: box-shadow 0.3s ease;
-  
-  /* Ограничиваем высоту по экрану и включаем flex */
-  max-height: calc(100vh - 40px);
-  display: flex;
-  flex-direction: column;
-  overflow: hidden; /* Чтобы скругления не обрезались */
-}
+    position: fixed; top: 20px; right: 20px; width: 320px;
+    background: rgba(20, 20, 32, 0.95); border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 12px; box-shadow: 0 12px 40px rgba(0,0,0,0.5);
+    z-index: 1000; font-size: 13px; color: #e8e8ee;
+    backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+    font-family: 'Inter', sans-serif; transition: box-shadow 0.3s ease;
+    max-height: calc(100vh - 40px); display: flex; flex-direction: column; overflow: hidden;
+  }
   #settings-panel:hover { box-shadow: 0 16px 48px rgba(0,0,0,0.6); }
 
   .panel-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 12px 16px;
-  background: rgba(255,255,255,0.04);
-  border-bottom: 1px solid rgba(255,255,255,0.08);
-  cursor: pointer;
-  user-select: none;
-  font-weight: 700;
-  color: #8ab4ff;
-  font-size: 13px;
-  letter-spacing: 1px;
-  flex-shrink: 0;
-}
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 12px 16px; background: rgba(255,255,255,0.04);
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    cursor: pointer; user-select: none; font-weight: 700; color: #8ab4ff;
+    font-size: 13px; letter-spacing: 1px; flex-shrink: 0;
+  }
   .panel-header:hover { background: rgba(255,255,255,0.07); }
-
-  #toggle-icon {
-  color: #8ab4ff;
-  font-size: 10px;
-  transition: transform 0.3s ease;
-  display: inline-block;
-}
+  #toggle-icon { color: #8ab4ff; font-size: 10px; transition: transform 0.3s ease; display: inline-block; }
   #settings-panel.collapsed #toggle-icon { transform: rotate(180deg); }
 
   .panel-body {
-  max-height: calc(100vh - 100px); /* Высота минус заголовок */
-  overflow-y: auto;
-  overflow-x: hidden;
-  -webkit-overflow-scrolling: touch;
-  padding: 14px 18px 18px;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-  transition: max-height 0.4s ease, padding 0.3s ease, opacity 0.3s ease;
-  opacity: 1;
-}
-  #settings-panel.collapsed .panel-body {
-  max-height: 0;
-  padding: 0 18px;
-  opacity: 0;
-  overflow: hidden;
-}
-
-/* Кастомный скроллбар — тонкий и аккуратный */
-.panel-body::-webkit-scrollbar {
-  width: 6px;
-}
-.panel-body::-webkit-scrollbar-track {
-  background: transparent;
-}
-.panel-body::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.15);
-  border-radius: 3px;
-}
-.panel-body::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.3);
-}
-
-  .panel-section {
-    border-bottom: 1px solid rgba(255,255,255,0.08);
-    padding-bottom: 12px;
+    max-height: calc(100vh - 100px); overflow-y: auto; overflow-x: hidden;
+    -webkit-overflow-scrolling: touch; padding: 14px 18px 18px;
+    display: flex; flex-direction: column; gap: 14px;
+    transition: max-height 0.4s ease, padding 0.3s ease, opacity 0.3s ease; opacity: 1;
+    scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.15) transparent;
   }
+  #settings-panel.collapsed .panel-body { max-height: 0; padding: 0 18px; opacity: 0; overflow: hidden; }
+  .panel-body::-webkit-scrollbar { width: 6px; }
+  .panel-body::-webkit-scrollbar-track { background: transparent; }
+  .panel-body::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 3px; }
+  .panel-body::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.3); }
+
+  .panel-section { border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 12px; }
   .panel-section:last-child { border-bottom: none; padding-bottom: 0; }
-
   .panel-section h4 {
-    margin: 0 0 8px 0;
-    font-size: 11px;
-    color: #8ab4ff;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.8px;
+    margin: 0 0 8px 0; font-size: 11px; color: #8ab4ff; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.8px;
   }
 
-  .color-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 6px;
-  }
+  .color-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
   .color-row label { flex: 1; font-size: 12px; color: #ccc; }
   .color-row input[type="color"] {
-    width: 34px; height: 26px;
-    border: 1px solid rgba(255,255,255,0.15);
-    padding: 2px; cursor: pointer;
-    border-radius: 5px; background: transparent;
-    transition: border-color 0.2s;
+    width: 34px; height: 26px; border: 1px solid rgba(255,255,255,0.15);
+    padding: 2px; cursor: pointer; border-radius: 5px; background: transparent; transition: border-color 0.2s;
   }
   .color-row input[type="color"]:hover { border-color: #4488ff; }
 
   .file-drop {
-    position: relative;
-    border: 1.5px dashed rgba(255,255,255,0.2);
-    border-radius: 8px;
-    padding: 12px 14px;
-    cursor: pointer;
-    transition: all 0.2s;
-    text-align: center;
-    background: rgba(255,255,255,0.02);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 3px;
+    position: relative; border: 1.5px dashed rgba(255,255,255,0.2); border-radius: 8px;
+    padding: 12px 14px; cursor: pointer; transition: all 0.2s; text-align: center;
+    background: rgba(255,255,255,0.02); display: flex; flex-direction: column; align-items: center; gap: 3px;
   }
   .file-drop:hover { border-color: #4488ff; background: rgba(68,136,255,0.06); }
   .file-drop.dragover { border-color: #4488ff; background: rgba(68,136,255,0.12); transform: scale(1.01); }
-  .file-drop input[type="file"] {
-    position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%;
-  }
+  .file-drop input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
   .file-drop-text { font-size: 12px; color: #bbb; line-height: 1.4; }
   .file-drop-text strong { color: #e8e8ee; font-weight: 600; }
   .file-drop-name {
@@ -517,15 +233,14 @@
   .slider-row { display: flex; align-items: center; gap: 8px; margin-top: 8px; }
   .slider-row label { flex: 1; font-size: 11px; color: #aaa; }
   .slider-row input[type="range"] {
-    flex: 1.5; -webkit-appearance: none; appearance: none;
-    height: 4px; background: rgba(255,255,255,0.15); border-radius: 2px; outline: none; cursor: pointer;
+    flex: 1.5; -webkit-appearance: none; appearance: none; height: 4px;
+    background: rgba(255,255,255,0.15); border-radius: 2px; outline: none; cursor: pointer;
   }
   .slider-row input[type="range"]::-webkit-slider-thumb {
-    -webkit-appearance: none; appearance: none;
-    width: 14px; height: 14px; background: #4488ff; border-radius: 50%;
-    border: 2px solid #fff; box-shadow: 0 1px 3px rgba(0,0,0,0.4); cursor: pointer;
+    -webkit-appearance: none; appearance: none; width: 14px; height: 14px;
+    background: #4488ff; border-radius: 50%; border: 2px solid #fff;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.4); cursor: pointer;
   }
-  .slider-row input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.2); }
 
   .btn-panel {
     display: flex; align-items: center; justify-content: center; gap: 6px;
@@ -536,29 +251,21 @@
   .btn-panel:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
   .btn-panel:active { transform: translateY(0); }
   .btn-pdf { background: linear-gradient(135deg, #2563eb, #1d4ed8); margin-bottom: 6px; }
-  .btn-pdf:hover { background: linear-gradient(135deg, #1d4ed8, #1e3a8a); }
   .btn-export { background: #2563eb; }
-  .btn-export:hover { background: #1d4ed8; }
   .btn-import { background: #059669; }
-  .btn-import:hover { background: #047857; }
   .btn-danger { background: #b91c1c; font-size: 11px; padding: 6px 10px; }
-  .btn-danger:hover { background: #991b1b; }
+  .btn-template { background: linear-gradient(135deg, #7c3aed, #6d28d9); margin-bottom: 10px; }
+  .btn-template:hover { background: linear-gradient(135deg, #6d28d9, #5b21b6); }
 
-  .decal-list {
-    max-height: 110px; overflow-y: auto; margin-top: 8px;
-    border-radius: 6px; background: rgba(0,0,0,0.2);
-  }
+  .decal-list { max-height: 110px; overflow-y: auto; margin-top: 8px; border-radius: 6px; background: rgba(0,0,0,0.2); }
   .decal-list::-webkit-scrollbar { width: 6px; }
-  .decal-list::-webkit-scrollbar-track { background: transparent; }
   .decal-list::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 3px; }
-
   .decal-list-item {
     display: flex; justify-content: space-between; align-items: center;
-    padding: 6px 10px; font-size: 11px;
-    border-bottom: 1px solid rgba(255,255,255,0.05); color: #ddd; gap: 8px;
+    padding: 6px 10px; font-size: 11px; border-bottom: 1px solid rgba(255,255,255,0.05);
+    color: #ddd; gap: 8px; cursor: pointer;
   }
   .decal-list-item:last-child { border-bottom: none; }
-
   .decal-thumb {
     width: 28px; height: 28px; border-radius: 4px; object-fit: contain;
     background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); flex-shrink: 0;
@@ -566,82 +273,197 @@
   .decal-item-info { display: flex; align-items: center; gap: 8px; flex: 1; min-width: 0; }
   .decal-item-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .decal-list-item button {
-    background: rgba(255,68,68,0.2); color: #ff8888;
-    border: 1px solid rgba(255,68,68,0.3); border-radius: 4px;
-    padding: 3px 8px; cursor: pointer; font-size: 10px; transition: all 0.2s; flex-shrink: 0;
+    background: rgba(255,68,68,0.2); color: #ff8888; border: 1px solid rgba(255,68,68,0.3);
+    border-radius: 4px; padding: 3px 8px; cursor: pointer; font-size: 10px; transition: all 0.2s; flex-shrink: 0;
   }
   .decal-list-item button:hover { background: rgba(255,68,68,0.4); color: #fff; }
 
-  /* FAB */
-  .fab-container {
-    position: fixed; bottom: 24px; right: 24px;
-    display: flex; gap: 12px; z-index: 999;
+  /* ===== ШАБЛОНЫ ===== */
+  .tpl-active {
+    display: flex; align-items: center; gap: 9px; padding: 8px 10px;
+    margin-bottom: 8px; border-radius: 8px;
+    background: linear-gradient(135deg, rgba(124,58,237,.20), rgba(68,136,255,.10));
+    border: 1px solid rgba(124,58,237,.45);
   }
+  .tpl-active.is-empty { background: rgba(255,255,255,.03); border-color: rgba(255,255,255,.10); border-style: dashed; }
+  .tpl-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; background: #a78bfa; box-shadow: 0 0 8px rgba(167,139,250,.9); }
+  .tpl-active.is-empty .tpl-dot { background: #6b7280; box-shadow: none; }
+  .tpl-active-text { min-width: 0; flex: 1; line-height: 1.25; }
+  .tpl-active-label { font-size: 9px; letter-spacing: .7px; text-transform: uppercase; color: #a9b4cc; }
+  .tpl-active-name { font-size: 12px; font-weight: 700; color: #e9e6ff; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .tpl-active.is-empty .tpl-active-name { color: #9aa3b2; font-weight: 600; }
+  .tpl-clear-btn {
+    flex-shrink: 0; border: 1px solid rgba(255,255,255,.16); background: rgba(255,255,255,.06);
+    color: #dfe4ee; font-family: inherit; font-size: 10px; font-weight: 700;
+    padding: 5px 9px; border-radius: 6px; cursor: pointer; transition: all .18s;
+  }
+  .tpl-clear-btn:hover { background: #b91c1c; border-color: #ef4444; color: #fff; }
+  .tpl-note {
+    font-size: 10px; line-height: 1.45; color: #8f97a8; padding: 7px 9px;
+    margin-bottom: 9px; border-radius: 6px; background: rgba(255,255,255,.03); border-left: 3px solid #7c3aed;
+  }
+  .tpl-note b { color: #cbb8ff; font-weight: 700; }
+
+  .templates-list {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 8px; max-height: 220px; overflow-y: auto; padding: 4px;
+    scrollbar-width: thin; scrollbar-color: rgba(167,139,250,.35) transparent;
+  }
+  .templates-list::-webkit-scrollbar { width: 5px; }
+  .templates-list::-webkit-scrollbar-thumb { background: rgba(167,139,250,.35); border-radius: 3px; }
+  .template-card {
+    background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 6px; overflow: hidden; cursor: pointer; transition: all 0.2s; position: relative;
+  }
+  .template-card:hover { border-color: #7c3aed; background: rgba(124,58,237,0.1); transform: translateY(-2px); }
+  .template-card:focus-visible { outline: 2px solid #a78bfa; outline-offset: 2px; }
+  .template-card .thumb { width: 100%; height: 70px; background: #fff; display: block; object-fit: cover; }
+  .template-card .name {
+    padding: 4px 6px; font-size: 10px; color: #ddd;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .template-card .actions { position: absolute; top: 2px; right: 2px; display: none; gap: 2px; }
+  .template-card:hover .actions, .template-card:focus-within .actions { display: flex; }
+  .template-card .actions button {
+    width: 20px; height: 20px; border: none; border-radius: 3px; cursor: pointer;
+    font-size: 10px; display: flex; align-items: center; justify-content: center;
+  }
+  .template-card .btn-apply-template { background: #7c3aed; color: white; }
+  .template-card .btn-delete-template { background: #dc2626; color: white; }
+  .template-card.is-active { border-color: #a78bfa; box-shadow: 0 0 0 1px rgba(167,139,250,.55), 0 6px 18px rgba(124,58,237,.28); }
+  .template-card .tpl-badge {
+    position: absolute; left: 4px; top: 4px; display: none; align-items: center; gap: 3px;
+    background: rgba(124,58,237,.94); color: #fff; font-size: 8px; font-weight: 800;
+    letter-spacing: .5px; padding: 2px 5px; border-radius: 4px; text-transform: uppercase;
+  }
+  .template-card.is-active .tpl-badge { display: flex; }
+  .template-card.is-busy { opacity: .5; pointer-events: none; }
+  .templates-empty {
+    grid-column: 1 / -1; text-align: center; padding: 16px;
+    color: #888; font-size: 11px; font-style: italic;
+  }
+
+  .decal-list-item.tpl-decal-row { border-left: 2px solid rgba(167,139,250,.75); }
+  .decal-list-item .tpl-tag {
+    flex-shrink: 0; font-size: 8px; font-weight: 800; letter-spacing: .4px; color: #d6c9ff;
+    background: rgba(124,58,237,.30); border: 1px solid rgba(167,139,250,.45);
+    padding: 1px 4px; border-radius: 3px; text-transform: uppercase;
+  }
+  .decal.tpl-decal.active::before { border-color: #a78bfa; }
+  .decal.tpl-decal.active .handle, .decal.tpl-decal.active .rotate-handle { border-color: #a78bfa; }
+  .decal.tpl-decal.active .rotate-line { background: #a78bfa; }
+  .decal.tpl-decal.active .rotate-handle::after { color: #7c3aed; }
+
+  /* ===== МОДАЛКИ ===== */
+  .modal-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.7);
+    backdrop-filter: blur(4px); z-index: 2000; display: none;
+    align-items: center; justify-content: center; padding: 20px;
+  }
+  .modal-overlay.active { display: flex; }
+  .modal-content {
+    background: rgba(20, 20, 32, 0.98); border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 12px; width: 100%; max-width: 400px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.6); overflow: hidden;
+    max-height: calc(100vh - 40px); display: flex; flex-direction: column;
+  }
+  .modal-large { max-width: 650px; }
+  .modal-header {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 14px 18px; background: rgba(255,255,255,0.04);
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    color: #8ab4ff; font-weight: 700; font-size: 14px; flex-shrink: 0;
+  }
+  .modal-close {
+    background: none; border: none; color: #8ab4ff; font-size: 20px; cursor: pointer;
+    padding: 0; width: 28px; height: 28px; display: flex; align-items: center;
+    justify-content: center; border-radius: 4px;
+  }
+  .modal-close:hover { background: rgba(255,255,255,0.1); }
+  .modal-body {
+    padding: 18px; display: flex; flex-direction: column; gap: 12px;
+    overflow-y: auto; scrollbar-width: thin; scrollbar-color: rgba(167,139,250,.3) transparent;
+  }
+  .modal-body::-webkit-scrollbar { width: 6px; }
+  .modal-body::-webkit-scrollbar-thumb { background: rgba(167,139,250,.3); border-radius: 3px; }
+  .modal-label { font-size: 12px; color: #aaa; font-weight: 600; }
+  .modal-input {
+    width: 100%; padding: 8px 12px; background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.15); border-radius: 6px;
+    color: #e8e8ee; font-size: 13px; font-family: inherit; outline: none;
+  }
+  .modal-input:focus { border-color: #7c3aed; }
+  .modal-hint {
+    font-size: 11px; color: #888; line-height: 1.4; padding: 8px;
+    background: rgba(255,255,255,0.03); border-radius: 4px; border-left: 3px solid #7c3aed;
+  }
+  .modal-preview { display: flex; flex-direction: column; gap: 6px; }
+  .preview-label { font-size: 11px; color: #aaa; font-weight: 600; }
+  #template-canvas, #preview-canvas {
+    width: 100%; height: auto; background: #fff; border-radius: 6px;
+    border: 1px solid rgba(255,255,255,0.1); display: block;
+  }
+  .preview-info { font-size: 11px; color: #aaa; padding: 8px; background: rgba(255,255,255,0.03); border-radius: 4px; line-height: 1.6; }
+  .modal-status { min-height: 15px; padding: 0 18px 4px; font-size: 11px; font-weight: 600; color: #a78bfa; letter-spacing: .2px; flex-shrink: 0; }
+  .modal-status:empty { display: none; }
+  .modal-footer { display: flex; gap: 8px; padding: 14px 18px; border-top: 1px solid rgba(255,255,255,0.08); flex-shrink: 0; }
+  .btn-modal {
+    flex: 1; padding: 8px 16px; border: none; border-radius: 6px;
+    font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.2s; font-family: inherit;
+  }
+  .btn-modal:disabled { opacity: .55; cursor: progress; }
+  .btn-cancel { background: rgba(255,255,255,0.1); color: #ccc; }
+  .btn-cancel:hover:not(:disabled) { background: rgba(255,255,255,0.15); }
+  .btn-save, .btn-apply { background: #7c3aed; color: white; }
+  .btn-save:hover:not(:disabled), .btn-apply:hover:not(:disabled) { background: #6d28d9; }
+
+  /* ===== FAB / ПОДСКАЗКИ / МЕНЮ ===== */
+  .fab-container { position: fixed; bottom: 24px; right: 24px; display: flex; gap: 12px; z-index: 999; }
   .fab {
-    width: 52px; height: 52px; border-radius: 50%;
-    background: #2563eb; color: white; border: none;
-    display: flex; align-items: center; justify-content: center;
-    cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-    transition: all 0.2s ease; position: relative;
+    width: 52px; height: 52px; border-radius: 50%; background: #2563eb; color: white;
+    border: none; display: flex; align-items: center; justify-content: center;
+    cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.3); transition: all 0.2s ease; position: relative;
   }
-  .fab:hover {
-    background: #1d4ed8; transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(0,0,0,0.4);
-  }
+  .fab:hover { background: #1d4ed8; transform: translateY(-2px); box-shadow: 0 6px 16px rgba(0,0,0,0.4); }
   .fab svg { width: 24px; height: 24px; fill: currentColor; }
   .fab::before {
-    content: attr(data-tooltip);
-    position: absolute; right: 60px; top: 50%;
-    transform: translateY(-50%);
-    background: rgba(0,0,0,0.85); color: white;
-    padding: 6px 10px; border-radius: 6px;
-    font-size: 12px; font-weight: 600; white-space: nowrap;
-    opacity: 0; pointer-events: none; transition: opacity 0.2s;
+    content: attr(data-tooltip); position: absolute; right: 60px; top: 50%;
+    transform: translateY(-50%); background: rgba(0,0,0,0.85); color: white;
+    padding: 6px 10px; border-radius: 6px; font-size: 12px; font-weight: 600;
+    white-space: nowrap; opacity: 0; pointer-events: none; transition: opacity 0.2s;
   }
   .fab:hover::before { opacity: 1; }
 
-  /* Подсказки */
   .shortcut-hint {
-    position: fixed; bottom: 24px; left: 24px;
-    background: rgba(20, 20, 30, 0.88); color: #e8e8ee;
-    padding: 14px 16px; border-radius: 10px;
-    font-size: 12px; z-index: 998;
-    min-width: 290px;
-    backdrop-filter: blur(12px);
-    border: 1px solid rgba(255,255,255,0.08);
-    box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+    position: fixed; bottom: 24px; left: 24px; background: rgba(20, 20, 30, 0.88);
+    color: #e8e8ee; padding: 14px 16px; border-radius: 10px; font-size: 12px;
+    z-index: 998; min-width: 290px; backdrop-filter: blur(12px);
+    border: 1px solid rgba(255,255,255,0.08); box-shadow: 0 8px 24px rgba(0,0,0,0.4);
     font-family: 'Inter', sans-serif;
   }
   .shortcut-hint .section-title {
-    font-weight: 700; margin: 8px 0 4px 0;
-    color: #8ab4ff; font-size: 11px;
+    font-weight: 700; margin: 8px 0 4px 0; color: #8ab4ff; font-size: 11px;
     text-transform: uppercase; letter-spacing: 0.6px;
   }
   .shortcut-hint .section-title:first-child { margin-top: 0; }
   .shortcut-row {
     display: flex; align-items: center; justify-content: space-between;
-    padding: 3px 0; gap: 10px;
-    border-bottom: 1px solid rgba(255,255,255,0.04);
+    padding: 3px 0; gap: 10px; border-bottom: 1px solid rgba(255,255,255,0.04);
   }
   .shortcut-row:last-child { border-bottom: none; }
   .shortcut-row .keys { display: flex; gap: 4px; flex-shrink: 0; }
   .shortcut-row kbd {
     font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 600;
-    background: rgba(255,255,255,0.12); color: #fff;
-    padding: 2px 7px; border-radius: 4px;
-    border: 1px solid rgba(255,255,255,0.15);
-    box-shadow: 0 1px 2px rgba(0,0,0,0.3); letter-spacing: 0.3px; white-space: nowrap;
+    background: rgba(255,255,255,0.12); color: #fff; padding: 2px 7px; border-radius: 4px;
+    border: 1px solid rgba(255,255,255,0.15); box-shadow: 0 1px 2px rgba(0,0,0,0.3); white-space: nowrap;
   }
-  .shortcut-row kbd.mod {
-    background: rgba(68,136,255,0.25); border-color: rgba(68,136,255,0.4); color: #a8cfff;
-  }
+  .shortcut-row kbd.mod { background: rgba(68,136,255,0.25); border-color: rgba(68,136,255,0.4); color: #a8cfff; }
   .shortcut-row .desc { color: #ccc; font-size: 12px; text-align: right; flex: 1; white-space: nowrap; }
 
-  /* Context Menu */
   #context-menu {
-    position: fixed; background: #fff; border: 1px solid #ddd;
-    border-radius: 8px; box-shadow: 0 8px 24px rgba(0,0,0,0.25);
-    padding: 4px; min-width: 200px; z-index: 2000; display: none; font-size: 13px;
+    position: fixed; background: #fff; border: 1px solid #ddd; border-radius: 8px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.25); padding: 4px; min-width: 200px;
+    z-index: 2500; display: none; font-size: 13px;
   }
   #context-menu .cm-item {
     padding: 6px 12px; cursor: pointer; border-radius: 4px;
@@ -653,717 +475,95 @@
   #context-menu .cm-item.danger { color: #d33; }
   #context-menu .cm-item.danger:hover { background: #fff0f0; }
 
-  @page { size: A4 landscape; margin: 0; }
+  .zoom-indicator {
+    position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%);
+    background: rgba(0,0,0,0.7); color: #fff; padding: 6px 14px; border-radius: 20px;
+    font-size: 12px; font-weight: 600; z-index: 997; opacity: 0; transition: opacity 0.3s;
+    pointer-events: none; backdrop-filter: blur(8px); font-family: 'Inter', sans-serif;
+  }
+  .zoom-indicator.visible { opacity: 1; }
 
+  #undo-toast {
+    position: fixed; left: 50%; bottom: 26px; transform: translate(-50%, 20px);
+    display: flex; align-items: center; gap: 12px; background: rgba(18,18,28,.96);
+    color: #e8e8ee; border: 1px solid rgba(167,139,250,.45);
+    box-shadow: 0 12px 34px rgba(0,0,0,.55); padding: 10px 12px 10px 16px;
+    border-radius: 10px; font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 600;
+    z-index: 3000; opacity: 0; pointer-events: none;
+    transition: opacity .25s ease, transform .25s ease;
+    backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+  }
+  #undo-toast.visible { opacity: 1; transform: translate(-50%, 0); pointer-events: auto; }
+  #undo-toast button {
+    border: none; border-radius: 6px; cursor: pointer; background: #7c3aed; color: #fff;
+    font-family: inherit; font-size: 11px; font-weight: 800; letter-spacing: .4px;
+    padding: 6px 12px; transition: background .18s;
+  }
+  #undo-toast button:hover { background: #6d28d9; }
+
+  @page { size: A4 landscape; margin: 0; }
   @media print {
     body { background: white; padding: 0; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
-    .page { box-shadow: none; margin: 0; padding: 12mm 10mm; width: 297mm; min-height: 210mm; }
-    #settings-panel, .fab-container, .shortcut-hint, #context-menu { display: none !important; }
+    .page { box-shadow: none; margin: 0; padding: 12mm 10mm; width: 297mm; min-height: 210mm; transform: none !important; }
+    #settings-panel, .fab-container, .shortcut-hint, #context-menu, #undo-toast, .zoom-indicator, .modal-overlay { display: none !important; }
     .decal .handle, .decal .rotate-handle, .decal .rotate-line, .decal.active::before { display: none !important; }
   }
 
-  /* АЛЬБОМНАЯ ОРИЕНТАЦИЯ тач-устройств — динамическое масштабирование */
-@media (hover: none) and (pointer: coarse) {
-  body {
-    padding: 0;
-    overflow: hidden; /* Убираем скролл — лист двигаем вручную */
-  }
-
-  .page {
-    margin: 0 !important; /* Убираем все отступы */
-    position: absolute;
-    top: 0;
-    left: 0;
-    will-change: transform; /* Оптимизация для плавности */
-  }
-}
-
-  /* Панель настроек — справа, компактная */
-  #settings-panel {
-    top: 10px;
-    right: 10px;
-    width: 240px;
-    max-height: calc(100vh - 20px);
-    border-radius: 10px;
-    font-size: 12px;
-  }
-  #settings-panel.collapsed .panel-body {
-    max-height: 0;
-    padding: 0 12px;
-    opacity: 0;
-  }
-
-  .panel-header { padding: 8px 12px; font-size: 11px; }
-  .panel-body { padding: 8px 12px 12px; gap: 8px; }
-  .panel-section { padding-bottom: 6px; }
-  .panel-section h4 { font-size: 10px; margin-bottom: 4px; }
-
-  .color-row { margin-bottom: 3px; }
-  .color-row label { font-size: 10px; }
-  .color-row input[type="color"] { width: 26px; height: 20px; }
-
-  .file-drop { padding: 6px 8px; }
-  .file-drop-text { font-size: 10px; }
-  .file-drop-name { font-size: 9px; }
-
-  .slider-row { margin-top: 4px; }
-  .slider-row label { font-size: 9px; }
-
-  .btn-panel { padding: 5px 8px; font-size: 10px; margin-bottom: 3px; }
-
-  .decal-list { max-height: 60px; }
-  .decal-list-item { padding: 3px 6px; font-size: 9px; }
-  .decal-thumb { width: 20px; height: 20px; }
-
-  /* FAB — горизонтально */
-  .fab-container {
-    bottom: 10px;
-    right: 10px;
-    flex-direction: row;
-    gap: 8px;
-  }
-  .fab { width: 44px; height: 44px; }
-/* Подсказки */
-  .shortcut-hint {
-    bottom: 65px;
-    left: 10px;
-    right: auto;
-    min-width: 220px;
-    max-height: 45vh;
-    font-size: 10px;
-    padding: 8px 10px;
-  }
-  .shortcut-row kbd { font-size: 9px; padding: 1px 4px; }
-  .shortcut-row .desc { font-size: 10px; }
-
-  /* Скрываем подсказки по умолчанию на мобильных */
-  .shortcut-hint {
-    display: none;
-  }
-  .shortcut-hint.visible {
-    display: block;
-  }
-
-  /* Кнопка "?" остаётся, но скрыта по умолчанию */
-  .fab-help {
-    display: flex;
-  }
-
+  /* ===== МОБИЛЬНЫЕ ===== */
   @media (hover: none) and (pointer: coarse) {
-  body {
-    padding: 0;
-    overflow-x: hidden;
-    overflow-y: auto;
-    display: flex;
-    flex-direction: column;
-    align-items: center; /* Центрируем по горизонтали */
-    justify-content: flex-start;
-    min-height: 100vh;
+    body { padding: 0; overflow: hidden; touch-action: pan-x pan-y; }
+    .page { margin: 0 !important; position: absolute; top: 0; left: 0; will-change: transform; touch-action: none; }
+    .shortcut-hint, .fab-help { display: none !important; }
+    .fab-container { bottom: 12px; right: 12px; flex-direction: row; gap: 10px; }
+    .fab { width: 50px; height: 50px; }
+    .fab::before { display: none; }
+    .handle { width: 20px; height: 20px; }
+    .handle.nw { top: -10px; left: -10px; } .handle.ne { top: -10px; right: -10px; }
+    .handle.se { bottom: -10px; right: -10px; } .handle.sw { bottom: -10px; left: -10px; }
+    .handle.n { top: -10px; } .handle.s { bottom: -10px; } .handle.e { right: -10px; } .handle.w { left: -10px; }
+    .rotate-handle { width: 24px; height: 24px; top: -55px; }
+    .rotate-handle::after { font-size: 14px; }
+    #context-menu {
+      top: auto !important; bottom: 0 !important; left: 0 !important; right: 0 !important;
+      width: 100% !important; min-width: auto !important; border-radius: 16px 16px 0 0;
+      max-height: 50vh; overflow-y: auto;
+    }
+    .modal-content { max-width: 92vw; }
+    .modal-large { max-width: 95vw; }
+    .templates-list { grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); }
+    .template-card .actions { display: flex; }
+    #undo-toast { bottom: 74px; max-width: calc(100vw - 24px); }
   }
-
-  .page {
-    width: 297mm;
-    min-height: 210mm;
-    margin: 0 auto; /* Центрируем лист */
-    transform-origin: top center;
-    flex-shrink: 0;
+  @media (hover: none) and (pointer: coarse) and (orientation: portrait) {
+    #settings-panel {
+      top: auto; bottom: 0; right: 0; left: 0; width: 100%; max-width: 100%;
+      max-height: 78vh; border-radius: 16px 16px 0 0;
+      transform: translateY(calc(100% - 46px)); transition: transform 0.3s ease;
+    }
+    #settings-panel:not(.collapsed) { transform: translateY(0); }
+    #settings-panel.collapsed .panel-body { max-height: 0; padding: 0 18px; opacity: 0; }
+    .zoom-indicator { bottom: auto; top: 16px; }
   }
-
-  /* Скрываем подсказки на мобильных */
-  .shortcut-hint { display: none !important; }
-  .fab-help { display: none !important; }
-}
-@media (hover: none) and (pointer: coarse) and (orientation: landscape) {
-  /* Панель настроек — справа, с прокруткой */
-  #settings-panel {
-    top: 10px;
-    right: 10px;
-    width: 240px;
-    max-height: calc(100vh - 20px);
-    border-radius: 10px;
-    font-size: 12px;
-    overflow-y: auto; /* Добавляем прокрутку */
-    -webkit-overflow-scrolling: touch; /* Плавный скролл на iOS */
+  @media (hover: none) and (pointer: coarse) and (orientation: landscape) {
+    #settings-panel { top: 10px; right: 10px; width: 250px; max-height: calc(100vh - 20px); font-size: 12px; }
+    .panel-header { padding: 9px 12px; font-size: 11px; }
+    .panel-body { padding: 9px 12px 12px; gap: 9px; max-height: calc(100vh - 70px); }
+    .panel-section h4 { font-size: 10px; }
+    .btn-panel { padding: 6px 9px; font-size: 11px; }
+    .decal-list { max-height: 70px; }
+    .templates-list { max-height: 130px; }
+    .fab { width: 46px; height: 46px; }
   }
-
-  #settings-panel.collapsed .panel-body {
-    max-height: 0;
-    padding: 0 12px;
-    opacity: 0;
-  }
-
-  #settings-panel:not(.collapsed) .panel-body {
-    max-height: calc(100vh - 80px); /* Ограничиваем высоту контента */
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
-  }
-
-  .panel-header {
-    position: sticky;
-    top: 0;
-    z-index: 10;
-    background: rgba(20, 20, 32, 0.98);
-  }
-
-  .panel-body {
-    padding: 8px 12px 12px;
-    gap: 8px;
-  }
-
-  .panel-section {
-    padding-bottom: 6px;
-  }
-
-  .panel-section h4 {
-    font-size: 10px;
-    margin-bottom: 4px;
-  }
-
-  .color-row {
-    margin-bottom: 3px;
-  }
-
-  .color-row label {
-    font-size: 10px;
-  }
-
-  .color-row input[type="color"] {
-    width: 26px;
-    height: 20px;
-  }
-
-  .file-drop {
-    padding: 6px 8px;
-  }
-
-  .file-drop-text {
-    font-size: 10px;
-  }
-
-  .file-drop-name {
-    font-size: 9px;
-  }
-
-  .slider-row {
-    margin-top: 4px;
-  }
-
-  .slider-row label {
-    font-size: 9px;
-  }
-
-  .btn-panel {
-    padding: 5px 8px;
-    font-size: 10px;
-    margin-bottom: 3px;
-  }
-
-  .decal-list {
-    max-height: 60px;
-  }
-
-  .decal-list-item {
-    padding: 3px 6px;
-    font-size: 9px;
-  }
-
-  .decal-thumb {
-    width: 20px;
-    height: 20px;
-  }
-
-  /* Кастомный скроллбар для мобильных */
-  #settings-panel::-webkit-scrollbar {
-    width: 4px;
-  }
-
-  #settings-panel::-webkit-scrollbar-track {
-    background: transparent;
-  }
-
-  #settings-panel::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.2);
-    border-radius: 2px;
-  }
-}
-
-/* Портретная ориентация — тоже добавляем прокрутку */
-@media (hover: none) and (pointer: coarse) and (orientation: portrait) {
-  #settings-panel {
-    top: auto;
-    bottom: 0;
-    right: 0;
-    left: 0;
-    width: 100%;
-    max-height: 85vh;
-    border-radius: 16px 16px 0 0;
-    transform: translateY(calc(100% - 50px));
-    transition: transform 0.3s ease;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
-  }
-
-  #settings-panel:not(.collapsed) {
-    transform: translateY(0);
-  }
-
-  #settings-panel:not(.collapsed) .panel-body {
-    max-height: calc(85vh - 50px);
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
-  }
-
-  .panel-header {
-    position: sticky;
-    top: 0;
-    z-index: 10;
-    background: rgba(20, 20, 32, 0.98);
-  }
-}
-
-/* ===== СТИЛИ ДЛЯ ШАБЛОНОВ ===== */
-.btn-template {
-  background: linear-gradient(135deg, #7c3aed, #6d28d9);
-  margin-bottom: 10px;
-}
-.btn-template:hover { background: linear-gradient(135deg, #6d28d9, #5b21b6); }
-
-.templates-list {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-  gap: 8px;
-  max-height: 200px;
-  overflow-y: auto;
-  padding: 4px;
-}
-.templates-list::-webkit-scrollbar { width: 4px; }
-.templates-list::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 2px; }
-
-.template-card {
-  background: rgba(255,255,255,0.05);
-  border: 1px solid rgba(255,255,255,0.1);
-  border-radius: 6px;
-  overflow: hidden;
-  cursor: pointer;
-  transition: all 0.2s;
-  position: relative;
-}
-.template-card:hover {
-  border-color: #7c3aed;
-  background: rgba(124,58,237,0.1);
-  transform: translateY(-2px);
-}
-.template-card .thumb {
-  width: 100%;
-  height: 70px;
-  background: #fff;
-  display: block;
-  object-fit: cover;
-}
-.template-card .name {
-  padding: 4px 6px;
-  font-size: 10px;
-  color: #ddd;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-.template-card .actions {
-  position: absolute;
-  top: 2px;
-  right: 2px;
-  display: none;
-  gap: 2px;
-}
-.template-card:hover .actions { display: flex; }
-.template-card .actions button {
-  width: 20px;
-  height: 20px;
-  border: none;
-  border-radius: 3px;
-  cursor: pointer;
-  font-size: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.template-card .btn-apply-template {
-  background: #7c3aed;
-  color: white;
-}
-.template-card .btn-delete-template {
-  background: #dc2626;
-  color: white;
-}
-
-.templates-empty {
-  grid-column: 1 / -1;
-  text-align: center;
-  padding: 16px;
-  color: #888;
-  font-size: 11px;
-  font-style: italic;
-}
-
-/* ===== МОДАЛЬНЫЕ ОКНА ===== */
-.modal-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.7);
-  backdrop-filter: blur(4px);
-  z-index: 2000;
-  display: none;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-}
-.modal-overlay.active { display: flex; }
-
-.modal-content {
-  background: rgba(20, 20, 32, 0.98);
-  border: 1px solid rgba(255,255,255,0.1);
-  border-radius: 12px;
-  width: 100%;
-  max-width: 400px;
-  box-shadow: 0 20px 60px rgba(0,0,0,0.6);
-  overflow: hidden;
-}
-.modal-large { max-width: 650px; }
-
-.modal-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 14px 18px;
-  background: rgba(255,255,255,0.04);
-  border-bottom: 1px solid rgba(255,255,255,0.08);
-  color: #8ab4ff;
-  font-weight: 700;
-  font-size: 14px;
-}
-.modal-close {
-  background: none;
-  border: none;
-  color: #8ab4ff;
-  font-size: 20px;
-  cursor: pointer;
-  padding: 0;
-  width: 28px;
-  height: 28px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 4px;
-}
-.modal-close:hover { background: rgba(255,255,255,0.1); }
-
-.modal-body {
-  padding: 18px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-.modal-label {
-  font-size: 12px;
-  color: #aaa;
-  font-weight: 600;
-}
-.modal-input {
-  width: 100%;
-  padding: 8px 12px;
-  background: rgba(255,255,255,0.05);
-  border: 1px solid rgba(255,255,255,0.15);
-  border-radius: 6px;
-  color: #e8e8ee;
-  font-size: 13px;
-  font-family: inherit;
-  outline: none;
-}
-.modal-input:focus { border-color: #7c3aed; }
-.modal-hint {
-  font-size: 11px;
-  color: #888;
-  line-height: 1.4;
-  padding: 8px;
-  background: rgba(255,255,255,0.03);
-  border-radius: 4px;
-  border-left: 3px solid #7c3aed;
-}
-.modal-preview {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-.preview-label {
-  font-size: 11px;
-  color: #aaa;
-  font-weight: 600;
-}
-#template-canvas, #preview-canvas {
-  width: 100%;
-  background: #fff;
-  border-radius: 6px;
-  border: 1px solid rgba(255,255,255,0.1);
-}
-#preview-canvas { max-height: 400px; object-fit: contain; }
-.preview-info {
-  font-size: 11px;
-  color: #aaa;
-  padding: 8px;
-  background: rgba(255,255,255,0.03);
-  border-radius: 4px;
-}
-
-.modal-footer {
-  display: flex;
-  gap: 8px;
-  padding: 14px 18px;
-  border-top: 1px solid rgba(255,255,255,0.08);
-}
-.btn-modal {
-  flex: 1;
-  padding: 8px 16px;
-  border: none;
-  border-radius: 6px;
-  font-size: 12px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s;
-  font-family: inherit;
-}
-.btn-cancel {
-  background: rgba(255,255,255,0.1);
-  color: #ccc;
-}
-.btn-cancel:hover { background: rgba(255,255,255,0.15); }
-.btn-save, .btn-apply {
-  background: #7c3aed;
-  color: white;
-}
-.btn-save:hover, .btn-apply:hover { background: #6d28d9; }
-
-/* Мобильная адаптация модалок */
-@media (hover: none) and (pointer: coarse) {
-  .modal-content { max-width: 90vw; }
-  .modal-large { max-width: 95vw; }
-  .templates-list { grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); }
-}
-
-
-/* ===== ШАБЛОНЫ ===== */
-.btn-template {
-  background: linear-gradient(135deg, #7c3aed, #6d28d9);
-  margin-bottom: 10px;
-}
-.btn-template:hover { background: linear-gradient(135deg, #6d28d9, #5b21b6); }
-
-.templates-list {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-  gap: 8px;
-  max-height: 200px;
-  overflow-y: auto;
-  padding: 4px;
-}
-.templates-list::-webkit-scrollbar { width: 4px; }
-.templates-list::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 2px; }
-
-.template-card {
-  background: rgba(255,255,255,0.05);
-  border: 1px solid rgba(255,255,255,0.1);
-  border-radius: 6px;
-  overflow: hidden;
-  cursor: pointer;
-  transition: all 0.2s;
-  position: relative;
-}
-.template-card:hover {
-  border-color: #7c3aed;
-  background: rgba(124,58,237,0.1);
-  transform: translateY(-2px);
-}
-.template-card .thumb {
-  width: 100%;
-  height: 70px;
-  background: #fff;
-  display: block;
-  object-fit: cover;
-}
-.template-card .name {
-  padding: 4px 6px;
-  font-size: 10px;
-  color: #ddd;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-.template-card .actions {
-  position: absolute;
-  top: 2px;
-  right: 2px;
-  display: none;
-  gap: 2px;
-}
-.template-card:hover .actions { display: flex; }
-.template-card .actions button {
-  width: 20px; height: 20px;
-  border: none; border-radius: 3px;
-  cursor: pointer; font-size: 10px;
-  display: flex; align-items: center; justify-content: center;
-}
-.template-card .btn-apply-template { background: #7c3aed; color: white; }
-.template-card .btn-delete-template { background: #dc2626; color: white; }
-
-.templates-empty {
-  grid-column: 1 / -1;
-  text-align: center;
-  padding: 16px;
-  color: #888;
-  font-size: 11px;
-  font-style: italic;
-}
-
-/* ===== МОДАЛЬНЫЕ ОКНА ===== */
-.modal-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.7);
-  backdrop-filter: blur(4px);
-  z-index: 2000;
-  display: none;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-}
-.modal-overlay.active { display: flex; }
-
-.modal-content {
-  background: rgba(20, 20, 32, 0.98);
-  border: 1px solid rgba(255,255,255,0.1);
-  border-radius: 12px;
-  width: 100%;
-  max-width: 400px;
-  box-shadow: 0 20px 60px rgba(0,0,0,0.6);
-  overflow: hidden;
-}
-.modal-large { max-width: 650px; }
-
-.modal-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 14px 18px;
-  background: rgba(255,255,255,0.04);
-  border-bottom: 1px solid rgba(255,255,255,0.08);
-  color: #8ab4ff;
-  font-weight: 700;
-  font-size: 14px;
-}
-.modal-close {
-  background: none; border: none; color: #8ab4ff;
-  font-size: 20px; cursor: pointer; padding: 0;
-  width: 28px; height: 28px;
-  display: flex; align-items: center; justify-content: center;
-  border-radius: 4px;
-}
-.modal-close:hover { background: rgba(255,255,255,0.1); }
-
-.modal-body {
-  padding: 18px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-.modal-label { font-size: 12px; color: #aaa; font-weight: 600; }
-.modal-input {
-  width: 100%; padding: 8px 12px;
-  background: rgba(255,255,255,0.05);
-  border: 1px solid rgba(255,255,255,0.15);
-  border-radius: 6px;
-  color: #e8e8ee; font-size: 13px;
-  font-family: inherit; outline: none;
-}
-.modal-input:focus { border-color: #7c3aed; }
-.modal-hint {
-  font-size: 11px; color: #888; line-height: 1.4;
-  padding: 8px; background: rgba(255,255,255,0.03);
-  border-radius: 4px; border-left: 3px solid #7c3aed;
-}
-.modal-preview { display: flex; flex-direction: column; gap: 6px; }
-.preview-label { font-size: 11px; color: #aaa; font-weight: 600; }
-#template-canvas, #preview-canvas {
-  width: 100%; height: auto;
-  background: #fff; border-radius: 6px;
-  border: 1px solid rgba(255,255,255,0.1);
-  display: block;
-}
-.preview-info {
-  font-size: 11px; color: #aaa; padding: 8px;
-  background: rgba(255,255,255,0.03); border-radius: 4px;
-}
-.modal-footer {
-  display: flex; gap: 8px;
-  padding: 14px 18px;
-  border-top: 1px solid rgba(255,255,255,0.08);
-}
-.btn-modal {
-  flex: 1; padding: 8px 16px;
-  border: none; border-radius: 6px;
-  font-size: 12px; font-weight: 600;
-  cursor: pointer; transition: all 0.2s;
-  font-family: inherit;
-}
-.btn-cancel { background: rgba(255,255,255,0.1); color: #ccc; }
-.btn-cancel:hover { background: rgba(255,255,255,0.15); }
-.btn-save, .btn-apply { background: #7c3aed; color: white; }
-.btn-save:hover, .btn-apply:hover { background: #6d28d9; }
-
-@media (hover: none) and (pointer: coarse) {
-  .modal-content { max-width: 90vw; }
-  .modal-large { max-width: 95vw; }
-  .templates-list { grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); }
-}
-
-/* Индикатор зума — маленький и ненавязчивый */
-.zoom-indicator {
-  position: fixed;
-  bottom: 80px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: rgba(0,0,0,0.7);
-  color: #fff;
-  padding: 6px 14px;
-  border-radius: 20px;
-  font-size: 12px;
-  font-weight: 600;
-  z-index: 997;
-  opacity: 0;
-  transition: opacity 0.3s;
-  pointer-events: none;
-  backdrop-filter: blur(8px);
-  font-family: 'Inter', sans-serif;
-}
-.zoom-indicator.visible { opacity: 1; }
-
-/* Отключаем стандартный зум браузера на мобильных */
-@media (hover: none) and (pointer: coarse) {
-  body {
-    touch-action: pan-x pan-y; /* Разрешаем только скролл, не зум браузера */
-  }
-  .page {
-    touch-action: none; /* На листе — полный контроль */
-  }
-}
 </style>
 </head>
 <body>
 
 <div class="fab-container">
-  
   <button class="fab fab-help" data-tooltip="Подсказки" onclick="document.querySelector('.shortcut-hint').classList.toggle('visible')">
     <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"/></svg>
   </button>
 </div>
+
 <div class="zoom-indicator" id="zoom-indicator">100%</div>
 
 <div class="shortcut-hint">
@@ -1371,21 +571,18 @@
   <div class="shortcut-row"><div class="keys"><kbd class="mod">Ctrl</kbd><kbd>C</kbd></div><div class="desc">Копировать</div></div>
   <div class="shortcut-row"><div class="keys"><kbd class="mod">Ctrl</kbd><kbd>V</kbd></div><div class="desc">Вставить</div></div>
   <div class="shortcut-row"><div class="keys"><kbd class="mod">Ctrl</kbd><kbd>D</kbd></div><div class="desc">Дублировать</div></div>
-
   <div class="section-title">Трансформация</div>
   <div class="shortcut-row"><div class="keys"><kbd>←</kbd><kbd>→</kbd><kbd>↑</kbd><kbd>↓</kbd></div><div class="desc">Сдвинуть на 1px</div></div>
   <div class="shortcut-row"><div class="keys"><kbd class="mod">Shift</kbd><kbd>← → ↑ ↓</kbd></div><div class="desc">Сдвинуть на 10px</div></div>
   <div class="shortcut-row"><div class="keys"><kbd>R</kbd></div><div class="desc">Повернуть +90°</div></div>
-  <div class="shortcut-row"><div class="keys"><kbd class="mod">Shift</kbd><kbd>R</kbd></div><div class="desc">Повернуть -90°</div></div>
+  <div class="shortcut-row"><div class="keys"><kbd class="mod">Shift</kbd><kbd>R</kbd></div><div class="desc">Повернуть −90°</div></div>
   <div class="shortcut-row"><div class="keys"><kbd>F</kbd></div><div class="desc">Отразить ↔</div></div>
   <div class="shortcut-row"><div class="keys"><kbd class="mod">Shift</kbd><kbd>F</kbd></div><div class="desc">Отразить ↕</div></div>
   <div class="shortcut-row"><div class="keys"><kbd>[</kbd><kbd>]</kbd></div><div class="desc">Размер − / +</div></div>
-
   <div class="section-title">⚙️ Общее</div>
   <div class="shortcut-row"><div class="keys"><kbd>Del</kbd></div><div class="desc">Удалить</div></div>
-  <div class="shortcut-row"><div class="keys"><kbd>Esc</kbd></div><div class="desc">Снять вёделение</div></div>
+  <div class="shortcut-row"><div class="keys"><kbd>Esc</kbd></div><div class="desc">Снять выделение</div></div>
   <div class="shortcut-row"><div class="keys"><kbd class="mod">Ctrl</kbd><kbd>S</kbd></div><div class="desc">Сохранить JSON</div></div>
-  <div class="shortcut-row"><div class="keys"><kbd class="mod">Ctrl</kbd><kbd>P</kbd></div><div class="desc">Экспорт PDF</div></div>
   <div class="shortcut-row"><div class="keys"><kbd>ПКМ</kbd></div><div class="desc">Контекстное меню</div></div>
 </div>
 
@@ -1439,56 +636,68 @@
       </div>
       <div class="decal-list" id="decal-list"></div>
     </div>
+
     <div class="panel-section">
       <h4>ШАБЛОНЫ</h4>
-      <button class="btn-panel btn-template" onclick="showCreateTemplateModal()">Сохранить как шаблон</button>
+      <div class="tpl-active is-empty" id="tpl-active">
+        <span class="tpl-dot"></span>
+        <div class="tpl-active-text">
+          <div class="tpl-active-label">Активный шаблон</div>
+          <div class="tpl-active-name" id="tpl-active-name">Не применён</div>
+        </div>
+        <button class="tpl-clear-btn" id="tpl-clear-btn" onclick="clearTemplate()" style="display:none">Снять</button>
+      </div>
+      <div class="tpl-note">
+        Применение шаблона <b>заменяет</b> предыдущее оформление: его фон, цвета и декали удаляются. Ваши декали и текст персонажа остаются нетронутыми.
+      </div>
+      <button class="btn-panel btn-template" onclick="showCreateTemplateModal()">💾 Сохранить как шаблон</button>
       <div class="templates-list" id="templates-list"></div>
     </div>
 
-    <!-- Модалка создания шаблона -->
-    <div id="template-modal" class="modal-overlay">
-      <div class="modal-content">
-        <div class="modal-header">
-          <span>Создать шаблон</span>
-          <button class="modal-close" onclick="closeTemplateModal()">×</button>
-        </div>
-        <div class="modal-body">
-          <label class="modal-label">Название шаблона</label>
-          <input type="text" id="template-name-input" placeholder="Например: Тёмная тема" class="modal-input">
-          <div class="modal-hint">Будет сохранено: цвета, фон и все декали. Содержимое полей (имя, навыки и т.д.) не сохраняется.</div>
-          <div class="modal-preview">
-            <div class="preview-label">Предпросмотр:</div>
-            <canvas id="template-canvas" width="400" height="283"></canvas>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button class="btn-modal btn-cancel" onclick="closeTemplateModal()">Отмена</button>
-          <button class="btn-modal btn-save" onclick="confirmCreateTemplate()">Создать</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Модалка предпросмотра шаблона -->
-    <div id="preview-modal" class="modal-overlay">
-      <div class="modal-content modal-large">
-        <div class="modal-header">
-          <span id="preview-title">Предпросмотр шаблона</span>
-          <button class="modal-close" onclick="closePreviewModal()">×</button>
-        </div>
-        <div class="modal-body">
-          <canvas id="preview-canvas" width="800" height="566"></canvas>
-          <div class="preview-info" id="preview-info"></div>
-        </div>
-        <div class="modal-footer">
-          <button class="btn-modal btn-cancel" onclick="closePreviewModal()">Закрыть</button>
-          <button class="btn-modal btn-apply" id="preview-apply-btn">Применить шаблон</button>
-        </div>
-      </div>
-    </div>
-    
-
   </div>
 </div>
+
+<div id="template-modal" class="modal-overlay">
+  <div class="modal-content">
+    <div class="modal-header">
+      <span>Создать шаблон</span>
+      <button class="modal-close" onclick="closeTemplateModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <label class="modal-label">Название шаблона</label>
+      <input type="text" id="template-name-input" placeholder="Например: Боевой ринг" class="modal-input">
+      <div class="modal-hint">Будет сохранено: цвета, фон и все декали. Содержимое полей (имя, навыки и т.д.) не сохраняется.</div>
+      <div class="modal-preview">
+        <div class="preview-label">Предпросмотр:</div>
+        <canvas id="template-canvas" width="400" height="283"></canvas>
+      </div>
+    </div>
+    <div class="modal-status" id="template-save-status"></div>
+    <div class="modal-footer">
+      <button class="btn-modal btn-cancel" onclick="closeTemplateModal()">Отмена</button>
+      <button class="btn-modal btn-save" onclick="confirmCreateTemplate()">Создать</button>
+    </div>
+  </div>
+</div>
+
+<div id="preview-modal" class="modal-overlay">
+  <div class="modal-content modal-large">
+    <div class="modal-header">
+      <span id="preview-title">Предпросмотр шаблона</span>
+      <button class="modal-close" onclick="closePreviewModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <canvas id="preview-canvas" width="800" height="566"></canvas>
+      <div class="preview-info" id="preview-info"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-modal btn-cancel" onclick="closePreviewModal()">Закрыть</button>
+      <button class="btn-modal btn-apply" id="preview-apply-btn">Применить шаблон</button>
+    </div>
+  </div>
+</div>
+
+<div id="undo-toast"><span id="undo-text"></span><button onclick="undoTemplateChange()">Отменить</button></div>
 
 <div id="context-menu">
   <div class="cm-item" data-action="copy">Копировать <span class="shortcut">Ctrl+C</span></div>
@@ -1497,7 +706,7 @@
   <div class="cm-item" data-action="flip-h">Отразить ↔ <span class="shortcut">F</span></div>
   <div class="cm-item" data-action="flip-v">Отразить ↕ <span class="shortcut">Shift+F</span></div>
   <div class="cm-item" data-action="rotate-plus">Повернуть +90° <span class="shortcut">R</span></div>
-  <div class="cm-item" data-action="rotate-minus">Повернуть -90° <span class="shortcut">Shift+R</span></div>
+  <div class="cm-item" data-action="rotate-minus">Повернуть −90° <span class="shortcut">Shift+R</span></div>
   <div class="cm-item" data-action="reset-rotation">Сбросить поворот</div>
   <div class="cm-separator"></div>
   <div class="cm-item" data-action="front">На передний план</div>
@@ -1630,1480 +839,1460 @@
       </div>
       <div class="conseq-col">
         <div class="hbar">Последствия</div>
-        <div class="conseq-row">
-          <div class="num">2</div><div class="label">Легкое</div><input type="text" data-field="conseq-2">
-        </div>
-        <div class="conseq-row">
-          <div class="num">4</div><div class="label">Среднее</div><input type="text" data-field="conseq-4">
-        </div>
-        <div class="conseq-row">
-          <div class="num">6</div><div class="label">Серьезное</div><input type="text" data-field="conseq-6">
-        </div>
+        <div class="conseq-row"><div class="num">2</div><div class="label">Легкое</div><input type="text" data-field="conseq-2"></div>
+        <div class="conseq-row"><div class="num">4</div><div class="label">Среднее</div><input type="text" data-field="conseq-4"></div>
+        <div class="conseq-row"><div class="num">6</div><div class="label">Серьезное</div><input type="text" data-field="conseq-6"></div>
       </div>
     </div>
   </div>
 </div>
 
 <script>
-  const root = document.documentElement;
-  document.getElementById('col-header-bg').addEventListener('input', e => root.style.setProperty('--header-bg', e.target.value));
-  document.getElementById('col-header-text').addEventListener('input', e => root.style.setProperty('--header-text', e.target.value));
-  document.getElementById('col-border').addEventListener('input', e => root.style.setProperty('--border-color', e.target.value));
-  document.getElementById('col-text').addEventListener('input', e => root.style.setProperty('--text-color', e.target.value));
+/* ============================================================
+   IRIS — редактор листа персонажа
+   Полностью рабочая версия: шаблоны сохраняются без зависаний
+   ============================================================ */
 
-  const bgLayers = document.querySelectorAll('.page-bg');
-  document.getElementById('bg-upload').addEventListener('change', e => {
-    if(e.target.files[0]) {
-      const url = URL.createObjectURL(e.target.files[0]);
-      bgLayers.forEach(layer => { layer.style.backgroundImage = `url(${url})`; });
-      const bgFileName = document.getElementById('bg-file-name');
-      if (bgFileName) { bgFileName.textContent = e.target.files[0].name; bgFileName.style.color = '#4ade80'; }
+const root = document.documentElement;
+const bgLayers = document.querySelectorAll('.page-bg');
+const decalContainers = document.querySelectorAll('.decal-container');
+const decalList = document.getElementById('decal-list');
+let activeDecal = null;
+let clipboard = null;
+let decalZIndex = 10;
+
+/* ---------- УТИЛИТЫ ---------- */
+function escapeHtml(str) {
+  return String(str == null ? '' : str)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+
+let managedObjectUrls = [];
+function trackUrl(url) {
+  if (typeof url === 'string' && url.startsWith('blob:')) managedObjectUrls.push(url);
+  return url;
+}
+function releaseUrl(url) {
+  if (typeof url !== 'string' || !url.startsWith('blob:')) return;
+  try { URL.revokeObjectURL(url); } catch (e) {}
+  managedObjectUrls = managedObjectUrls.filter(u => u !== url);
+}
+
+// Загрузка картинки с таймаутом — процесс никогда не зависает
+function loadImageSafe(src, timeout = 8000) {
+  return new Promise((resolve) => {
+    if (!src) { resolve(null); return; }
+    const img = new Image();
+    let done = false;
+    const finish = (val) => { if (done) return; done = true; clearTimeout(timer); resolve(val); };
+    const timer = setTimeout(() => finish(null), timeout);
+    img.onload = () => finish(img.naturalWidth > 0 ? img : null);
+    img.onerror = () => finish(null);
+    try { img.src = src; } catch (e) { finish(null); }
+  });
+}
+
+function dataUrlToBlob(dataUrl) {
+  try {
+    const parts = String(dataUrl).split(',');
+    const mime = (parts[0].match(/:(.*?);/) || [, 'image/png'])[1];
+    const bin = atob(parts[1]);
+    const arr = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i);
+    return new Blob([arr], { type: mime });
+  } catch (e) { return null; }
+}
+
+function imageToBase64(src) {
+  return new Promise(async (resolve, reject) => {
+    if (!src) { reject(new Error('Пустой источник')); return; }
+    if (src.startsWith('data:image/')) { resolve(src); return; }
+    const img = await loadImageSafe(src, 10000);
+    if (!img) { reject(new Error('Не удалось загрузить изображение')); return; }
+    try {
+      const canvas = document.createElement('canvas');
+      canvas.width = img.naturalWidth; canvas.height = img.naturalHeight;
+      canvas.getContext('2d').drawImage(img, 0, 0);
+      resolve(canvas.toDataURL('image/png'));
+    } catch (err) { reject(err); }
+  });
+}
+
+// Сжатие в PNG-Blob: таймаут + фолбэк
+async function compressToBlob(src, maxWidth = 600) {
+  const img = await loadImageSafe(src, 10000);
+  if (!img) return null;
+  try {
+    let w = img.naturalWidth, h = img.naturalHeight;
+    if (w > maxWidth) { h = Math.max(1, Math.round((maxWidth / w) * h)); w = maxWidth; }
+    const canvas = document.createElement('canvas');
+    canvas.width = w; canvas.height = h;
+    canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+    const blob = await new Promise((resolve) => {
+      let settled = false;
+      const t = setTimeout(() => { if (!settled) { settled = true; resolve(null); } }, 8000);
+      try {
+        canvas.toBlob((b) => { if (!settled) { settled = true; clearTimeout(t); resolve(b); } }, 'image/png');
+      } catch (e) { if (!settled) { settled = true; clearTimeout(t); resolve(null); } }
+    });
+    return blob || dataUrlToBlob(canvas.toDataURL('image/png'));
+  } catch (e) { console.warn('compressToBlob failed:', e); return null; }
+}
+
+function getBlobUrl(blobOrString) {
+  if (!blobOrString) return '';
+  if (typeof blobOrString === 'string') return blobOrString;
+  if (blobOrString instanceof Blob) return URL.createObjectURL(blobOrString);
+  return '';
+}
+
+function drawCover(ctx, img, W, H) {
+  const ir = img.naturalWidth / img.naturalHeight;
+  const cr = W / H;
+  let dw, dh;
+  if (ir > cr) { dh = H; dw = H * ir; } else { dw = W; dh = W / ir; }
+  ctx.drawImage(img, (W - dw) / 2, (H - dh) / 2, dw, dh);
+}
+
+function flashNotification(text) {
+  const n = document.createElement('div');
+  n.textContent = text;
+  n.style.cssText = `position:fixed;top:80px;left:50%;transform:translateX(-50%);
+    background:rgba(0,0,0,.85);color:#fff;padding:8px 16px;border-radius:6px;
+    font-size:13px;font-weight:600;z-index:3500;pointer-events:none;
+    transition:opacity .4s;font-family:'Inter',sans-serif;max-width:90vw;text-align:center;`;
+  document.body.appendChild(n);
+  setTimeout(() => { n.style.opacity = '0'; }, 1400);
+  setTimeout(() => { n.remove(); }, 1900);
+}
+
+/* ---------- ЦВЕТА И ФОН ---------- */
+const DEFAULT_COLORS = { headerBg:'#000000', headerText:'#ffffff', border:'#333333', text:'#111111' };
+const COLOR_INPUTS = { headerBg:'col-header-bg', headerText:'col-header-text', border:'col-border', text:'col-text' };
+const COLOR_VARS = { headerBg:'--header-bg', headerText:'--header-text', border:'--border-color', text:'--text-color' };
+
+Object.keys(COLOR_INPUTS).forEach(key => {
+  document.getElementById(COLOR_INPUTS[key]).addEventListener('input', e => {
+    root.style.setProperty(COLOR_VARS[key], e.target.value);
+  });
+});
+
+function applyColors(colors) {
+  const src = colors || DEFAULT_COLORS;
+  Object.keys(COLOR_INPUTS).forEach(key => {
+    const value = src[key] || DEFAULT_COLORS[key];
+    const input = document.getElementById(COLOR_INPUTS[key]);
+    if (input) input.value = value;
+    root.style.setProperty(COLOR_VARS[key], value);
+  });
+}
+function readCurrentColors() {
+  const out = {};
+  Object.keys(COLOR_INPUTS).forEach(key => {
+    const input = document.getElementById(COLOR_INPUTS[key]);
+    out[key] = input ? input.value : DEFAULT_COLORS[key];
+  });
+  return out;
+}
+
+function setBackgroundSource(src, label, color) {
+  bgLayers.forEach(layer => {
+    releaseUrl(layer.dataset.objectUrl || '');
+    if (src) {
+      layer.style.backgroundImage = `url("${src}")`;
+      if (src.startsWith('blob:')) layer.dataset.objectUrl = src; else delete layer.dataset.objectUrl;
+    } else {
+      layer.style.backgroundImage = '';
+      delete layer.dataset.objectUrl;
     }
   });
-  document.getElementById('bg-opacity').addEventListener('input', e => root.style.setProperty('--bg-opacity', e.target.value));
-  function removeBg() {
-    bgLayers.forEach(layer => { layer.style.backgroundImage = ''; });
-    document.getElementById('bg-upload').value = '';
-    const bgFileName = document.getElementById('bg-file-name');
-    if (bgFileName) { bgFileName.textContent = 'Файл не выбран'; bgFileName.style.color = '#8ab4ff'; }
+  const el = document.getElementById('bg-file-name');
+  if (el) { el.textContent = label || 'Файл не выбран'; el.style.color = color || '#8ab4ff'; }
+}
+
+function readBackgroundDataUrl() {
+  const layer = document.querySelector('.page-bg');
+  if (!layer) return '';
+  const bg = layer.style.backgroundImage;
+  if (!bg || bg === 'none') return '';
+  const m = bg.match(/url\(["']?(.*?)["']?\)$/);
+  return m ? m[1] : '';
+}
+
+document.getElementById('bg-upload').addEventListener('change', e => {
+  if (e.target.files[0]) {
+    setBackgroundSource(trackUrl(URL.createObjectURL(e.target.files[0])), e.target.files[0].name, '#4ade80');
   }
+});
+document.getElementById('bg-opacity').addEventListener('input', e => root.style.setProperty('--bg-opacity', e.target.value));
+function removeBg() {
+  setBackgroundSource('', 'Файл не выбран', '#8ab4ff');
+  document.getElementById('bg-upload').value = '';
+}
 
-  const decalContainers = document.querySelectorAll('.decal-container');
-  const decalList = document.getElementById('decal-list');
-  let activeDecal = null;
-  let clipboard = null;
-  let decalZIndex = 10;
+/* ---------- FILE DROP ---------- */
+function setupFileDrop(dropId, inputId, nameId) {
+  const drop = document.getElementById(dropId);
+  const input = document.getElementById(inputId);
+  const nameEl = document.getElementById(nameId);
+  if (!drop || !input) return;
+  input.addEventListener('change', (e) => {
+    if (e.target.files[0] && nameEl) { nameEl.textContent = e.target.files[0].name; nameEl.style.color = '#4ade80'; }
+  });
+  ['dragenter','dragover'].forEach(evt => drop.addEventListener(evt, e => { e.preventDefault(); drop.classList.add('dragover'); }));
+  ['dragleave','drop'].forEach(evt => drop.addEventListener(evt, e => { e.preventDefault(); drop.classList.remove('dragover'); }));
+  drop.addEventListener('drop', e => {
+    e.preventDefault();
+    if (e.dataTransfer.files[0]) { input.files = e.dataTransfer.files; input.dispatchEvent(new Event('change')); }
+  });
+}
+setupFileDrop('bg-file-drop','bg-upload','bg-file-name');
+setupFileDrop('decal-file-drop','decal-upload','decal-file-name');
 
-  document.getElementById('decal-upload').addEventListener('change', e => {
-    if(e.target.files[0]) {
-      addDecal(e.target.files[0]);
-      e.target.value = '';
-    }
+/* ---------- ДЕКАЛИ ---------- */
+document.getElementById('decal-upload').addEventListener('change', e => {
+  if (e.target.files[0]) { addDecal(e.target.files[0]); e.target.value = ''; }
+});
+document.getElementById('decal-size').addEventListener('input', e => root.style.setProperty('--decal-default-size', e.target.value + 'px'));
+
+// options: { fromTemplate, templateId, templateName }
+function addDecal(file, restoreData = null, options = {}) {
+  const pageEl = document.querySelector('.page');
+  const pageW = pageEl ? pageEl.offsetWidth : 1122;
+  const pageH = pageEl ? pageEl.offsetHeight : 793;
+  const toPx = (value, axis, fallback) => {
+    if (value === undefined || value === null || value === '') return fallback;
+    if (typeof value === 'string' && value.trim().endsWith('%')) return (parseFloat(value)/100) * (axis === 'x' ? pageW : pageH);
+    const n = parseFloat(value);
+    return isNaN(n) ? fallback : n;
+  };
+
+  const id = (restoreData && restoreData.id) ? restoreData.id : 'd_' + Date.now() + '_' + Math.random().toString(36).slice(2,7);
+  const defaultSize = parseInt(getComputedStyle(root).getPropertyValue('--decal-default-size')) || 120;
+  const width = restoreData ? toPx(restoreData.width,'x',defaultSize) : defaultSize;
+  const height = restoreData ? toPx(restoreData.height,'y',width) : width;
+  const left = restoreData ? toPx(restoreData.left,'x',100) + 'px' : '100px';
+  const top = restoreData ? toPx(restoreData.top,'y',100) + 'px' : '100px';
+  const rotation = restoreData ? (parseFloat(restoreData.rotation) || 0) : 0;
+  const flipH = restoreData ? (parseFloat(restoreData.flipH) || 1) : 1;
+  const flipV = restoreData ? (parseFloat(restoreData.flipV) || 1) : 1;
+  const zIndex = restoreData ? (parseInt(restoreData.zIndex) || 10) : ++decalZIndex;
+
+  const wrap = document.createElement('div');
+  wrap.className = 'decal';
+  wrap.id = id;
+  wrap.style.width = Math.max(10,width) + 'px';
+  wrap.style.height = Math.max(10,height) + 'px';
+  wrap.style.left = left;
+  wrap.style.top = top;
+  wrap.dataset.rotation = rotation;
+  wrap.dataset.flipH = flipH;
+  wrap.dataset.flipV = flipV;
+  wrap.dataset.originalImageName = restoreData ? (restoreData.imageName || '') : (file ? file.name : '');
+  if (options.fromTemplate) {
+    wrap.classList.add('tpl-decal');
+    wrap.dataset.templateId = options.templateId || '';
+    wrap.dataset.templateName = options.templateName || '';
+  }
+  applyTransform(wrap);
+  wrap.style.zIndex = zIndex;
+  if (zIndex > decalZIndex) decalZIndex = zIndex;
+
+  const img = document.createElement('img');
+  let objectUrl = '';
+  if (restoreData) {
+    if (restoreData.imageBlob instanceof Blob) objectUrl = trackUrl(URL.createObjectURL(restoreData.imageBlob));
+    img.src = objectUrl || restoreData.imageSrc || '';
+  } else if (file) {
+    objectUrl = trackUrl(URL.createObjectURL(file));
+    img.src = objectUrl;
+  }
+  if (objectUrl) wrap.dataset.objectUrl = objectUrl;
+  img.draggable = false;
+  wrap.appendChild(img);
+
+  const rotateLine = document.createElement('div');
+  rotateLine.className = 'rotate-line';
+  rotateLine.style.height = '28px';
+  wrap.appendChild(rotateLine);
+
+  const handlePositions = ['nw','ne','se','sw','n','s','e','w'];
+  handlePositions.forEach(pos => {
+    const h = document.createElement('div');
+    h.className = 'handle' + (['nw','ne','se','sw'].includes(pos) ? ' corner' : '');
+    h.classList.add(pos);
+    h.dataset.handle = pos;
+    wrap.appendChild(h);
   });
 
-  document.getElementById('decal-size').addEventListener('input', e => root.style.setProperty('--decal-default-size', e.target.value + 'px'));
+  const rotateHandle = document.createElement('div');
+  rotateHandle.className = 'rotate-handle';
+  rotateHandle.dataset.handle = 'rotate';
+  wrap.appendChild(rotateHandle);
 
-  function addDecal(file, restoreData = null) {
-    const id = restoreData ? restoreData.id : 'd_' + Date.now();
-    const defaultSize = parseInt(getComputedStyle(root).getPropertyValue('--decal-default-size')) || 120;
-    const width = restoreData ? parseInt(restoreData.width) || defaultSize : defaultSize;
-    const height = restoreData ? parseInt(restoreData.height) || width : width;
-    const left = restoreData ? restoreData.left : '100px';
-    const top = restoreData ? restoreData.top : '100px';
-    const rotation = restoreData ? (parseFloat(restoreData.rotation) || 0) : 0;
-    const flipH = restoreData ? (parseFloat(restoreData.flipH) || 1) : 1;
-    const flipV = restoreData ? (parseFloat(restoreData.flipV) || 1) : 1;
-    const zIndex = restoreData ? (parseInt(restoreData.zIndex) || 10) : ++decalZIndex;
-    
-    const wrap = document.createElement('div');
-    wrap.className = 'decal';
-    wrap.id = id;
-    wrap.style.width = width + 'px';
-    wrap.style.height = height + 'px';
-    wrap.style.left = left;
-    wrap.style.top = top;
-    wrap.dataset.rotation = rotation;
-    wrap.dataset.flipH = flipH;
-    wrap.dataset.flipV = flipV;
-    wrap.dataset.originalImageName = restoreData ? (restoreData.imageName || '') : (file ? file.name : '');
-    applyTransform(wrap);
-    wrap.style.zIndex = zIndex;
-    if (zIndex > decalZIndex) decalZIndex = zIndex;
-    
-    const img = document.createElement('img');
-    img.src = restoreData 
-      ? (restoreData.imageBlob 
-      ? URL.createObjectURL(restoreData.imageBlob) 
-      : restoreData.imageSrc) 
-  : URL.createObjectURL(file);
-    img.draggable = false;
-    wrap.appendChild(img);
+  // --- мышь: перетаскивание ---
+  let isDragging = false, startX, startY, origLeft, origTop;
+  wrap.addEventListener('mousedown', e => {
+    if (e.target.dataset.handle) return;
+    if (e.button !== 0) return;
+    isDragging = true;
+    startX = e.clientX; startY = e.clientY;
+    origLeft = parseFloat(wrap.style.left) || 0;
+    origTop = parseFloat(wrap.style.top) || 0;
+    setActiveDecal(wrap);
+    e.preventDefault();
+  });
 
-    const rotateLine = document.createElement('div');
-    rotateLine.className = 'rotate-line';
-    rotateLine.style.height = '28px';
-    wrap.appendChild(rotateLine);
+  // --- тач: перетаскивание ---
+  let isTouchDragging = false, touchStartX, touchStartY, touchOrigLeft, touchOrigTop;
+  wrap.addEventListener('touchstart', (e) => {
+    if (e.target.dataset.handle) return;
+    if (e.touches.length !== 1) return;
+    e.preventDefault(); e.stopPropagation();
+    const t = e.touches[0];
+    isTouchDragging = true;
+    touchStartX = t.clientX; touchStartY = t.clientY;
+    touchOrigLeft = parseFloat(wrap.style.left) || 0;
+    touchOrigTop = parseFloat(wrap.style.top) || 0;
+    setActiveDecal(wrap);
+  }, { passive: false });
 
-    const handlePositions = ['nw','ne','se','sw','n','s','e','w'];
-    handlePositions.forEach(pos => {
-      const h = document.createElement('div');
-      h.className = 'handle' + (['nw','ne','se','sw'].includes(pos) ? ' corner' : '');
-      h.classList.add(pos);
-      h.dataset.handle = pos;
-      wrap.appendChild(h);
-    });
+  wrap.addEventListener('touchmove', (e) => {
+    if (!isTouchDragging || e.touches.length !== 1) return;
+    e.preventDefault(); e.stopPropagation();
+    const t = e.touches[0];
+    wrap.style.left = (touchOrigLeft + t.clientX - touchStartX) + 'px';
+    wrap.style.top = (touchOrigTop + t.clientY - touchStartY) + 'px';
+  }, { passive: false });
+  wrap.addEventListener('touchend', () => { isTouchDragging = false; });
 
-    const rotateHandle = document.createElement('div');
-    rotateHandle.className = 'rotate-handle';
-    rotateHandle.dataset.handle = 'rotate';
-    wrap.appendChild(rotateHandle);
+  wrap.addEventListener('contextmenu', e => {
+    e.preventDefault(); e.stopPropagation();
+    setActiveDecal(wrap);
+    showContextMenu(e.clientX, e.clientY);
+  });
 
-    // Mouse drag
-    let isDragging = false, startX, startY, origLeft, origTop;
-    wrap.addEventListener('mousedown', e => {
-      if(e.target.dataset.handle) return;
-      if (e.button !== 0) return;
-      isDragging = true;
-      startX = e.clientX; startY = e.clientY;
-      origLeft = parseFloat(wrap.style.left) || 0;
-      origTop = parseFloat(wrap.style.top) || 0;
+  let longPressTimer;
+  wrap.addEventListener('touchstart', (e) => {
+    if (e.target.dataset.handle) return;
+    const t = e.touches[0];
+    longPressTimer = setTimeout(() => {
+      isTouchDragging = false;
       setActiveDecal(wrap);
-      e.preventDefault();
-    });
+      showContextMenu(t.clientX, t.clientY);
+    }, 550);
+  });
+  wrap.addEventListener('touchend', () => clearTimeout(longPressTimer));
+  wrap.addEventListener('touchmove', () => clearTimeout(longPressTimer));
 
-    // Touch drag
-    let isTouchDragging = false, touchStartX, touchStartY, touchOrigLeft, touchOrigTop;
-    wrap.addEventListener('touchstart', (e) => {
-      if (e.target.dataset.handle) return;
-      if (e.touches.length !== 1) return;
-      e.preventDefault();
-      const touch = e.touches[0];
-      isTouchDragging = true;
-      touchStartX = touch.clientX;
-      touchStartY = touch.clientY;
-      touchOrigLeft = parseFloat(wrap.style.left) || 0;
-      touchOrigTop = parseFloat(wrap.style.top) || 0;
-      setActiveDecal(wrap);
-    }, { passive: false });
+  // --- ресайз ---
+  handlePositions.forEach(pos => {
+    const handle = wrap.querySelector('.handle.' + pos);
+    let isResizing = false, smX, smY, sW, sH, sL, sT;
+    let tResizing = false, tX, tY, tW, tH, tL, tT;
 
-    wrap.addEventListener('touchmove', (e) => {
-      if (!isTouchDragging || e.touches.length !== 1) return;
-      e.preventDefault();
-      const touch = e.touches[0];
-      wrap.style.left = (touchOrigLeft + touch.clientX - touchStartX) + 'px';
-      wrap.style.top = (touchOrigTop + touch.clientY - touchStartY) + 'px';
-    }, { passive: false });
+    const applyResize = (dx, dy, baseW, baseH, baseL, baseT) => {
+      let newW = baseW, newH = baseH, newL = baseL, newT = baseT;
+      if (pos.includes('e')) newW = Math.max(30, baseW + dx);
+      else if (pos.includes('w')) { newW = Math.max(30, baseW - dx); newL = baseL + (baseW - newW); }
+      if (pos.includes('s')) newH = Math.max(30, baseH + dy);
+      else if (pos.includes('n')) { newH = Math.max(30, baseH - dy); newT = baseT + (baseH - newH); }
+      wrap.style.width = newW + 'px'; wrap.style.height = newH + 'px';
+      wrap.style.left = newL + 'px'; wrap.style.top = newT + 'px';
+    };
 
-    wrap.addEventListener('touchend', () => { isTouchDragging = false; });
-
-    // Context menu
-    wrap.addEventListener('contextmenu', e => {
-      e.preventDefault();
-      e.stopPropagation();
-      setActiveDecal(wrap);
-      showContextMenu(e.clientX, e.clientY, wrap);
-    });
-
-    // Long press for mobile context menu
-    let longPressTimer;
-    wrap.addEventListener('touchstart', (e) => {
-      if (e.target.dataset.handle) return;
-      longPressTimer = setTimeout(() => {
-        setActiveDecal(wrap);
-        const touch = e.touches[0];
-        showContextMenu(touch.clientX, touch.clientY, wrap);
-      }, 500);
-    });
-    wrap.addEventListener('touchend', () => clearTimeout(longPressTimer));
-    wrap.addEventListener('touchmove', () => clearTimeout(longPressTimer));
-
-    // Resize handles
-    handlePositions.forEach(pos => {
-      const handle = wrap.querySelector(`.handle.${pos}`);
-      let isResizing = false, startMouseX, startMouseY, startW, startH, startLeft, startTop;
-
-      handle.addEventListener('mousedown', (e) => {
-        e.stopPropagation();
-        isResizing = true;
-        startMouseX = e.clientX; startMouseY = e.clientY;
-        startW = wrap.offsetWidth; startH = wrap.offsetHeight;
-        startLeft = parseFloat(wrap.style.left) || 0;
-        startTop = parseFloat(wrap.style.top) || 0;
-        setActiveDecal(wrap);
-      });
-
-      // Touch resize
-      let touchIsResizing = false;
-      let touchStartX, touchStartY, touchStartW, touchStartH, touchStartLeft, touchStartTop;
-      handle.addEventListener('touchstart', (e) => {
-        e.stopPropagation();
-        e.preventDefault();
-        const touch = e.touches[0];
-        touchIsResizing = true;
-        touchStartX = touch.clientX; touchStartY = touch.clientY;
-        touchStartW = wrap.offsetWidth; touchStartH = wrap.offsetHeight;
-        touchStartLeft = parseFloat(wrap.style.left) || 0;
-        touchStartTop = parseFloat(wrap.style.top) || 0;
-        setActiveDecal(wrap);
-      }, { passive: false });
-
-      document.addEventListener('mousemove', (e) => {
-        if (!isResizing) return;
-        const dx = e.clientX - startMouseX;
-        const dy = e.clientY - startMouseY;
-        let newW = startW, newH = startH, newLeft = startLeft, newTop = startTop;
-        if (pos.includes('e')) newW = Math.max(30, startW + dx);
-        else if (pos.includes('w')) { newW = Math.max(30, startW - dx); newLeft = startLeft + (startW - newW); }
-        if (pos.includes('s')) newH = Math.max(30, startH + dy);
-        else if (pos.includes('n')) { newH = Math.max(30, startH - dy); newTop = startTop + (startH - newH); }
-        wrap.style.width = newW + 'px';
-        wrap.style.height = newH + 'px';
-        wrap.style.left = newLeft + 'px';
-        wrap.style.top = newTop + 'px';
-      });
-
-      document.addEventListener('touchmove', (e) => {
-        if (!touchIsResizing || e.touches.length !== 1) return;
-        e.preventDefault();
-        const touch = e.touches[0];
-        const dx = touch.clientX - touchStartX;
-        const dy = touch.clientY - touchStartY;
-        let newW = touchStartW, newH = touchStartH, newLeft = touchStartLeft, newTop = touchStartTop;
-        if (pos.includes('e')) newW = Math.max(30, touchStartW + dx);
-        else if (pos.includes('w')) { newW = Math.max(30, touchStartW - dx); newLeft = touchStartLeft + (touchStartW - newW); }
-        if (pos.includes('s')) newH = Math.max(30, touchStartH + dy);
-        else if (pos.includes('n')) { newH = Math.max(30, touchStartH - dy); newTop = touchStartTop + (touchStartH - newH); }
-        wrap.style.width = newW + 'px';
-        wrap.style.height = newH + 'px';
-        wrap.style.left = newLeft + 'px';
-        wrap.style.top = newTop + 'px';
-      }, { passive: false });
-
-      document.addEventListener('mouseup', () => { isResizing = false; });
-      document.addEventListener('touchend', () => { touchIsResizing = false; });
-    });
-
-    // Rotate handle
-    let isRotating = false, startAngle = 0, startRotation = 0;
-    rotateHandle.addEventListener('mousedown', (e) => {
+    handle.addEventListener('mousedown', (e) => {
       e.stopPropagation(); e.preventDefault();
-      isRotating = true; setActiveDecal(wrap);
-      const rect = wrap.getBoundingClientRect();
-      const centerX = rect.left + rect.width / 2;
-      const centerY = rect.top + rect.height / 2;
-      startAngle = Math.atan2(e.clientY - centerY, e.clientX - centerX);
-      startRotation = parseFloat(wrap.dataset.rotation) || 0;
+      isResizing = true;
+      smX = e.clientX; smY = e.clientY;
+      sW = wrap.offsetWidth; sH = wrap.offsetHeight;
+      sL = parseFloat(wrap.style.left) || 0; sT = parseFloat(wrap.style.top) || 0;
+      setActiveDecal(wrap);
     });
-
-    let touchIsRotating = false, touchStartAngle = 0, touchStartRotation = 0;
-    rotateHandle.addEventListener('touchstart', (e) => {
+    handle.addEventListener('touchstart', (e) => {
       e.stopPropagation(); e.preventDefault();
-      const touch = e.touches[0];
-      touchIsRotating = true; setActiveDecal(wrap);
-      const rect = wrap.getBoundingClientRect();
-      const centerX = rect.left + rect.width / 2;
-      const centerY = rect.top + rect.height / 2;
-      touchStartAngle = Math.atan2(touch.clientY - centerY, touch.clientX - centerX);
-      touchStartRotation = parseFloat(wrap.dataset.rotation) || 0;
+      const t = e.touches[0];
+      tResizing = true;
+      tX = t.clientX; tY = t.clientY;
+      tW = wrap.offsetWidth; tH = wrap.offsetHeight;
+      tL = parseFloat(wrap.style.left) || 0; tT = parseFloat(wrap.style.top) || 0;
+      setActiveDecal(wrap);
     }, { passive: false });
 
     document.addEventListener('mousemove', (e) => {
-      if (isDragging) {
-        wrap.style.left = (origLeft + e.clientX - startX) + 'px';
-        wrap.style.top = (origTop + e.clientY - startY) + 'px';
-      }
-      if (isRotating) {
-        const rect = wrap.getBoundingClientRect();
-        const centerX = rect.left + rect.width / 2;
-        const centerY = rect.top + rect.height / 2;
-        const currentAngle = Math.atan2(e.clientY - centerY, e.clientX - centerX);
-        wrap.dataset.rotation = startRotation + (currentAngle - startAngle) * (180 / Math.PI);
-        applyTransform(wrap);
-      }
+      if (!isResizing) return;
+      applyResize(e.clientX - smX, e.clientY - smY, sW, sH, sL, sT);
     });
-
     document.addEventListener('touchmove', (e) => {
-      if (!touchIsRotating || e.touches.length !== 1) return;
+      if (!tResizing || e.touches.length !== 1) return;
       e.preventDefault();
-      const touch = e.touches[0];
-      const rect = wrap.getBoundingClientRect();
-      const centerX = rect.left + rect.width / 2;
-      const centerY = rect.top + rect.height / 2;
-      const currentAngle = Math.atan2(touch.clientY - centerY, touch.clientX - centerX);
-      wrap.dataset.rotation = touchStartRotation + (currentAngle - touchStartAngle) * (180 / Math.PI);
-      applyTransform(wrap);
+      const t = e.touches[0];
+      applyResize(t.clientX - tX, t.clientY - tY, tW, tH, tL, tT);
     }, { passive: false });
-
-    document.addEventListener('mouseup', () => { isDragging = false; isRotating = false; });
-    document.addEventListener('touchend', () => { isTouchDragging = false; touchIsRotating = false; });
-
-    decalContainers[0].appendChild(wrap);
-    
-    if (!restoreData) {
-      const item = document.createElement('div');
-      item.className = 'decal-list-item';
-      item.id = 'list_' + id;
-      const imgSrc = URL.createObjectURL(file);
-      const name = file ? file.name : 'decal';
-      item.innerHTML = `
-        <div class="decal-item-info">
-          <img src="${imgSrc}" class="decal-thumb" alt="preview">
-          <span class="decal-item-name">${name}</span>
-        </div>
-        <button onclick="removeDecal('${id}')">Удалить</button>
-      `;
-      decalList.appendChild(item);
-    }
-  }
-
-  function applyTransform(el) {
-    const rot = parseFloat(el.dataset.rotation) || 0;
-    const flipH = parseFloat(el.dataset.flipH) || 1;
-    const flipV = parseFloat(el.dataset.flipV) || 1;
-    el.style.transform = `rotate(${rot}deg) scale(${flipH}, ${flipV})`;
-  }
-
-  function setActiveDecal(wrap) {
-    document.querySelectorAll('.decal').forEach(d => d.classList.remove('active'));
-    wrap.classList.add('active');
-    activeDecal = wrap;
-  }
-
-  function removeDecal(id) {
-    const el = document.getElementById(id);
-    if(el) el.remove();
-    const listEl = document.getElementById('list_' + id);
-    if(listEl) listEl.remove();
-    if(activeDecal === el) activeDecal = null;
-  }
-
-  function copyDecal() {
-    if (!activeDecal) return;
-    const img = activeDecal.querySelector('img');
-    clipboard = {
-      imageSrc: img ? img.src : '',
-      imageBlob: img ? img.src : null,
-      width: activeDecal.offsetWidth,
-      height: activeDecal.offsetHeight,
-      rotation: parseFloat(activeDecal.dataset.rotation) || 0,
-      flipH: parseFloat(activeDecal.dataset.flipH) || 1,
-      flipV: parseFloat(activeDecal.dataset.flipV) || 1,
-      imageName: activeDecal.dataset.originalImageName || ''
-    };
-    flashNotification('Скопировано');
-  }
-
-  function pasteDecal() {
-    if (!clipboard) { flashNotification('Буфер пуст'); return; }
-    const data = { ...clipboard };
-    data.id = 'd_' + Date.now();
-    const origLeft = parseFloat(activeDecal?.style.left) || 100;
-    const origTop = parseFloat(activeDecal?.style.top) || 100;
-    data.left = (origLeft + 20) + 'px';
-    data.top = (origTop + 20) + 'px';
-    data.zIndex = ++decalZIndex;
-    addDecal(null, data);
-    setActiveDecal(document.getElementById(data.id));
-    const item = document.createElement('div');
-    item.className = 'decal-list-item';
-    item.id = 'list_' + data.id;
-    const thumbSrc = data.imageBlob 
-  ? URL.createObjectURL(data.imageBlob) 
-  : data.imageSrc;
-    item.innerHTML = `
-      <div class="decal-item-info">
-        <img src="${thumbSrc}" class="decal-thumb" alt="preview">
-        <span class="decal-item-name">(копия)</span>
-      </div>
-      <button onclick="removeDecal('${data.id}')">Удалить</button>
-    `;
-    decalList.appendChild(item);
-  }
-
-  function duplicateDecal() { if (!activeDecal) return; copyDecal(); pasteDecal(); }
-  function flipDecal(axis) {
-    if (!activeDecal) return;
-    if (axis === 'h') activeDecal.dataset.flipH = -(parseFloat(activeDecal.dataset.flipH) || 1);
-    else activeDecal.dataset.flipV = -(parseFloat(activeDecal.dataset.flipV) || 1);
-    applyTransform(activeDecal);
-  }
-  function rotateDecal(delta) {
-    if (!activeDecal) return;
-    activeDecal.dataset.rotation = (parseFloat(activeDecal.dataset.rotation) || 0) + delta;
-    applyTransform(activeDecal);
-  }
-  function resetRotation() { if (!activeDecal) return; activeDecal.dataset.rotation = 0; applyTransform(activeDecal); }
-  function bringToFront() { if (!activeDecal) return; activeDecal.style.zIndex = ++decalZIndex; }
-  function sendToBack() { if (!activeDecal) return; activeDecal.style.zIndex = 1; }
-  function moveDecal(dx, dy) {
-    if (!activeDecal) return;
-    activeDecal.style.left = (parseFloat(activeDecal.style.left) || 0) + dx + 'px';
-    activeDecal.style.top = (parseFloat(activeDecal.style.top) || 0) + dy + 'px';
-  }
-  function resizeDecal(delta) {
-    if (!activeDecal) return;
-    const curW = activeDecal.offsetWidth;
-    const curH = activeDecal.offsetHeight;
-    const ratio = curH / curW;
-    const newW = Math.max(30, curW + delta);
-    activeDecal.style.width = newW + 'px';
-    activeDecal.style.height = (newW * ratio) + 'px';
-  }
-
-  function showContextMenu(x, y, target) {
-    const menu = document.getElementById('context-menu');
-    menu.style.display = 'block';
-    const rect = menu.getBoundingClientRect();
-    let finalX = x, finalY = y;
-    if (x + rect.width > window.innerWidth) finalX = window.innerWidth - rect.width - 8;
-    if (y + rect.height > window.innerHeight) finalY = window.innerHeight - rect.height - 8;
-    menu.style.left = finalX + 'px';
-    menu.style.top = finalY + 'px';
-  }
-
-  function hideContextMenu() { document.getElementById('context-menu').style.display = 'none'; }
-
-  document.querySelectorAll('#context-menu .cm-item').forEach(item => {
-    item.addEventListener('click', () => {
-      const action = item.dataset.action;
-      if (action === 'copy') copyDecal();
-      else if (action === 'duplicate') duplicateDecal();
-      else if (action === 'flip-h') flipDecal('h');
-      else if (action === 'flip-v') flipDecal('v');
-      else if (action === 'rotate-plus') rotateDecal(90);
-      else if (action === 'rotate-minus') rotateDecal(-90);
-      else if (action === 'reset-rotation') resetRotation();
-      else if (action === 'front') bringToFront();
-      else if (action === 'back') sendToBack();
-      else if (action === 'delete') { if (activeDecal) removeDecal(activeDecal.id); }
-      hideContextMenu();
-    });
+    document.addEventListener('mouseup', () => { isResizing = false; });
+    document.addEventListener('touchend', () => { tResizing = false; });
   });
 
-  document.addEventListener('click', (e) => {
-    if (!e.target.closest('#context-menu') && !e.target.closest('.decal')) {
-      hideContextMenu();
-      if (!e.target.closest('#settings-panel') && !e.target.closest('.fab')) {
-        document.querySelectorAll('.decal').forEach(d => d.classList.remove('active'));
-        activeDecal = null;
-      }
+  // --- поворот ---
+  let isRotating = false, startAngle = 0, startRotation = 0;
+  let tRotating = false, tStartAngle = 0, tStartRotation = 0;
+  const angleFrom = (cx, cy) => {
+    const r = wrap.getBoundingClientRect();
+    return Math.atan2(cy - (r.top + r.height/2), cx - (r.left + r.width/2));
+  };
+  rotateHandle.addEventListener('mousedown', (e) => {
+    e.stopPropagation(); e.preventDefault();
+    isRotating = true; setActiveDecal(wrap);
+    startAngle = angleFrom(e.clientX, e.clientY);
+    startRotation = parseFloat(wrap.dataset.rotation) || 0;
+  });
+  rotateHandle.addEventListener('touchstart', (e) => {
+    e.stopPropagation(); e.preventDefault();
+    const t = e.touches[0];
+    tRotating = true; setActiveDecal(wrap);
+    tStartAngle = angleFrom(t.clientX, t.clientY);
+    tStartRotation = parseFloat(wrap.dataset.rotation) || 0;
+  }, { passive: false });
+
+  document.addEventListener('mousemove', (e) => {
+    if (isDragging) {
+      wrap.style.left = (origLeft + e.clientX - startX) + 'px';
+      wrap.style.top = (origTop + e.clientY - startY) + 'px';
+    }
+    if (isRotating) {
+      wrap.dataset.rotation = startRotation + (angleFrom(e.clientX, e.clientY) - startAngle) * (180/Math.PI);
+      applyTransform(wrap);
     }
   });
+  document.addEventListener('touchmove', (e) => {
+    if (!tRotating || e.touches.length !== 1) return;
+    e.preventDefault();
+    const t = e.touches[0];
+    wrap.dataset.rotation = tStartRotation + (angleFrom(t.clientX, t.clientY) - tStartAngle) * (180/Math.PI);
+    applyTransform(wrap);
+  }, { passive: false });
+  document.addEventListener('mouseup', () => { isDragging = false; isRotating = false; });
+  document.addEventListener('touchend', () => { isTouchDragging = false; tRotating = false; });
 
-  function flashNotification(text) {
-    const n = document.createElement('div');
-    n.textContent = text;
-    n.style.cssText = `position:fixed; top:80px; left:50%; transform:translateX(-50%);
-      background:rgba(0,0,0,0.85); color:white; padding:8px 16px; border-radius:6px;
-      font-size:13px; font-weight:600; z-index:3000; pointer-events:none;
-      transition:opacity 0.4s; font-family:'Inter',sans-serif;`;
-    document.body.appendChild(n);
-    setTimeout(() => { n.style.opacity = '0'; }, 800);
-    setTimeout(() => { n.remove(); }, 1200);
-  }
-
-  // Keyboard shortcuts with Russian layout support
-  document.addEventListener('keydown', (e) => {
-    const inInput = document.activeElement && 
-      (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA');
-    const isCtrl = e.ctrlKey || e.metaKey;
-    const key = e.key;
-    const keyLower = key.toLowerCase();
-
-    if (isCtrl && (keyLower === 'c' || keyLower === 'с') && activeDecal && !inInput) {
-      e.preventDefault(); copyDecal(); return;
-    }
-    if (isCtrl && (keyLower === 'v' || keyLower === 'м') && clipboard && !inInput) {
-      e.preventDefault(); pasteDecal(); return;
-    }
-    if (isCtrl && (keyLower === 'd' || keyLower === 'в') && activeDecal && !inInput) {
-      e.preventDefault(); duplicateDecal(); return;
-    }
-    if (isCtrl && (keyLower === 's' || keyLower === 'ы') && !inInput) {
-      e.preventDefault(); exportData(); return;
-    }
-
-    if (!activeDecal || inInput) return;
-    const step = e.shiftKey ? 10 : 1;
-
-    if (key === 'ArrowLeft')  { e.preventDefault(); moveDecal(-step, 0); return; }
-    if (key === 'ArrowRight') { e.preventDefault(); moveDecal(step, 0); return; }
-    if (key === 'ArrowUp')    { e.preventDefault(); moveDecal(0, -step); return; }
-    if (key === 'ArrowDown')  { e.preventDefault(); moveDecal(0, step); return; }
-    if (keyLower === 'r' || keyLower === 'к') { e.preventDefault(); rotateDecal(e.shiftKey ? -90 : 90); return; }
-    if (keyLower === 'f' || keyLower === 'а') { e.preventDefault(); flipDecal(e.shiftKey ? 'v' : 'h'); return; }
-    if (key === '[' || keyLower === 'х') { e.preventDefault(); resizeDecal(-10); return; }
-    if (key === ']' || keyLower === 'ъ') { e.preventDefault(); resizeDecal(10); return; }
-    if (key === 'Delete' || key === 'Backspace') { e.preventDefault(); removeDecal(activeDecal.id); return; }
-    if (key === 'Escape') { e.preventDefault(); activeDecal.classList.remove('active'); activeDecal = null; return; }
-  });
-
-  // File drop setup
-  function setupFileDrop(dropId, inputId, nameId) {
-    const drop = document.getElementById(dropId);
-    const input = document.getElementById(inputId);
-    const nameEl = document.getElementById(nameId);
-    input.addEventListener('change', (e) => {
-      if (e.target.files[0]) {
-        nameEl.textContent = e.target.files[0].name;
-        nameEl.style.color = '#4ade80';
-      }
-    });
-    ['dragenter','dragover'].forEach(evt => {
-      drop.addEventListener(evt, e => { e.preventDefault(); drop.classList.add('dragover'); });
-    });
-    ['dragleave','drop'].forEach(evt => {
-      drop.addEventListener(evt, e => { e.preventDefault(); drop.classList.remove('dragover'); });
-    });
-    drop.addEventListener('drop', e => {
-      e.preventDefault();
-      if (e.dataTransfer.files[0]) {
-        input.files = e.dataTransfer.files;
-        input.dispatchEvent(new Event('change'));
-      }
-    });
-  }
-  setupFileDrop('bg-file-drop', 'bg-upload', 'bg-file-name');
-  setupFileDrop('decal-file-drop', 'decal-upload', 'decal-file-name');
-
-  // Export/Import
-  async function exportData() {
-    const data = {
-      version: '2.0',
-      timestamp: new Date().toISOString(),
-      colors: {
-        headerBg: document.getElementById('col-header-bg').value,
-        headerText: document.getElementById('col-header-text').value,
-        border: document.getElementById('col-border').value,
-        text: document.getElementById('col-text').value
-      },
-      bgOpacity: document.getElementById('bg-opacity').value,
-      fields: {},
-      decals: []
-    };
-
-    document.querySelectorAll('[data-field]').forEach(el => {
-      const field = el.dataset.field;
-      if (el.tagName === 'INPUT' && el.type === 'text') data.fields[field] = el.value;
-      else if (el.tagName === 'TEXTAREA') data.fields[field] = el.value;
-      else if (el.classList.contains('cb')) data.fields[field] = el.classList.contains('checked');
-    });
-
-    const bgLayer = document.querySelector('.page-bg');
-    if (bgLayer.style.backgroundImage && bgLayer.style.backgroundImage !== 'none') {
-      const bgUrl = bgLayer.style.backgroundImage.slice(5, -2);
-      try { data.background = await imageToBase64(bgUrl); } catch (e) { console.warn('BG export failed:', e); }
-    }
-
-    const decalElements = document.querySelectorAll('.decal');
-    for (const decal of decalElements) {
-      const img = decal.querySelector('img');
-      if (img && img.src) {
-        try {
-          const imgBase64 = await imageToBase64(img.src);
-          data.decals.push({
-            id: decal.id,
-            imageSrc: imgBase64,
-            imageName: decal.dataset.originalImageName || '',
-            left: decal.style.left,
-            top: decal.style.top,
-            width: decal.offsetWidth,
-            height: decal.offsetHeight,
-            rotation: parseFloat(decal.dataset.rotation) || 0,
-            flipH: parseFloat(decal.dataset.flipH) || 1,
-            flipV: parseFloat(decal.dataset.flipV) || 1,
-            zIndex: parseInt(decal.style.zIndex) || 10
-          });
-        } catch (e) { console.warn('Failed to export decal:', decal.id, e); }
-      }
-    }
-
-    const json = JSON.stringify(data, null, 2);
-    const blob = new Blob([json], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `character-sheet-${Date.now()}.json`;
-    a.click();
-    URL.revokeObjectURL(url);
-    flashNotification('Форма экспортирована');
-  }
-
-  async function importData(event) {
-    const file = event.target.files[0];
-    if (!file) return;
-    try {
-      const text = await file.text();
-      const data = JSON.parse(text);
-      if (!data.version) { alert('Неверный формат файла'); return; }
-
-      if (data.colors) {
-        const colorMap = {headerBg:'col-header-bg', headerText:'col-header-text', border:'col-border', text:'col-text'};
-        const cssMap = {headerBg:'--header-bg', headerText:'--header-text', border:'--border-color', text:'--text-color'};
-        for (const [key, value] of Object.entries(data.colors)) {
-          if (value && colorMap[key]) {
-            document.getElementById(colorMap[key]).value = value;
-            root.style.setProperty(cssMap[key], value);
-          }
-        }
-      }
-      if (data.bgOpacity !== undefined) {
-        document.getElementById('bg-opacity').value = data.bgOpacity;
-        root.style.setProperty('--bg-opacity', data.bgOpacity);
-      }
-      if (data.background) {
-        bgLayers.forEach(l => { l.style.backgroundImage = `url(${data.background})`; });
-        const bgFileName = document.getElementById('bg-file-name');
-        if (bgFileName) { bgFileName.textContent = 'Файл загружен'; bgFileName.style.color = '#4ade80'; }
-      }
-      if (data.fields) {
-        document.querySelectorAll('[data-field]').forEach(el => {
-          const field = el.dataset.field;
-          if (data.fields[field] !== undefined) {
-            if (el.tagName === 'INPUT' && el.type === 'text') el.value = data.fields[field];
-            else if (el.tagName === 'TEXTAREA') el.value = data.fields[field];
-            else if (el.classList.contains('cb')) el.classList.toggle('checked', !!data.fields[field]);
-          }
-        });
-      }
-      if (data.decals && data.decals.length > 0) {
-        document.querySelectorAll('.decal').forEach(d => d.remove());
-        decalList.innerHTML = '';
-        decalZIndex = 10;
-        for (const decalData of data.decals) {
-          await addDecal(null, decalData);
-          const item = document.createElement('div');
-          item.className = 'decal-list-item';
-          item.id = 'list_' + decalData.id;
-          const name = decalData.imageName ? decalData.imageName : 'decal';
-          item.innerHTML = `
-            <div class="decal-item-info">
-              <img src="${decalData.imageSrc}" class="decal-thumb" alt="preview">
-              <span class="decal-item-name">${name}</span>
-            </div>
-            <button onclick="removeDecal('${decalData.id}')">Удалить</button>
-          `;
-          decalList.appendChild(item);
-        }
-      }
-      flashNotification('Форма импортирована');
-    } catch (e) {
-      alert('Ошибка импорта: ' + e.message);
-    }
-    event.target.value = '';
-  }
-
-  function imageToBase64(src) {
-    return new Promise((resolve, reject) => {
-      if (src.startsWith('data:image/')) { resolve(src); return; }
-      const img = new Image();
-      img.crossOrigin = 'anonymous';
-      img.onload = () => {
-        try {
-          const canvas = document.createElement('canvas');
-          canvas.width = img.naturalWidth;
-          canvas.height = img.naturalHeight;
-          canvas.getContext('2d').drawImage(img, 0, 0);
-          resolve(canvas.toDataURL('image/png'));
-        } catch (err) { reject(err); }
-      };
-      img.onerror = () => reject(new Error('Failed to load: ' + src));
-      img.src = src;
-    });
-  }
-  
-function scalePageToFit() {
-  const isTouchDevice = window.matchMedia('(hover: none) and (pointer: coarse)').matches;
-  if (!isTouchDevice) {
-    const page = document.querySelector('.page');
-    if (page) {
-      page.style.transform = 'none';
-      page.style.transformOrigin = 'top center';
-      page.style.marginTop = '0';
-      page.style.marginLeft = 'auto';
-      page.style.marginRight = 'auto';
-    }
-    return;
-  }
-
-  const page = document.querySelector('.page');
-  if (!page) return;
-
-  const viewportWidth = window.innerWidth;
-  const viewportHeight = window.innerHeight;
-  
-  const mmToPx = 3.7795275591;
-  const pageWidth = 297 * mmToPx;
-  const pageHeight = 210 * mmToPx;
-  
-  const padding = 16;
-  const fabSpace = 70;
-  const availableWidth = viewportWidth - padding * 2;
-  const availableHeight = viewportHeight - fabSpace - padding;
-  
-  const scaleX = availableWidth / pageWidth;
-  const scaleY = availableHeight / pageHeight;
-  const scale = Math.min(scaleX, scaleY, 1);
-  
-  page.style.transform = `scale(${scale})`;
-  page.style.transformOrigin = 'top center';
-  
-  const scaledHeight = pageHeight * scale;
-  const marginTop = Math.max(0, (availableHeight - scaledHeight) / 2) + padding;
-  page.style.marginTop = marginTop + 'px';
-  page.style.marginBottom = '0';
-  page.style.marginLeft = 'auto';
-  page.style.marginRight = 'auto';
+  decalContainers[0].appendChild(wrap);
+  renderDecalListItem(wrap);
+  return wrap;
 }
 
-// ===== СИСТЕМА ШАБЛОНОВ =====
-const TEMPLATES_KEY = 'iris_templates_v1';
+function renderDecalListItem(wrap) {
+  if (!wrap || !decalList) return;
+  const old = document.getElementById('list_' + wrap.id);
+  if (old) old.remove();
+  const img = wrap.querySelector('img');
+  const isTpl = wrap.classList.contains('tpl-decal');
+  const name = wrap.dataset.originalImageName || 'decal';
+  const item = document.createElement('div');
+  item.className = 'decal-list-item' + (isTpl ? ' tpl-decal-row' : '');
+  item.id = 'list_' + wrap.id;
+  item.innerHTML = `
+    <div class="decal-item-info">
+      <img src="${escapeHtml(img ? img.src : '')}" class="decal-thumb" alt="">
+      <span class="decal-item-name">${escapeHtml(name)}</span>
+      ${isTpl ? `<span class="tpl-tag" title="Из шаблона: ${escapeHtml(wrap.dataset.templateName || '')}">шаблон</span>` : ''}
+    </div>
+    <button onclick="removeDecal('${wrap.id}')">Удалить</button>`;
+  item.addEventListener('click', (e) => {
+    if (e.target.tagName === 'BUTTON') return;
+    setActiveDecal(wrap);
+  });
+  decalList.appendChild(item);
+}
 
-// ===== INDEXEDDB ДЛЯ ШАБЛОНОВ =====
+function applyTransform(el) {
+  const rot = parseFloat(el.dataset.rotation) || 0;
+  const fh = parseFloat(el.dataset.flipH) || 1;
+  const fv = parseFloat(el.dataset.flipV) || 1;
+  el.style.transform = `rotate(${rot}deg) scale(${fh}, ${fv})`;
+}
+function setActiveDecal(wrap) {
+  document.querySelectorAll('.decal').forEach(d => d.classList.remove('active'));
+  wrap.classList.add('active');
+  activeDecal = wrap;
+}
+function removeDecal(id) {
+  const el = document.getElementById(id);
+  if (el) { releaseUrl(el.dataset.objectUrl || ''); el.remove(); }
+  const listEl = document.getElementById('list_' + id);
+  if (listEl) listEl.remove();
+  if (activeDecal === el) activeDecal = null;
+}
+function copyDecal() {
+  if (!activeDecal) return;
+  const img = activeDecal.querySelector('img');
+  clipboard = {
+    imageSrc: img ? img.src : '',
+    width: activeDecal.offsetWidth, height: activeDecal.offsetHeight,
+    rotation: parseFloat(activeDecal.dataset.rotation) || 0,
+    flipH: parseFloat(activeDecal.dataset.flipH) || 1,
+    flipV: parseFloat(activeDecal.dataset.flipV) || 1,
+    imageName: activeDecal.dataset.originalImageName || ''
+  };
+  flashNotification('Скопировано');
+}
+function pasteDecal() {
+  if (!clipboard) { flashNotification('Буфер пуст'); return; }
+  const data = { ...clipboard };
+  data.id = 'd_' + Date.now() + '_' + Math.random().toString(36).slice(2,7);
+  const oL = parseFloat(activeDecal?.style.left) || 100;
+  const oT = parseFloat(activeDecal?.style.top) || 100;
+  data.left = (oL + 20) + 'px'; data.top = (oT + 20) + 'px';
+  data.zIndex = ++decalZIndex;
+  const copy = addDecal(null, data);
+  if (copy) {
+    copy.dataset.originalImageName = (data.imageName || 'decal') + ' (копия)';
+    renderDecalListItem(copy);
+    setActiveDecal(copy);
+  }
+}
+function duplicateDecal() { if (!activeDecal) return; copyDecal(); pasteDecal(); }
+function flipDecal(axis) {
+  if (!activeDecal) return;
+  if (axis === 'h') activeDecal.dataset.flipH = -(parseFloat(activeDecal.dataset.flipH) || 1);
+  else activeDecal.dataset.flipV = -(parseFloat(activeDecal.dataset.flipV) || 1);
+  applyTransform(activeDecal);
+}
+function rotateDecal(delta) {
+  if (!activeDecal) return;
+  activeDecal.dataset.rotation = (parseFloat(activeDecal.dataset.rotation) || 0) + delta;
+  applyTransform(activeDecal);
+}
+function resetRotation() { if (!activeDecal) return; activeDecal.dataset.rotation = 0; applyTransform(activeDecal); }
+function bringToFront() { if (!activeDecal) return; activeDecal.style.zIndex = ++decalZIndex; }
+function sendToBack() { if (!activeDecal) return; activeDecal.style.zIndex = 1; }
+function moveDecal(dx, dy) {
+  if (!activeDecal) return;
+  activeDecal.style.left = (parseFloat(activeDecal.style.left) || 0) + dx + 'px';
+  activeDecal.style.top = (parseFloat(activeDecal.style.top) || 0) + dy + 'px';
+}
+function resizeDecal(delta) {
+  if (!activeDecal) return;
+  const w = activeDecal.offsetWidth, h = activeDecal.offsetHeight;
+  const ratio = h / w, nw = Math.max(30, w + delta);
+  activeDecal.style.width = nw + 'px';
+  activeDecal.style.height = (nw * ratio) + 'px';
+}
+function clearAllDecals() {
+  document.querySelectorAll('.decal').forEach(d => { releaseUrl(d.dataset.objectUrl || ''); d.remove(); });
+  if (decalList) decalList.innerHTML = '';
+  activeDecal = null; decalZIndex = 10;
+}
+function clearTemplateDecals() {
+  let removed = 0;
+  document.querySelectorAll('.decal.tpl-decal').forEach(d => {
+    const l = document.getElementById('list_' + d.id);
+    if (l) l.remove();
+    releaseUrl(d.dataset.objectUrl || '');
+    if (activeDecal === d) activeDecal = null;
+    d.remove(); removed++;
+  });
+  return removed;
+}
+
+/* ---------- КОНТЕКСТНОЕ МЕНЮ ---------- */
+function showContextMenu(x, y) {
+  const menu = document.getElementById('context-menu');
+  menu.style.display = 'block';
+  const r = menu.getBoundingClientRect();
+  menu.style.left = Math.min(x, window.innerWidth - r.width - 8) + 'px';
+  menu.style.top = Math.min(y, window.innerHeight - r.height - 8) + 'px';
+}
+function hideContextMenu() { document.getElementById('context-menu').style.display = 'none'; }
+
+document.querySelectorAll('#context-menu .cm-item').forEach(item => {
+  item.addEventListener('click', () => {
+    const a = item.dataset.action;
+    if (a === 'copy') copyDecal();
+    else if (a === 'duplicate') duplicateDecal();
+    else if (a === 'flip-h') flipDecal('h');
+    else if (a === 'flip-v') flipDecal('v');
+    else if (a === 'rotate-plus') rotateDecal(90);
+    else if (a === 'rotate-minus') rotateDecal(-90);
+    else if (a === 'reset-rotation') resetRotation();
+    else if (a === 'front') bringToFront();
+    else if (a === 'back') sendToBack();
+    else if (a === 'delete') { if (activeDecal) removeDecal(activeDecal.id); }
+    hideContextMenu();
+  });
+});
+
+document.addEventListener('click', (e) => {
+  if (!e.target.closest('#context-menu') && !e.target.closest('.decal')) {
+    hideContextMenu();
+    if (!e.target.closest('#settings-panel') && !e.target.closest('.fab') && !e.target.closest('.modal-overlay')) {
+      document.querySelectorAll('.decal').forEach(d => d.classList.remove('active'));
+      activeDecal = null;
+    }
+  }
+});
+
+/* ---------- ГОРЯЧИЕ КЛАВИШИ (EN + RU) ---------- */
+document.addEventListener('keydown', (e) => {
+  const ae = document.activeElement;
+  const inInput = ae && (ae.tagName === 'INPUT' || ae.tagName === 'TEXTAREA');
+  const ctrl = e.ctrlKey || e.metaKey;
+  const k = e.key, kl = k.toLowerCase();
+
+  if (ctrl && (kl === 's' || kl === 'ы')) { e.preventDefault(); exportData(); return; }
+  if (inInput) return;
+  if (ctrl && (kl === 'c' || kl === 'с') && activeDecal) { e.preventDefault(); copyDecal(); return; }
+  if (ctrl && (kl === 'v' || kl === 'м') && clipboard) { e.preventDefault(); pasteDecal(); return; }
+  if (ctrl && (kl === 'd' || kl === 'в') && activeDecal) { e.preventDefault(); duplicateDecal(); return; }
+  if (!activeDecal) return;
+
+  const step = e.shiftKey ? 10 : 1;
+  if (k === 'ArrowLeft')  { e.preventDefault(); moveDecal(-step,0); return; }
+  if (k === 'ArrowRight') { e.preventDefault(); moveDecal(step,0); return; }
+  if (k === 'ArrowUp')    { e.preventDefault(); moveDecal(0,-step); return; }
+  if (k === 'ArrowDown')  { e.preventDefault(); moveDecal(0,step); return; }
+  if (kl === 'r' || kl === 'к') { e.preventDefault(); rotateDecal(e.shiftKey ? -90 : 90); return; }
+  if (kl === 'f' || kl === 'а') { e.preventDefault(); flipDecal(e.shiftKey ? 'v' : 'h'); return; }
+  if (k === '[' || kl === 'х') { e.preventDefault(); resizeDecal(-10); return; }
+  if (k === ']' || kl === 'ъ') { e.preventDefault(); resizeDecal(10); return; }
+  if (k === 'Delete' || k === 'Backspace') { e.preventDefault(); removeDecal(activeDecal.id); return; }
+  if (k === 'Escape') { e.preventDefault(); activeDecal.classList.remove('active'); activeDecal = null; }
+});
+
+/* ---------- ЭКСПОРТ / ИМПОРТ ФОРМЫ ---------- */
+async function exportData() {
+  try {
+    const page = document.querySelector('.page');
+    const pW = page.offsetWidth || 1122, pH = page.offsetHeight || 793;
+    const data = {
+      version: '2.1',
+      timestamp: new Date().toISOString(),
+      colors: readCurrentColors(),
+      bgOpacity: document.getElementById('bg-opacity').value,
+      activeTemplate: activeTemplateMeta ? { ...activeTemplateMeta } : null,
+      fields: {}, decals: []
+    };
+    document.querySelectorAll('[data-field]').forEach(el => {
+      const f = el.dataset.field;
+      if (el.tagName === 'INPUT' && el.type === 'text') data.fields[f] = el.value;
+      else if (el.tagName === 'TEXTAREA') data.fields[f] = el.value;
+      else if (el.classList.contains('cb')) data.fields[f] = el.classList.contains('checked');
+    });
+    const bgSrc = readBackgroundDataUrl();
+    if (bgSrc) { try { data.background = await imageToBase64(bgSrc); } catch (e) {} }
+
+    for (const decal of document.querySelectorAll('.decal')) {
+      const img = decal.querySelector('img');
+      if (!img || !img.src) continue;
+      try {
+        data.decals.push({
+          id: decal.id,
+          imageSrc: await imageToBase64(img.src),
+          imageName: decal.dataset.originalImageName || '',
+          left: ((parseFloat(decal.style.left)||0)/pW*100)+'%',
+          top: ((parseFloat(decal.style.top)||0)/pH*100)+'%',
+          width: (decal.offsetWidth/pW*100)+'%',
+          height: (decal.offsetHeight/pH*100)+'%',
+          rotation: parseFloat(decal.dataset.rotation)||0,
+          flipH: parseFloat(decal.dataset.flipH)||1,
+          flipV: parseFloat(decal.dataset.flipV)||1,
+          zIndex: parseInt(decal.style.zIndex)||10,
+          fromTemplate: decal.classList.contains('tpl-decal'),
+          templateId: decal.dataset.templateId || '',
+          templateName: decal.dataset.templateName || ''
+        });
+      } catch (e) { console.warn('Export decal skipped:', decal.id); }
+    }
+
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = `character-sheet-${Date.now()}.json`;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+    flashNotification('Форма экспортирована');
+  } catch (e) { alert('Ошибка экспорта: ' + e.message); }
+}
+
+async function importData(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  try {
+    const data = JSON.parse(await file.text());
+    if (!data.version) { alert('Неверный формат файла'); return; }
+    if (data.colors) applyColors(data.colors);
+    if (data.bgOpacity !== undefined) {
+      document.getElementById('bg-opacity').value = data.bgOpacity;
+      root.style.setProperty('--bg-opacity', data.bgOpacity);
+    }
+    setBackgroundSource(data.background || '', data.background ? 'Файл загружен' : 'Файл не выбран', data.background ? '#4ade80' : '#8ab4ff');
+    if (data.fields) {
+      document.querySelectorAll('[data-field]').forEach(el => {
+        const f = el.dataset.field;
+        if (data.fields[f] === undefined) return;
+        if (el.tagName === 'INPUT' && el.type === 'text') el.value = data.fields[f];
+        else if (el.tagName === 'TEXTAREA') el.value = data.fields[f];
+        else if (el.classList.contains('cb')) el.classList.toggle('checked', !!data.fields[f]);
+      });
+    }
+    clearAllDecals();
+    for (const d of (data.decals || [])) {
+      addDecal(null, d, { fromTemplate: !!d.fromTemplate, templateId: d.templateId || '', templateName: d.templateName || '' });
+    }
+    if (data.activeTemplate && data.activeTemplate.id) {
+      const known = await getTemplateById(data.activeTemplate.id);
+      setActiveTemplateMeta(known ? { id: known.id, name: known.name } : data.activeTemplate);
+    } else setActiveTemplateMeta(null);
+    await renderTemplateList();
+    flashNotification('Форма импортирована');
+  } catch (e) { alert('Ошибка импорта: ' + e.message); }
+  event.target.value = '';
+}
+
+/* ============================================================
+   ШАБЛОНЫ · IndexedDB
+   ============================================================ */
 const DB_NAME = 'iris_templates_db';
 const DB_VERSION = 1;
 const STORE_NAME = 'templates';
+const ACTIVE_TEMPLATE_KEY = 'iris_active_template_v1';
 let dbInstance = null;
+let dbOpening = null;
+let activeTemplateMeta = null;
+let templateUndoState = null;
+let undoTimer = null;
+let templateSaveInProgress = false;
+let templateApplyInProgress = false;
+let previewBusy = false;
 
 function openDB() {
   if (dbInstance) return Promise.resolve(dbInstance);
-  return new Promise((resolve, reject) => {
-    const request = indexedDB.open(DB_NAME, DB_VERSION);
-    request.onerror = () => reject(request.error);
-    request.onsuccess = () => { dbInstance = request.result; resolve(dbInstance); };
+  if (dbOpening) return dbOpening;
+  dbOpening = new Promise((resolve, reject) => {
+    let request;
+    try { request = indexedDB.open(DB_NAME, DB_VERSION); }
+    catch (e) { dbOpening = null; reject(e); return; }
+    const timer = setTimeout(() => {
+      dbOpening = null;
+      reject(new Error('База шаблонов не отвечает. Закройте другие вкладки редактора и повторите.'));
+    }, 10000);
     request.onupgradeneeded = (e) => {
       const db = e.target.result;
-      if (!db.objectStoreNames.contains(STORE_NAME)) {
-        db.createObjectStore(STORE_NAME, { keyPath: 'id' });
-      }
+      if (!db.objectStoreNames.contains(STORE_NAME)) db.createObjectStore(STORE_NAME, { keyPath: 'id' });
     };
+    request.onsuccess = () => {
+      clearTimeout(timer);
+      dbInstance = request.result;
+      dbInstance.onversionchange = () => { try { dbInstance.close(); } catch (e) {} dbInstance = null; };
+      dbInstance.onclose = () => { dbInstance = null; };
+      dbOpening = null;
+      resolve(dbInstance);
+    };
+    request.onerror = () => { clearTimeout(timer); dbOpening = null; reject(request.error || new Error('Не удалось открыть базу шаблонов')); };
+    request.onblocked = () => flashNotification('База занята другой вкладкой — закройте её');
+  });
+  return dbOpening;
+}
+
+async function addTemplate(template) {
+  const db = await openDB();
+  return new Promise((resolve, reject) => {
+    let tx;
+    try { tx = db.transaction(STORE_NAME, 'readwrite'); } catch (e) { reject(e); return; }
+    const req = tx.objectStore(STORE_NAME).put(template);
+    req.onerror = () => reject(req.error || new Error('Не удалось записать шаблон'));
+    tx.oncomplete = () => resolve(template);
+    tx.onerror = () => reject(tx.error || new Error('Транзакция записи прервана'));
+    tx.onabort = () => reject(tx.error || new Error('Запись отменена — возможно, не хватает места'));
   });
 }
 
 async function getTemplates() {
   try {
     const db = await openDB();
-    return new Promise((resolve, reject) => {
-      const tx = db.transaction(STORE_NAME, 'readonly');
-      const store = tx.objectStore(STORE_NAME);
-      const request = store.getAll();
-      request.onsuccess = () => resolve(request.result || []);
-      request.onerror = () => reject(request.error);
+    return await new Promise((resolve, reject) => {
+      const req = db.transaction(STORE_NAME,'readonly').objectStore(STORE_NAME).getAll();
+      req.onsuccess = () => resolve(req.result || []);
+      req.onerror = () => reject(req.error);
     });
-  } catch (e) {
-    console.warn('IndexedDB failed:', e);
-    return [];
-  }
+  } catch (e) { console.warn('getTemplates:', e); return []; }
 }
 
-async function saveTemplates(templates) {
-  try {
-    const db = await openDB();
-    return new Promise((resolve, reject) => {
-      const tx = db.transaction(STORE_NAME, 'readwrite');
-      const store = tx.objectStore(STORE_NAME);
-      store.clear();
-      templates.forEach(t => store.put(t));
-      tx.oncomplete = () => resolve();
-      tx.onerror = () => reject(tx.error);
-    });
-  } catch (e) {
-    console.error('Failed to save templates:', e);
-    throw e;
-  }
-}
-
-async function addTemplate(template) {
-  try {
-    const db = await openDB();
-    return new Promise((resolve, reject) => {
-      const tx = db.transaction(STORE_NAME, 'readwrite');
-      const store = tx.objectStore(STORE_NAME);
-      store.put(template);
-      tx.oncomplete = () => resolve();
-      tx.onerror = () => reject(tx.error);
-    });
-  } catch (e) {
-    console.error('Failed to add template:', e);
-    throw e;
-  }
-}
-
-async function deleteTemplateFromDB(id) {
-  try {
-    const db = await openDB();
-    return new Promise((resolve, reject) => {
-      const tx = db.transaction(STORE_NAME, 'readwrite');
-      const store = tx.objectStore(STORE_NAME);
-      store.delete(id);
-      tx.oncomplete = () => resolve();
-      tx.onerror = () => reject(tx.error);
-    });
-  } catch (e) {
-    console.error('Failed to delete template:', e);
-    throw e;
-  }
-}
-
-// Получить один шаблон по ID
 async function getTemplateById(id) {
   try {
     const db = await openDB();
-    return new Promise((resolve, reject) => {
-      const tx = db.transaction(STORE_NAME, 'readonly');
-      const store = tx.objectStore(STORE_NAME);
-      const request = store.get(id);
-      request.onsuccess = () => resolve(request.result || null);
-      request.onerror = () => reject(request.error);
+    return await new Promise((resolve, reject) => {
+      const req = db.transaction(STORE_NAME,'readonly').objectStore(STORE_NAME).get(id);
+      req.onsuccess = () => resolve(req.result || null);
+      req.onerror = () => reject(req.error);
     });
-  } catch (e) {
-    console.error('Failed to get template:', e);
-    return null;
-  }
+  } catch (e) { console.warn('getTemplateById:', e); return null; }
 }
 
-async function compressToBlob(src, maxWidth = 600) {
-  return new Promise((resolve) => {
-    const img = new Image();
-    img.onload = () => {
-      const canvas = document.createElement('canvas');
-      let w = img.naturalWidth;
-      let h = img.naturalHeight;
-      if (w > maxWidth) {
-        h = Math.round((maxWidth / w) * h);
-        w = maxWidth;
-      }
-      canvas.width = w;
-      canvas.height = h;
-      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
-      canvas.toBlob((blob) => resolve(blob), 'image/png');
-    };
-    img.onerror = () => resolve(null);
-    img.src = src;
+async function deleteTemplateFromDB(id) {
+  const db = await openDB();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(STORE_NAME,'readwrite');
+    tx.objectStore(STORE_NAME).delete(id);
+    tx.oncomplete = () => resolve();
+    tx.onerror = () => reject(tx.error);
+    tx.onabort = () => reject(tx.error || new Error('Удаление отменено'));
   });
 }
 
-// Получить URL из Blob (для отображения)
-function getBlobUrl(blobOrString) {
-  if (!blobOrString) return '';
-  if (typeof blobOrString === 'string') return blobOrString; // старый base64
-  if (blobOrString instanceof Blob) return URL.createObjectURL(blobOrString);
-  return '';
+/* ---------- активный шаблон ---------- */
+function readActiveTemplateMeta() {
+  try {
+    const raw = localStorage.getItem(ACTIVE_TEMPLATE_KEY);
+    const p = raw ? JSON.parse(raw) : null;
+    return (p && p.id) ? p : null;
+  } catch (e) { return null; }
+}
+function setActiveTemplateMeta(meta) {
+  activeTemplateMeta = (meta && meta.id) ? { id: meta.id, name: meta.name || 'Шаблон' } : null;
+  try {
+    if (activeTemplateMeta) localStorage.setItem(ACTIVE_TEMPLATE_KEY, JSON.stringify(activeTemplateMeta));
+    else localStorage.removeItem(ACTIVE_TEMPLATE_KEY);
+  } catch (e) {}
+  updateActiveTemplateUI();
+}
+function updateActiveTemplateUI() {
+  const box = document.getElementById('tpl-active');
+  const nameEl = document.getElementById('tpl-active-name');
+  const btn = document.getElementById('tpl-clear-btn');
+  if (!box || !nameEl) return;
+  if (activeTemplateMeta) {
+    box.classList.remove('is-empty');
+    nameEl.textContent = activeTemplateMeta.name;
+    nameEl.title = activeTemplateMeta.name;
+    if (btn) btn.style.display = '';
+  } else {
+    box.classList.add('is-empty');
+    nameEl.textContent = 'Не применён';
+    nameEl.title = '';
+    if (btn) btn.style.display = 'none';
+  }
+  document.querySelectorAll('.template-card').forEach(c => {
+    c.classList.toggle('is-active', !!activeTemplateMeta && c.dataset.id === activeTemplateMeta.id);
+  });
 }
 
-
-
-function drawBarWithOutline(ctx, x, y, w, h, color, label, fontSize) {
+/* ---------- отрисовка структуры для превью ---------- */
+function drawBarWithOutline(ctx,x,y,w,h,color,label,fontSize,textColor) {
   ctx.fillStyle = 'rgba(255,255,255,0.3)';
-  ctx.fillRect(x - 1, y - 1, w + 2, h + 2);
+  ctx.fillRect(x-1,y-1,w+2,h+2);
   ctx.fillStyle = color;
-  ctx.fillRect(x, y, w, h);
+  ctx.fillRect(x,y,w,h);
   if (label && fontSize) {
     ctx.font = `bold ${fontSize}px Inter, Arial, sans-serif`;
-    ctx.textAlign = 'left';
-    ctx.textBaseline = 'middle';
-    ctx.strokeStyle = 'white';
-    ctx.lineWidth = Math.max(2, fontSize * 0.15);
-    ctx.lineJoin = 'round';
-    ctx.strokeText(label, x + 3, y + h / 2);
-    ctx.fillStyle = '#fff';
-    ctx.fillText(label, x + 3, y + h / 2);
+    ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
+    ctx.fillStyle = textColor || '#fff';
+    ctx.fillText(label, x+3, y+h/2);
   }
 }
-function drawField(ctx, x, y, w, h, borderColor) {
-  ctx.strokeStyle = borderColor;
-  ctx.lineWidth = 0.8;
-  ctx.strokeRect(x, y, w, h);
+function drawField(ctx,x,y,w,h,borderColor) {
+  ctx.strokeStyle = borderColor; ctx.lineWidth = 0.8; ctx.strokeRect(x,y,w,h);
 }
-function drawCheckbox(ctx, x, y, size, borderColor) {
-  ctx.strokeStyle = borderColor;
-  ctx.lineWidth = 0.8;
-  ctx.strokeRect(x, y, size, size);
+function drawCheckbox(ctx,x,y,size,borderColor) {
+  ctx.strokeStyle = borderColor; ctx.lineWidth = 0.8; ctx.strokeRect(x,y,size,size);
 }
+function drawFormStructure(ctx,W,H,colors) {
+  const c = colors || DEFAULT_COLORS;
+  const scale = W/297, mm = v => v*scale;
+  const labelSize = mm(3.5), smallLabel = mm(2.8);
+  const ht = mm(12);
+  drawField(ctx, mm(10), ht, mm(30), mm(22), c.border);
+  drawBarWithOutline(ctx, mm(45), ht, mm(165), mm(5), c.headerBg, 'ПЕРСОНАЖ', labelSize, c.headerText);
+  drawField(ctx, mm(45), ht+mm(6), mm(165), mm(6), c.border);
+  drawField(ctx, mm(45), ht+mm(13), mm(165), mm(8), c.border);
+  drawBarWithOutline(ctx, mm(215), ht, mm(30), mm(5), c.headerBg, 'ЦВЕТКИ', smallLabel, c.headerText);
+  drawField(ctx, mm(215), ht+mm(6), mm(30), mm(15), c.border);
+  ctx.strokeStyle = 'rgba(200,200,200,0.6)'; ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(mm(10), ht+mm(26)); ctx.lineTo(mm(287), ht+mm(26)); ctx.stroke();
 
-function drawFormStructure(ctx, W, H, colors) {
-  const scale = W / 297;
-  const mm = (v) => v * scale;
-  const labelSize = mm(3.5);
-  const smallLabel = mm(2.8);
-  
-  const headerTop = mm(12);
-  drawField(ctx, mm(10), headerTop, mm(30), mm(22), colors.border);
-  drawBarWithOutline(ctx, mm(45), headerTop, mm(165), mm(5), colors.headerBg, 'ПЕРСОНАЖ', labelSize);
-  drawField(ctx, mm(45), headerTop + mm(6), mm(165), mm(6), colors.border);
-  drawField(ctx, mm(45), headerTop + mm(13), mm(165), mm(8), colors.border);
-  drawBarWithOutline(ctx, mm(215), headerTop, mm(30), mm(5), colors.headerBg, 'ЦВЕТКИ', smallLabel);
-  drawField(ctx, mm(215), headerTop + mm(6), mm(30), mm(15), colors.border);
-  
-  ctx.strokeStyle = 'rgba(200,200,200,0.6)';
-  ctx.lineWidth = 1;
-  ctx.beginPath();
-  ctx.moveTo(mm(10), headerTop + mm(26));
-  ctx.lineTo(mm(287), headerTop + mm(26));
-  ctx.stroke();
-  
-  const bodyTop = headerTop + mm(32);
-  drawBarWithOutline(ctx, mm(10), bodyTop, mm(130), mm(5), colors.headerBg, 'АСПЕКТЫ', labelSize);
-  for (let i = 0; i < 5; i++) drawField(ctx, mm(10), bodyTop + mm(7) + i * mm(7), mm(130), mm(6), colors.border);
-  drawBarWithOutline(ctx, mm(145), bodyTop, mm(142), mm(5), colors.headerBg, 'НАВЫКИ', labelSize);
-  for (let i = 0; i < 5; i++) {
-    const rowY = bodyTop + mm(7) + i * mm(7);
-    drawField(ctx, mm(145), rowY, mm(40), mm(6), colors.border);
-    for (let j = 0; j < 5; j++) drawField(ctx, mm(190) + j * mm(19), rowY, mm(18), mm(6), colors.border);
+  const bt = ht + mm(32);
+  drawBarWithOutline(ctx, mm(10), bt, mm(130), mm(5), c.headerBg, 'АСПЕКТЫ', labelSize, c.headerText);
+  for (let i=0;i<5;i++) drawField(ctx, mm(10), bt+mm(7)+i*mm(7), mm(130), mm(6), c.border);
+  drawBarWithOutline(ctx, mm(145), bt, mm(142), mm(5), c.headerBg, 'НАВЫКИ', labelSize, c.headerText);
+  for (let i=0;i<5;i++) {
+    const ry = bt+mm(7)+i*mm(7);
+    drawField(ctx, mm(145), ry, mm(40), mm(6), c.border);
+    for (let j=0;j<5;j++) drawField(ctx, mm(190)+j*mm(19), ry, mm(18), mm(6), c.border);
   }
-  
-  const bottomTop = bodyTop + mm(45);
-  drawBarWithOutline(ctx, mm(10), bottomTop, mm(140), mm(5), colors.headerBg, 'ДОПОЛНЕНИЯ', labelSize);
-  drawBarWithOutline(ctx, mm(155), bottomTop, mm(132), mm(5), colors.headerBg, 'ТРЮКИ', labelSize);
-  drawField(ctx, mm(10), bottomTop + mm(7), mm(140), mm(30), colors.border);
-  drawField(ctx, mm(155), bottomTop + mm(7), mm(132), mm(30), colors.border);
-  
-  const footerTop = bottomTop + mm(42);
-  drawBarWithOutline(ctx, mm(10), footerTop, mm(70), mm(5), colors.headerBg, 'ФИЗ. СТРЕСС', smallLabel);
-  for (let i = 0; i < 4; i++) drawCheckbox(ctx, mm(12) + i * mm(17), footerTop + mm(7), mm(5), colors.border);
-  drawBarWithOutline(ctx, mm(10), footerTop + mm(12), mm(70), mm(5), colors.headerBg, 'МЕНТАЛ. СТРЕСС', smallLabel);
-  for (let i = 0; i < 4; i++) drawCheckbox(ctx, mm(12) + i * mm(17), footerTop + mm(19), mm(5), colors.border);
-  drawBarWithOutline(ctx, mm(155), footerTop, mm(132), mm(5), colors.headerBg, 'ПОСЛЕДСТВИЯ', labelSize);
-  for (let i = 0; i < 3; i++) drawField(ctx, mm(155), footerTop + mm(7) + i * mm(7), mm(132), mm(6), colors.border);
+  const bo = bt + mm(45);
+  drawBarWithOutline(ctx, mm(10), bo, mm(136), mm(5), c.headerBg, 'ДОПОЛНЕНИЯ', labelSize, c.headerText);
+  drawBarWithOutline(ctx, mm(151), bo, mm(136), mm(5), c.headerBg, 'ТРЮКИ', labelSize, c.headerText);
+  drawField(ctx, mm(10), bo+mm(7), mm(136), mm(30), c.border);
+  drawField(ctx, mm(151), bo+mm(7), mm(136), mm(30), c.border);
+
+  const ft = bo + mm(42);
+  drawBarWithOutline(ctx, mm(10), ft, mm(70), mm(5), c.headerBg, 'ФИЗ. СТРЕСС', smallLabel, c.headerText);
+  for (let i=0;i<4;i++) drawCheckbox(ctx, mm(12)+i*mm(17), ft+mm(7), mm(5), c.border);
+  drawBarWithOutline(ctx, mm(10), ft+mm(12), mm(70), mm(5), c.headerBg, 'МЕНТАЛ. СТРЕСС', smallLabel, c.headerText);
+  for (let i=0;i<4;i++) drawCheckbox(ctx, mm(12)+i*mm(17), ft+mm(19), mm(5), c.border);
+  drawBarWithOutline(ctx, mm(151), ft, mm(136), mm(5), c.headerBg, 'ПОСЛЕДСТВИЯ', labelSize, c.headerText);
+  for (let i=0;i<3;i++) drawField(ctx, mm(151), ft+mm(7)+i*mm(7), mm(136), mm(6), c.border);
 }
 
-function drawDecalsOnCanvas(ctx, W, H) {
-  const decals = document.querySelectorAll('.decal');
+function drawDecalsOnCanvas(ctx,W,H) {
   const page = document.querySelector('.page');
-  const pageW = page.offsetWidth;
-  const pageH = page.offsetHeight;
-  const scaleX = W / pageW;
-  const scaleY = H / pageH;
-  const scale = Math.min(scaleX, scaleY);
-  
-  decals.forEach(decal => {
+  const pW = (page && page.offsetWidth) || 1122;
+  const pH = (page && page.offsetHeight) || 793;
+  const sx = W/pW, sy = H/pH;
+  document.querySelectorAll('.decal').forEach(decal => {
     const img = decal.querySelector('img');
-    if (!img || !img.src) return;
-    const left = parseFloat(decal.style.left) || 0;
-    const top = parseFloat(decal.style.top) || 0;
-    const w = decal.offsetWidth;
-    const h = decal.offsetHeight;
-    const rot = parseFloat(decal.dataset.rotation) || 0;
-    const flipH = parseFloat(decal.dataset.flipH) || 1;
-    const flipV = parseFloat(decal.dataset.flipV) || 1;
-    // Сдвиг на 2% для соответствия превью и применению
-    const page = document.querySelector('.page');
-    const shiftX = (page.offsetWidth * 0.01) * scale;
-    const shiftY = (page.offsetHeight * 0.01) * scale;
-
+    if (!img || !img.src || !img.complete || img.naturalWidth === 0) return;
+    const l = (parseFloat(decal.style.left)||0)*sx;
+    const t = (parseFloat(decal.style.top)||0)*sy;
+    const w = decal.offsetWidth*sx, h = decal.offsetHeight*sy;
+    if (w<=0||h<=0) return;
     ctx.save();
-    ctx.translate(left * scale + (w * scale) / 2, top * scale + (h * scale) / 2);
-    ctx.rotate(rot * Math.PI / 180);
-    ctx.scale(flipH, flipV);
-    ctx.drawImage(img, -(w * scale) / 2, -(h * scale) / 2, w * scale, h * scale);
+    ctx.translate(l+w/2, t+h/2);
+    ctx.rotate((parseFloat(decal.dataset.rotation)||0)*Math.PI/180);
+    ctx.scale(parseFloat(decal.dataset.flipH)||1, parseFloat(decal.dataset.flipV)||1);
+    try { ctx.drawImage(img, -w/2, -h/2, w, h); } catch (e) {}
     ctx.restore();
   });
 }
 
+// Превью текущего листа. ВСЕГДА завершается.
 async function generateTemplateThumbnail() {
-  return new Promise((resolve) => {
-    const canvas = document.getElementById('template-canvas');
-    canvas.width = 400;
-    canvas.height = 283;
-    const ctx = canvas.getContext('2d');
-    const W = canvas.width;
-    const H = canvas.height;
-    ctx.fillStyle = '#fff';
-    ctx.fillRect(0, 0, W, H);
-    
-    const colors = {
-      headerBg: document.getElementById('col-header-bg').value,
-      border: document.getElementById('col-border').value
-    };
-    
-    const bgLayer = document.querySelector('.page-bg');
-    const bgImage = bgLayer.style.backgroundImage;
-    
-    const drawContent = () => {
-      drawFormStructure(ctx, W, H, colors);
-      drawDecalsOnCanvas(ctx, W, H);
-      resolve(canvas.toDataURL('image/png'));
-    };
-    
-    if (bgImage && bgImage !== 'none') {
-      const bgUrl = bgImage.slice(5, -2);
-      const img = new Image();
-      img.onload = () => { ctx.drawImage(img, 0, 0, W, H); drawContent(); };
-      img.onerror = drawContent;
-      img.src = bgUrl;
-    } else { drawContent(); }
-  });
+  const canvas = document.getElementById('template-canvas');
+  if (!canvas) return '';
+  canvas.width = 400; canvas.height = 283;
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  ctx.fillStyle = '#fff'; ctx.fillRect(0,0,W,H);
+
+  const bgSrc = readBackgroundDataUrl();
+  if (bgSrc) {
+    const img = await loadImageSafe(bgSrc, 8000);
+    if (img) {
+      ctx.save();
+      const a = parseFloat(document.getElementById('bg-opacity').value);
+      ctx.globalAlpha = isNaN(a) ? 1 : a;
+      drawCover(ctx, img, W, H);
+      ctx.restore();
+    }
+  }
+  drawFormStructure(ctx, W, H, readCurrentColors());
+  drawDecalsOnCanvas(ctx, W, H);
+  try { return canvas.toDataURL('image/png'); } catch (e) { return ''; }
 }
 
+/* ---------- создание шаблона ---------- */
 async function showCreateTemplateModal() {
   const modal = document.getElementById('template-modal');
   modal.classList.add('active');
-  document.getElementById('template-name-input').value = '';
-  document.getElementById('template-name-input').focus();
+  const input = document.getElementById('template-name-input');
+  input.value = '';
+  setTemplateSaveProgress('Готовим предпросмотр…');
   await generateTemplateThumbnail();
+  setTemplateSaveProgress('');
+  input.focus();
 }
-
 function closeTemplateModal() {
+  if (templateSaveInProgress) return;
   document.getElementById('template-modal').classList.remove('active');
+}
+function setTemplateSaveProgress(text) {
+  const el = document.getElementById('template-save-status');
+  if (el) el.textContent = text || '';
 }
 
 async function confirmCreateTemplate() {
-  const name = document.getElementById('template-name-input').value.trim();
-  if (!name) { alert('Введите название шаблона'); return; }
-  
-  const thumbnail = document.getElementById('template-canvas').toDataURL('image/png');
-  
-  const template = {
-    id: 'tpl_' + Date.now(),
-    name: name,
-    type: 'template',
-    version: '1.0',
-    createdAt: new Date().toISOString(),
-    thumbnail: thumbnail,
-    colors: {
-      headerBg: document.getElementById('col-header-bg').value,
-      headerText: document.getElementById('col-header-text').value,
-      border: document.getElementById('col-border').value,
-      text: document.getElementById('col-text').value
-    },
-    bgOpacity: document.getElementById('bg-opacity').value,
-    background: null,
-    decals: []
-  };
-  
-  // Фон — сохраняем как Blob
-  const bgLayer = document.querySelector('.page-bg');
-  if (bgLayer.style.backgroundImage && bgLayer.style.backgroundImage !== 'none') {
-    const bgUrl = bgLayer.style.backgroundImage.slice(5, -2);
-    try { template.background = await compressToBlob(bgUrl, 1200); } 
-    catch (e) { console.warn('BG compress failed:', e); }
-  }
-  
-  // Декали — сохраняем как Blob со сдвигом 2%
-  const decalElements = document.querySelectorAll('.decal');
-  const page = document.querySelector('.page');
-  const pageW = page.offsetWidth;
-  const pageH = page.offsetHeight;
-  
-  for (const decal of decalElements) {
-    const img = decal.querySelector('img');
-    if (img && img.src) {
-      try {
-        const blob = await compressToBlob(img.src, 600);
-        const leftPx = parseFloat(decal.style.left) || 0;
-        const topPx = parseFloat(decal.style.top) || 0;
-        const widthPx = decal.offsetWidth;
-        const heightPx = decal.offsetHeight;
-        
-        // Сдвиг на 2%
-        const shiftX = 0;
-        const shiftY = 0;
-        
-        template.decals.push({
-          imageBlob: blob,
-          imageName: decal.dataset.originalImageName || '',
-          left: ((leftPx / pageW * 100) - shiftX) + '%',
-          top: ((topPx / pageH * 100) - shiftY) + '%',
-          width: (widthPx / pageW * 100) + '%',
-          height: (heightPx / pageH * 100) + '%',
-          rotation: parseFloat(decal.dataset.rotation) || 0,
-          flipH: parseFloat(decal.dataset.flipH) || 1,
-          flipV: parseFloat(decal.dataset.flipV) || 1,
-          zIndex: parseInt(decal.style.zIndex) || 10
-        });
-      } catch (e) { console.warn('Decal compress failed:', e); }
-    }
-  }
-  
+  if (templateSaveInProgress) return;
+  const nameInput = document.getElementById('template-name-input');
+  const name = nameInput.value.trim();
+  if (!name) { alert('Введите название шаблона'); nameInput.focus(); return; }
+
+  templateSaveInProgress = true;
+  const saveBtn = document.querySelector('#template-modal .btn-save');
+  const cancelBtn = document.querySelector('#template-modal .btn-cancel');
+  if (saveBtn) { saveBtn.disabled = true; saveBtn.textContent = 'Сохранение…'; }
+  if (cancelBtn) cancelBtn.disabled = true;
+  setTemplateSaveProgress('Готовим предпросмотр…');
+
   try {
+    await generateTemplateThumbnail();
+    const canvas = document.getElementById('template-canvas');
+    let thumbBlob = null;
+    try { thumbBlob = dataUrlToBlob(canvas.toDataURL('image/png')); } catch (e) {}
+
+    const template = {
+      id: 'tpl_' + Date.now(),
+      name, type: 'template', version: '2.1',
+      createdAt: new Date().toISOString(),
+      thumbnail: thumbBlob || '',
+      colors: readCurrentColors(),
+      bgOpacity: document.getElementById('bg-opacity').value,
+      background: null,
+      decals: []
+    };
+
+    setTemplateSaveProgress('Сжимаем фон…');
+    const bgSrc = readBackgroundDataUrl();
+    if (bgSrc) template.background = await compressToBlob(bgSrc, 1600);
+
+    const page = document.querySelector('.page');
+    const pW = page.offsetWidth || 1122, pH = page.offsetHeight || 793;
+    const els = Array.from(document.querySelectorAll('.decal'));
+    let skipped = 0;
+
+    for (let i=0;i<els.length;i++) {
+      const decal = els[i];
+      const img = decal.querySelector('img');
+      if (!img || !img.src) continue;
+      setTemplateSaveProgress(`Декали: ${i+1} / ${els.length}`);
+      const blob = await compressToBlob(img.src, 900);
+      if (!blob) { skipped++; continue; }
+      template.decals.push({
+        imageBlob: blob,
+        imageName: decal.dataset.originalImageName || '',
+        left: ((parseFloat(decal.style.left)||0)/pW*100)+'%',
+        top: ((parseFloat(decal.style.top)||0)/pH*100)+'%',
+        width: (decal.offsetWidth/pW*100)+'%',
+        height: (decal.offsetHeight/pH*100)+'%',
+        rotation: parseFloat(decal.dataset.rotation)||0,
+        flipH: parseFloat(decal.dataset.flipH)||1,
+        flipV: parseFloat(decal.dataset.flipV)||1,
+        zIndex: parseInt(decal.style.zIndex)||10
+      });
+    }
+
+    setTemplateSaveProgress('Записываем в библиотеку…');
     await addTemplate(template);
+    templateSaveInProgress = false;
     closeTemplateModal();
-    renderTemplateList();
-    flashNotification('Шаблон сохранён');
+    await renderTemplateList();
+    flashNotification(`Шаблон «${name}» сохранён · декалей: ${template.decals.length}` + (skipped ? ` (пропущено: ${skipped})` : ''));
   } catch (e) {
-    alert('Ошибка сохранения: ' + e.message);
+    console.error(e);
+    alert(e && e.name === 'QuotaExceededError'
+      ? 'Не хватает места в хранилище браузера. Удалите старые шаблоны и повторите.'
+      : 'Ошибка сохранения: ' + (e && e.message ? e.message : e));
+  } finally {
+    templateSaveInProgress = false;
+    if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = 'Создать'; }
+    if (cancelBtn) cancelBtn.disabled = false;
+    setTemplateSaveProgress('');
   }
 }
 
+/* ---------- библиотека шаблонов ---------- */
 async function renderTemplateList() {
   const list = document.getElementById('templates-list');
+  if (!list) return;
   const templates = await getTemplates();
-  
-  if (templates.length === 0) {
+  templates.sort((a,b) => String(b.createdAt||'').localeCompare(String(a.createdAt||'')));
+
+  (list._thumbUrls || []).forEach(u => releaseUrl(u));
+  list._thumbUrls = [];
+
+  if (!templates.length) {
     list.innerHTML = '<div class="templates-empty">Нет сохранённых шаблонов</div>';
+    updateActiveTemplateUI();
     return;
   }
-  
-  list.innerHTML = templates.map(t => {
-    const thumbSrc = getBlobUrl(t.thumbnail);
-    return `
-      <div class="template-card" data-id="${t.id}">
-        <img src="${thumbSrc}" class="thumb" alt="${t.name}">
-        <div class="name">${t.name}</div>
-        <div class="actions">
-          <button class="btn-apply-template" onclick="event.stopPropagation(); applyTemplate('${t.id}')" title="Применить">✓</button>
-          <button class="btn-delete-template" onclick="event.stopPropagation(); deleteTemplate('${t.id}')" title="Удалить">×</button>
-        </div>
-      </div>
-    `;
-  }).join('');
-  
-  list.querySelectorAll('.template-card').forEach(card => {
-    card.addEventListener('click', () => showTemplatePreview(card.dataset.id));
+  list.innerHTML = '';
+  templates.forEach(t => {
+    const card = document.createElement('div');
+    card.className = 'template-card';
+    card.dataset.id = t.id;
+    card.tabIndex = 0;
+    card.title = `${t.name} — нажмите для предпросмотра`;
+    let thumb = '';
+    if (t.thumbnail instanceof Blob) { thumb = trackUrl(URL.createObjectURL(t.thumbnail)); list._thumbUrls.push(thumb); }
+    else if (typeof t.thumbnail === 'string') thumb = t.thumbnail;
+    card.innerHTML = `
+      <span class="tpl-badge">✓ активен</span>
+      <img src="${escapeHtml(thumb)}" class="thumb" alt="${escapeHtml(t.name)}">
+      <div class="name">${escapeHtml(t.name)}</div>
+      <div class="actions">
+        <button class="btn-apply-template" title="Применить (заменит текущий)">✓</button>
+        <button class="btn-delete-template" title="Удалить">×</button>
+      </div>`;
+    card.addEventListener('click', () => showTemplatePreview(t.id));
+    card.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); showTemplatePreview(t.id); }
+    });
+    card.querySelector('.btn-apply-template').addEventListener('click', (e) => { e.stopPropagation(); applyTemplate(t.id); });
+    card.querySelector('.btn-delete-template').addEventListener('click', (e) => { e.stopPropagation(); deleteTemplate(t.id); });
+    list.appendChild(card);
   });
+  updateActiveTemplateUI();
 }
 
 async function deleteTemplate(id) {
-  if (!confirm('Удалить шаблон?')) return;
+  const t = await getTemplateById(id);
+  if (!confirm(`Удалить шаблон «${t ? t.name : id}» из библиотеки?\nПрименённое оформление на листе останется.`)) return;
   try {
     await deleteTemplateFromDB(id);
-    renderTemplateList();
+    await renderTemplateList();
     flashNotification('Шаблон удалён');
-  } catch (e) {
-    alert('Ошибка удаления: ' + e.message);
-  }
+  } catch (e) { alert('Ошибка удаления: ' + e.message); }
 }
 
+/* ---------- снимок для отмены ---------- */
+async function captureStyleSnapshot() {
+  const snap = {
+    meta: activeTemplateMeta ? { ...activeTemplateMeta } : null,
+    colors: readCurrentColors(),
+    bgOpacity: document.getElementById('bg-opacity').value,
+    background: null, decals: []
+  };
+  const bg = readBackgroundDataUrl();
+  if (bg) { try { snap.background = await imageToBase64(bg); } catch (e) {} }
+  const page = document.querySelector('.page');
+  const pW = page.offsetWidth||1122, pH = page.offsetHeight||793;
+  for (const d of document.querySelectorAll('.decal')) {
+    const img = d.querySelector('img');
+    if (!img || !img.src) continue;
+    try {
+      snap.decals.push({
+        imageSrc: await imageToBase64(img.src),
+        imageName: d.dataset.originalImageName || '',
+        left: d.style.left, top: d.style.top,
+        width: (d.offsetWidth/pW*100)+'%', height: (d.offsetHeight/pH*100)+'%',
+        rotation: parseFloat(d.dataset.rotation)||0,
+        flipH: parseFloat(d.dataset.flipH)||1, flipV: parseFloat(d.dataset.flipV)||1,
+        zIndex: parseInt(d.style.zIndex)||10,
+        fromTemplate: d.classList.contains('tpl-decal'),
+        templateId: d.dataset.templateId||'', templateName: d.dataset.templateName||''
+      });
+    } catch (e) {}
+  }
+  return snap;
+}
+function showUndoToast(text) {
+  const toast = document.getElementById('undo-toast');
+  const label = document.getElementById('undo-text');
+  if (!toast || !label) return;
+  label.textContent = text;
+  toast.classList.add('visible');
+  clearTimeout(undoTimer);
+  undoTimer = setTimeout(hideUndoToast, 8000);
+}
+function hideUndoToast() {
+  const t = document.getElementById('undo-toast');
+  if (t) t.classList.remove('visible');
+  clearTimeout(undoTimer);
+  templateUndoState = null;
+}
+async function undoTemplateChange() {
+  if (!templateUndoState) { hideUndoToast(); return; }
+  const snap = templateUndoState;
+  hideUndoToast();
+  applyColors(snap.colors);
+  document.getElementById('bg-opacity').value = snap.bgOpacity;
+  root.style.setProperty('--bg-opacity', snap.bgOpacity);
+  setBackgroundSource(snap.background||'', snap.background?'Файл загружен':'Файл не выбран', snap.background?'#4ade80':'#8ab4ff');
+  clearAllDecals();
+  for (const d of snap.decals) addDecal(null, d, { fromTemplate: d.fromTemplate, templateId: d.templateId, templateName: d.templateName });
+  setActiveTemplateMeta(snap.meta);
+  await renderTemplateList();
+  flashNotification('Изменение отменено');
+}
+
+/* ---------- применение = ЗАМЕНА ---------- */
 async function applyTemplate(id) {
-  const template = await getTemplateById(id);
-  if (!template) return;
-  
-  if (template.colors) {
-    const colorMap = {headerBg:'col-header-bg', headerText:'col-header-text', border:'col-border', text:'col-text'};
-    const cssMap = {headerBg:'--header-bg', headerText:'--header-text', border:'--border-color', text:'--text-color'};
-    for (const [key, value] of Object.entries(template.colors)) {
-      if (value && colorMap[key]) {
-        document.getElementById(colorMap[key]).value = value;
-        root.style.setProperty(cssMap[key], value);
+  if (templateApplyInProgress) return;
+  templateApplyInProgress = true;
+  try {
+    const template = await getTemplateById(id);
+    if (!template) { flashNotification('Шаблон не найден'); return; }
+    templateUndoState = await captureStyleSnapshot();
+
+    clearTemplateDecals();
+    applyColors(template.colors);
+    const op = (template.bgOpacity !== undefined && template.bgOpacity !== null) ? template.bgOpacity : 1;
+    document.getElementById('bg-opacity').value = op;
+    root.style.setProperty('--bg-opacity', op);
+
+    if (template.background) {
+      const url = template.background instanceof Blob ? trackUrl(URL.createObjectURL(template.background)) : template.background;
+      setBackgroundSource(url, `Фон: ${template.name}`, '#a78bfa');
+    } else setBackgroundSource('', 'Файл не выбран', '#8ab4ff');
+    document.getElementById('bg-upload').value = '';
+
+    const page = document.querySelector('.page');
+    const pW = page.offsetWidth||1122, pH = page.offsetHeight||793;
+    let placed = 0;
+    for (const d of (template.decals || [])) {
+      if (!d.imageBlob && !d.imageSrc) continue;
+      addDecal(null, {
+        ...d,
+        id: 'd_' + Date.now() + '_' + Math.random().toString(36).slice(2,7),
+        left: ((parseFloat(d.left)||0)/100*pW)+'px',
+        top: ((parseFloat(d.top)||0)/100*pH)+'px',
+        width: ((parseFloat(d.width)||10)/100*pW)+'px',
+        height: ((parseFloat(d.height)||10)/100*pH)+'px',
+        zIndex: ++decalZIndex
+      }, { fromTemplate: true, templateId: template.id, templateName: template.name });
+      placed++;
+    }
+    setActiveTemplateMeta({ id: template.id, name: template.name });
+    await renderTemplateList();
+    showUndoToast(`Шаблон «${template.name}» применён · декалей: ${placed}`);
+    flashNotification('Шаблон применён (предыдущий заменён)');
+  } catch (e) {
+    console.error(e);
+    alert('Не удалось применить шаблон: ' + (e && e.message ? e.message : e));
+  } finally { templateApplyInProgress = false; }
+}
+
+async function clearTemplate() {
+  if (!activeTemplateMeta && !document.querySelectorAll('.decal.tpl-decal').length) {
+    flashNotification('Шаблон не применён'); return;
+  }
+  templateUndoState = await captureStyleSnapshot();
+  const removed = clearTemplateDecals();
+  applyColors(DEFAULT_COLORS);
+  document.getElementById('bg-opacity').value = 1;
+  root.style.setProperty('--bg-opacity', 1);
+  setBackgroundSource('', 'Файл не выбран', '#8ab4ff');
+  document.getElementById('bg-upload').value = '';
+  setActiveTemplateMeta(null);
+  await renderTemplateList();
+  showUndoToast(`Шаблон снят · удалено декалей: ${removed}`);
+  flashNotification('Оформление шаблона снято');
+}
+
+/* ---------- предпросмотр ---------- */
+async function drawPreviewDecals(decals, W, H, data) {
+  const canvas = document.getElementById('preview-canvas');
+  if (!canvas) return;
+  canvas.width = 800; canvas.height = 566;
+  const ctx = canvas.getContext('2d');
+  const CW = canvas.width, CH = canvas.height;
+  ctx.fillStyle = '#fff'; ctx.fillRect(0,0,CW,CH);
+  const d = data || {};
+  const owned = [];
+  const srcOf = (v) => {
+    if (!v) return '';
+    if (typeof v === 'string') return v;
+    if (v instanceof Blob) { const u = URL.createObjectURL(v); owned.push(u); return u; }
+    return '';
+  };
+  try {
+    const bg = srcOf(d.background);
+    if (bg) {
+      const img = await loadImageSafe(bg, 8000);
+      if (img) {
+        ctx.save();
+        const a = parseFloat(d.bgOpacity);
+        ctx.globalAlpha = isNaN(a) ? 1 : a;
+        drawCover(ctx, img, CW, CH);
+        ctx.restore();
       }
     }
-  }
-  if (template.bgOpacity !== undefined) {
-    document.getElementById('bg-opacity').value = template.bgOpacity;
-    root.style.setProperty('--bg-opacity', template.bgOpacity);
-  }
-  if (template.background) {
-    const bgUrl = getBlobUrl(template.background);
-    bgLayers.forEach(l => { l.style.backgroundImage = `url(${bgUrl})`; });
-    const bgFileName = document.getElementById('bg-file-name');
-    if (bgFileName) { bgFileName.textContent = '(из шаблона)'; bgFileName.style.color = '#7c3aed'; }
-  }
-  if (template.decals && template.decals.length > 0) {
-    const currentPage = document.querySelector('.page');
-    const currentPageW = currentPage.offsetWidth;
-    const currentPageH = currentPage.offsetHeight;
-    
-    for (const decalData of template.decals) {
-      const leftPercent = parseFloat(decalData.left);
-      const topPercent = parseFloat(decalData.top);
-      const widthPercent = parseFloat(decalData.width);
-      const heightPercent = parseFloat(decalData.height);
-      
-      const newDecalData = {
-        ...decalData,
-        id: 'd_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5),
-        left: (leftPercent / 100 * currentPageW) + 'px',
-        top: (topPercent / 100 * currentPageH) + 'px',
-        width: (widthPercent / 100 * currentPageW) + 'px',
-        height: (heightPercent / 100 * currentPageH) + 'px',
-        zIndex: ++decalZIndex
-      };
-      await addDecal(null, newDecalData);
-
-    const item = document.createElement('div');
-    item.className = 'decal-list-item';
-    item.id = 'list_' + newDecalData.id;
-    const name = decalData.imageName ? decalData.imageName : 'decal';
-    const imgSrc = getBlobUrl(decalData.imageBlob);
-    item.innerHTML = `
-      <div class="decal-item-info">
-        <img src="${imgSrc}" class="decal-thumb" alt="preview">
-        <span class="decal-item-name">${name} (шаблон)</span>
-      </div>
-      <button onclick="removeDecal('${newDecalData.id}')">Удалить</button>
-    `;
-    decalList.appendChild(item);
+    drawFormStructure(ctx, CW, CH, d.colors || DEFAULT_COLORS);
+    for (const dec of (decals || [])) {
+      const src = srcOf(dec.imageBlob) || dec.imageSrc || '';
+      if (!src) continue;
+      const img = await loadImageSafe(src, 8000);
+      if (!img) continue;
+      const l = (parseFloat(dec.left)||0)/100*CW;
+      const t = (parseFloat(dec.top)||0)/100*CH;
+      const w = (parseFloat(dec.width)||0)/100*CW;
+      const h = (parseFloat(dec.height)||0)/100*CH;
+      if (w<=0||h<=0) continue;
+      ctx.save();
+      ctx.translate(l+w/2, t+h/2);
+      ctx.rotate((parseFloat(dec.rotation)||0)*Math.PI/180);
+      ctx.scale(parseFloat(dec.flipH)||1, parseFloat(dec.flipV)||1);
+      ctx.drawImage(img, -w/2, -h/2, w, h);
+      ctx.restore();
     }
-  }
-  flashNotification('Шаблон применён');
-}
-
-async function drawPreviewDecals(decals, W, H, templateColors) {
-  const canvas = document.getElementById('preview-canvas');
-  canvas.width = 800;
-  canvas.height = 566;
-  const ctx = canvas.getContext('2d');
-  ctx.fillStyle = '#fff';
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
-  
-  if (templateColors && templateColors.background) {
-    const bgUrl = getBlobUrl(templateColors.background);
-    const img = new Image();
-    await new Promise((resolve) => { img.onload = resolve; img.onerror = resolve; img.src = bgUrl; });
-    if (img.complete && img.naturalWidth > 0) {
-      ctx.globalAlpha = templateColors.bgOpacity || 1;
-      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-      ctx.globalAlpha = 1;
-    }
-  }
-  
-  const colors = templateColors?.colors || { headerBg: '#000', border: '#333' };
-  drawFormStructure(ctx, canvas.width, canvas.height, colors);
-  
-  for (const decal of decals) {
-    const imgSrc = getBlobUrl(decal.imageBlob);
-    const img = new Image();
-    await new Promise((resolve) => { img.onload = resolve; img.onerror = resolve; img.src = imgSrc; });
-    if (!img.complete || img.naturalWidth === 0) continue;
-    
-    const leftPercent = parseFloat(decal.left);
-    const topPercent = parseFloat(decal.top);
-    const widthPercent = parseFloat(decal.width);
-    const heightPercent = parseFloat(decal.height);
-    const left = ((leftPercent) / 100) * canvas.width;
-    const top = ((topPercent - 2) / 100) * canvas.height;
-    const w = (widthPercent / 100) * canvas.width;
-    const h = (heightPercent / 100) * canvas.height;
-    const rot = parseFloat(decal.rotation) || 0;
-    const flipH = parseFloat(decal.flipH) || 1;
-    const flipV = parseFloat(decal.flipV) || 1;
-    
-    ctx.save();
-    ctx.translate(left + w / 2, top + h / 2);
-    ctx.rotate(rot * Math.PI / 180);
-    ctx.scale(flipH, flipV);
-    ctx.drawImage(img, -w / 2, -h / 2, w, h);
-    ctx.restore();
+  } finally {
+    owned.forEach(u => { try { URL.revokeObjectURL(u); } catch (e) {} });
   }
 }
 
 async function showTemplatePreview(id) {
-  const template = await getTemplateById(id);
-  if (!template) return;
-  const modal = document.getElementById('preview-modal');
-  document.getElementById('preview-title').textContent = template.name;
-  await drawPreviewDecals(template.decals, 800, 566, {
-    colors: template.colors,
-    background: template.background,
-    bgOpacity: template.bgOpacity
+  if (previewBusy) return;
+  previewBusy = true;
+  const card = document.querySelector(`.template-card[data-id="${id}"]`);
+  if (card) card.classList.add('is-busy');
+  try {
+    const template = await getTemplateById(id);
+    if (!template) { flashNotification('Шаблон не найден'); return; }
+    const modal = document.getElementById('preview-modal');
+    document.getElementById('preview-title').textContent = template.name;
+    document.getElementById('preview-info').innerHTML = '<span style="color:#8f97a8">Отрисовка предпросмотра…</span>';
+    modal.classList.add('active');
+    await drawPreviewDecals(template.decals, 800, 566, {
+      colors: template.colors, background: template.background, bgOpacity: template.bgOpacity
+    });
+    const isActive = !!activeTemplateMeta && activeTemplateMeta.id === template.id;
+    const created = template.createdAt ? new Date(template.createdAt).toLocaleString('ru-RU') : '—';
+    document.getElementById('preview-info').innerHTML = `
+      <strong>Шаблон:</strong> ${escapeHtml(template.name)}${isActive ? ' · <span style="color:#a78bfa">активен</span>' : ''}<br>
+      <strong>Создан:</strong> ${created}<br>
+      <strong>Декалей:</strong> ${(template.decals||[]).length}<br>
+      <span style="color:#8f97a8">Применение заменит текущее оформление шаблона. Текст персонажа и ваши декали сохранятся.</span>`;
+    const btn = document.getElementById('preview-apply-btn');
+    btn.textContent = isActive ? 'Применить заново' : 'Применить шаблон';
+    btn.onclick = () => { closePreviewModal(); applyTemplate(id); };
+  } catch (e) {
+    console.error(e);
+    flashNotification('Не удалось показать предпросмотр');
+  } finally {
+    previewBusy = false;
+    if (card) card.classList.remove('is-busy');
+  }
+}
+function closePreviewModal() { document.getElementById('preview-modal').classList.remove('active'); }
+
+document.querySelectorAll('.modal-overlay').forEach(m => {
+  m.addEventListener('click', (e) => {
+    if (e.target !== m) return;
+    if (m.id === 'template-modal' && templateSaveInProgress) return;
+    m.classList.remove('active');
   });
-  document.getElementById('preview-info').innerHTML = `
-    <strong>Шаблон:</strong> ${template.name}<br>
-    <strong>Создан:</strong> ${new Date(template.createdAt).toLocaleString('ru-RU')}<br>
-    <strong>Декалей:</strong> ${template.decals.length}
-  `;
-  document.getElementById('preview-apply-btn').onclick = () => { applyTemplate(id); closePreviewModal(); };
-  modal.classList.add('active');
-}
-
-function closePreviewModal() {
-  document.getElementById('preview-modal').classList.remove('active');
-}
-
-document.querySelectorAll('.modal-overlay').forEach(modal => {
-  modal.addEventListener('click', (e) => { if (e.target === modal) modal.classList.remove('active'); });
 });
-
 document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape') {
+    if (templateSaveInProgress) return;
     document.querySelectorAll('.modal-overlay.active').forEach(m => m.classList.remove('active'));
+  }
+  if (e.key === 'Enter' && document.getElementById('template-modal').classList.contains('active')) {
+    if (document.activeElement === document.getElementById('template-name-input')) {
+      e.preventDefault(); confirmCreateTemplate();
+    }
   }
 });
 
-renderTemplateList();
+/* ============================================================
+   МАСШТАБИРОВАНИЕ + ПЕРЕМЕЩЕНИЕ ЛИСТА (мобильные)
+   ============================================================ */
+let currentZoom = 1, baseScale = 1, pageOffsetX = 0, pageOffsetY = 0;
+let isPinching = false, pinchStartDistance = 0, pinchStartZoom = 1;
+let isDraggingPage = false, dragStartX = 0, dragStartY = 0, dragStartOffsetX = 0, dragStartOffsetY = 0;
+let lastTapTime = 0, lastTapX = 0, lastTapY = 0, zoomHideTimer = null;
 
+const isTouch = () => window.matchMedia('(hover: none) and (pointer: coarse)').matches;
 
-// ===== МАСШТАБИРОВАНИЕ + ПЕРЕМЕЩЕНИЕ ЛИСТА =====
-let currentZoom = 1;
-let baseScale = 1;
-let pageOffsetX = 0;
-let pageOffsetY = 0;
-
-// Pinch-to-zoom
-let isPinching = false;
-let pinchStartDistance = 0;
-let pinchStartZoom = 1;
-
-// Drag листа
-let isDraggingPage = false;
-let dragStartX = 0;
-let dragStartY = 0;
-let dragStartOffsetX = 0;
-let dragStartOffsetY = 0;
-
-// Двойной тап
-let lastTapTime = 0;
-let lastTapX = 0;
-let lastTapY = 0;
-
-// Индикатор зума
-let zoomHideTimer = null;
 function showZoomIndicator() {
   const el = document.getElementById('zoom-indicator');
   if (!el) return;
-  el.textContent = Math.round(currentZoom * 100) + '%';
+  el.textContent = Math.round(currentZoom*100) + '%';
   el.classList.add('visible');
   clearTimeout(zoomHideTimer);
   zoomHideTimer = setTimeout(() => el.classList.remove('visible'), 1500);
 }
-
-function getPinchDistance(touches) {
-  const dx = touches[0].clientX - touches[1].clientX;
-  const dy = touches[0].clientY - touches[1].clientY;
-  return Math.sqrt(dx * dx + dy * dy);
+function getPinchDistance(t) {
+  const dx = t[0].clientX - t[1].clientX, dy = t[0].clientY - t[1].clientY;
+  return Math.sqrt(dx*dx + dy*dy);
 }
-
-function isTouchOnDecal(e) {
-  return e.target.closest('.decal') !== null;
-}
-
+function isTouchOnDecal(e) { return !!e.target.closest('.decal'); }
 function isTouchOnFixedUI(e) {
-  const target = e.target;
-  return target.closest('#settings-panel') !== null ||
-         target.closest('.fab-container') !== null ||
-         target.closest('.zoom-controls') !== null ||
-         target.closest('.modal-overlay') !== null ||
-         target.closest('.shortcut-hint') !== null ||
-         target.closest('#context-menu') !== null;
+  const t = e.target;
+  return !!(t.closest('#settings-panel') || t.closest('.fab-container') ||
+            t.closest('.modal-overlay') || t.closest('.shortcut-hint') ||
+            t.closest('#context-menu') || t.closest('#undo-toast'));
 }
-
-
 function isTouchOnInteractive(e) {
-  const target = e.target;
-  return target.closest('input, textarea, select, button, a, [contenteditable]') !== null;
+  return !!e.target.closest('input, textarea, select, button, a, [contenteditable], .cb');
 }
-
-// Применяем transform: translate + scale
 function applyPageTransform() {
   const page = document.querySelector('.page');
   if (!page) return;
-  
-  const finalScale = baseScale * currentZoom;
-  
   page.style.transformOrigin = '0 0';
-  page.style.transform = `translate(${pageOffsetX}px, ${pageOffsetY}px) scale(${finalScale})`;
-  
+  page.style.transform = `translate(${pageOffsetX}px, ${pageOffsetY}px) scale(${baseScale*currentZoom})`;
   showZoomIndicator();
 }
-
-// Вычислить базовый масштаб под экран
 function updateBaseScale() {
-  const isTouchDevice = window.matchMedia('(hover: none) and (pointer: coarse)').matches;
-  
-  if (!isTouchDevice) {
-    // Десктоп
-    baseScale = 1;
-    currentZoom = 1;
-    pageOffsetX = 0;
-    pageOffsetY = 0;
-    const page = document.querySelector('.page');
-    if (page) {
-      page.style.transform = 'none';
-      page.style.transformOrigin = 'top center';
-      page.style.position = 'relative';
-      page.style.top = 'auto';
-      page.style.left = 'auto';
-      page.style.margin = '0 auto 20px auto';
-      page.style.width = '297mm';
-    }
-    return;
-  }
-  
   const page = document.querySelector('.page');
   if (!page) return;
-  
+  if (!isTouch()) {
+    baseScale = 1; currentZoom = 1; pageOffsetX = 0; pageOffsetY = 0;
+    page.style.transform = 'none';
+    page.style.transformOrigin = 'top center';
+    page.style.position = 'relative';
+    page.style.top = 'auto'; page.style.left = 'auto';
+    page.style.margin = '0 auto 20px auto';
+    page.style.width = '297mm';
+    return;
+  }
   const mmToPx = 3.7795275591;
-  const pageWidth = 297 * mmToPx;
-  const pageHeight = 210 * mmToPx;
-  
-  const viewportWidth = window.innerWidth;
-  const viewportHeight = window.innerHeight;
-  
-  // Просто подгоняем лист под экран (и в альбоме, и в портрете)
-  const scaleX = viewportWidth / pageWidth;
-  const scaleY = viewportHeight / pageHeight;
-  baseScale = Math.min(scaleX, scaleY, 1);
-  
-  // Центрируем лист
-  const scaledW = pageWidth * baseScale;
-  const scaledH = pageHeight * baseScale;
-  pageOffsetX = (viewportWidth - scaledW) / 2;
-  pageOffsetY = (viewportHeight - scaledH) / 2;
-  
+  const pW = 297*mmToPx, pH = 210*mmToPx;
+  const vw = window.innerWidth, vh = window.innerHeight;
+  baseScale = Math.min(vw/pW, vh/pH, 1);
+  pageOffsetX = (vw - pW*baseScale)/2;
+  pageOffsetY = (vh - pH*baseScale)/2;
   currentZoom = 1;
   applyPageTransform();
 }
 
-// ===== TOUCH-ОБРАБОТЧИКИ =====
-
 document.addEventListener('touchstart', (e) => {
-  // Фиксированный UI — вообще не вмешиваемся
   if (isTouchOnFixedUI(e)) return;
-  
-  // Pinch-to-zoom (два пальца, не на декали)
   if (e.touches.length === 2 && !isTouchOnDecal(e)) {
     isPinching = true;
     pinchStartDistance = getPinchDistance(e.touches);
     pinchStartZoom = currentZoom;
+    isDraggingPage = false;
     e.preventDefault();
     return;
   }
-  
-  // Перетаскивание листа — только если палец НЕ на интерактивном элементе и НЕ на декали
   if (e.touches.length === 1 && !isTouchOnDecal(e) && !isTouchOnInteractive(e)) {
     isDraggingPage = true;
-    dragStartX = e.touches[0].clientX;
-    dragStartY = e.touches[0].clientY;
-    dragStartOffsetX = pageOffsetX;
-    dragStartOffsetY = pageOffsetY;
+    dragStartX = e.touches[0].clientX; dragStartY = e.touches[0].clientY;
+    dragStartOffsetX = pageOffsetX; dragStartOffsetY = pageOffsetY;
     e.preventDefault();
   }
-  // Если палец на поле ввода или кнопке — ничего не делаем, даём элементу получить фокус
 }, { passive: false });
 
 document.addEventListener('touchmove', (e) => {
   if (isTouchOnFixedUI(e)) return;
-  
-  // Pinch-to-zoom
   if (isPinching && e.touches.length === 2) {
     e.preventDefault();
-    const currentDistance = getPinchDistance(e.touches);
-    const scale = currentDistance / pinchStartDistance;
-    currentZoom = Math.max(0.3, Math.min(4, pinchStartZoom * scale));
+    const ratio = getPinchDistance(e.touches)/pinchStartDistance;
+    currentZoom = Math.max(0.3, Math.min(4, pinchStartZoom*ratio));
     applyPageTransform();
     return;
   }
-  
-  // Перетаскивание листа (прямое, без инверсий)
   if (isDraggingPage && e.touches.length === 1) {
     e.preventDefault();
-    const dx = e.touches[0].clientX - dragStartX;
-    const dy = e.touches[0].clientY - dragStartY;
-    
-    pageOffsetX = dragStartOffsetX + dx;
-    pageOffsetY = dragStartOffsetY + dy;
-    
+    pageOffsetX = dragStartOffsetX + (e.touches[0].clientX - dragStartX);
+    pageOffsetY = dragStartOffsetY + (e.touches[0].clientY - dragStartY);
     applyPageTransform();
   }
 }, { passive: false });
 
 document.addEventListener('touchend', (e) => {
-  if (e.touches.length < 2) {
-    isPinching = false;
-  }
+  if (e.touches.length < 2) isPinching = false;
   if (e.touches.length === 0) {
+    const wasDragging = isDraggingPage;
     isDraggingPage = false;
-    
-    // Двойной тап — быстрый зум (только если не на интерактивном элементе)
-    const touch = e.changedTouches[0];
+    const t = e.changedTouches[0];
+    if (!t) return;
     const now = Date.now();
-    const dx = touch.clientX - lastTapX;
-    const dy = touch.clientY - lastTapY;
-    
-    if (now - lastTapTime < 300 && Math.abs(dx) < 30 && Math.abs(dy) < 30) {
+    const dx = t.clientX - lastTapX, dy = t.clientY - lastTapY;
+    if (!wasDragging && now - lastTapTime < 300 && Math.abs(dx) < 30 && Math.abs(dy) < 30) {
       if (!isTouchOnDecal(e) && !isTouchOnFixedUI(e) && !isTouchOnInteractive(e)) {
-        if (currentZoom > 1.1) {
-          currentZoom = 1;
-        } else {
-          currentZoom = 2;
-        }
+        currentZoom = currentZoom > 1.1 ? 1 : 2;
         applyPageTransform();
       }
     }
-    
-    lastTapTime = now;
-    lastTapX = touch.clientX;
-    lastTapY = touch.clientY;
+    lastTapTime = now; lastTapX = t.clientX; lastTapY = t.clientY;
   }
 });
 
-// Заменяем старую функцию scalePageToFit
-window.addEventListener('load', updateBaseScale);
 window.addEventListener('resize', updateBaseScale);
-window.addEventListener('orientationchange', () => {
-  setTimeout(updateBaseScale, 200);
-});
+window.addEventListener('orientationchange', () => setTimeout(updateBaseScale, 200));
 
+/* ---------- СТАРТ ---------- */
+(async function init() {
+  updateBaseScale();
+  activeTemplateMeta = readActiveTemplateMeta();
+  updateActiveTemplateUI();
+  await renderTemplateList();
+  if (activeTemplateMeta) {
+    const exists = await getTemplateById(activeTemplateMeta.id);
+    if (!exists) { setActiveTemplateMeta(null); await renderTemplateList(); }
+  }
+})();
+window.addEventListener('load', updateBaseScale);
 </script>
 
 </body>

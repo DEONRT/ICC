@@ -430,10 +430,25 @@ textarea { resize: none; line-height: 1.5; }
 .shortcut-hint {
   position: fixed; bottom: 24px; left: 24px; background: rgba(20, 20, 30, 0.88);
   color: #e8e8ee; padding: 14px 16px; border-radius: 10px; font-size: 12px;
-  z-index: 998; min-width: 290px; backdrop-filter: blur(12px);
+  z-index: 998; min-width: 290px; max-height: calc(100vh - 48px); overflow-y: auto;
+  backdrop-filter: blur(12px);
   border: 1px solid rgba(255,255,255,0.08); box-shadow: 0 8px 24px rgba(0,0,0,0.4);
   font-family: 'Inter', sans-serif;
+  /* скрыто по умолчанию, показывается кнопкой «Подсказки» (класс .visible) */
+  opacity: 0; visibility: hidden; pointer-events: none;
+  transition: opacity 0.2s ease, visibility 0.2s ease;
 }
+.shortcut-hint.visible { opacity: 1; visibility: visible; pointer-events: auto; }
+.shortcut-hint .hint-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 6px; padding-bottom: 6px; border-bottom: 1px solid rgba(255,255,255,0.12);
+}
+.shortcut-hint .hint-title { font-weight: 700; font-size: 12px; color: #fff; letter-spacing: 0.3px; }
+.shortcut-hint .hint-close {
+  background: transparent; border: none; color: #9aa3b5; font-size: 20px; line-height: 1;
+  cursor: pointer; padding: 0 2px; transition: color 0.15s;
+}
+.shortcut-hint .hint-close:hover { color: #fff; }
 .shortcut-hint .section-title {
   font-weight: 700; margin: 8px 0 4px 0; color: #8ab4ff; font-size: 11px;
   text-transform: uppercase; letter-spacing: 0.6px;
